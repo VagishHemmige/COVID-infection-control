@@ -1,0 +1,41 @@
+# R, RStudio and Positron
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+.httr-oauth
+.DS_Store
+
+# Quarto. docs/ is the local render; GitHub Actions renders the site and
+# publishes it to the gh-pages branch (.github/workflows/publish.yml)
+/docs/
+/.quarto/
+**/*.quarto_ipynb
+/_freeze/
+
+# Credentials
+.Renviron
+.env
+*.pem
+*.key
+
+# Data files. The weekly surveillance workbook and the Harris County extract
+# live outside the repository, in the folder named by COVID_IC_DATA_DIR;
+# this is a safety net, not access control.
+/data-raw/
+/data/
+*.csv
+*.xlsx
+*.xls
+*.rds
+*.rda
+
+# The original 2021 R Markdown file is kept outside the repository
+*.Rmd
+!/README.Rmd
+
+# Outputs from the study data. The published figures and tables shown on
+# the site are the journal's, in images/published/, not these.
+/figures/
+/tables/
+*.tiff
