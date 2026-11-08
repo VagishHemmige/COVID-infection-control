@@ -1,0 +1,32 @@
+---
+title: "Universal face shields and SARS-CoV-2 infections: an interrupted time series"
+format: html
+---
+
+## The study
+
+In July 2020, as SARS-CoV-2 infections rose among staff and inpatients during Houston's summer surge, a quaternary care center required every healthcare worker to wear a face shield on entering the facility, in addition to universal masking. Al Mohajer and colleagues evaluated the policy as an interrupted time series of weekly data, from 17 April to 5 July 2020 before face shields and 6 July to 7 September 2020 with them [@almohajer2021faceshield]. Two outcomes were studied:
+
+-   the percentage of healthcare-personnel SARS-CoV-2 tests that were positive;
+-   hospital-acquired infections among inpatients, per 1,000 patient-days.
+
+Both fell after face shields were introduced. Each outcome was modelled with segmented regression, logistic for test positivity and Poisson for hospital-acquired infections, allowing a change in level and in slope at the intervention.
+
+## What this site does
+
+This site is a teaching resource. It uses the published study to show how an interrupted time series analysis is built in R, step by step. The original analysis was one R Markdown file of 2021; here it is rebuilt as labelled scripts, and each page explains what a section of the code does and why.
+
+The code is shown, not run. The weekly surveillance data are institutional data and are not in this repository, so no result on this site comes from running the code. The study's results are those published in the article.
+
+## Methods
+
+The authoritative specification is [`analysis-plan.md`](quarto/analysis-plan.qmd), which records the published methods. Reporting follows SQUIRE 2.0 [@ogrinc2016squire].
+
+## Status
+
+The scripts are written and have been checked by reading; they have not yet been run on the study data. The pages explaining the study design and each script, the differences from the original code, and the published results will be added in turn.
+
+## References
+
+::: {#refs}
+:::
