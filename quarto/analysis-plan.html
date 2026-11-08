@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Vagish Hemmige">
+
+<title>Analysis plan – Universal face shields and SARS-CoV-2: an interrupted time series</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../quarto/architecture.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-66ae90e4418e9d0ac3caa4b8c3bef75c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+div.callout-Rcode.callout {
+  border-left-color: #d63384;
+}
+div.callout-Rcode.callout-style-default > .callout-header {
+  background-color: rgba(214, 51, 132, 0.13);
+}
+div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
+  content: '💻';
+  background-image: none;
+}
+div.callout-Results.callout {
+  border-left-color: #198754;
+}
+div.callout-Results.callout-style-default > .callout-header {
+  background-color: rgba(25, 135, 84, 0.13);
+}
+div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
+  content: '📊';
+  background-image: none;
+}
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
+}
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
+}
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
+  background-image: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../quarto/analysis-plan.html">Project documents</a></li><li class="breadcrumb-item"><a href="../quarto/analysis-plan.html">Analysis plan</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Universal face shields and SARS-CoV-2: an interrupted time series</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-house" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Project documents</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/analysis-plan.html" class="sidebar-item-text sidebar-link active"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">Analysis plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/architecture.html" class="sidebar-item-text sidebar-link"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">Architecture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/agents.html" class="sidebar-item-text sidebar-link"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">AGENTS.md</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/repository-blueprint.html" class="sidebar-item-text sidebar-link"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">Repository blueprint</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/about.html" class="sidebar-item-text sidebar-link"><i class="bi bi-info-circle" role="img">
+</i> 
+ <span class="menu-text">About</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#analysis-plan-universal-face-shields-and-sars-cov-2-infections-among-healthcare-personnel-and-hospitalized-patients" id="toc-analysis-plan-universal-face-shields-and-sars-cov-2-infections-among-healthcare-personnel-and-hospitalized-patients" class="nav-link active" data-scroll-target="#analysis-plan-universal-face-shields-and-sars-cov-2-infections-among-healthcare-personnel-and-hospitalized-patients">Analysis plan: Universal face shields and SARS-CoV-2 infections among healthcare personnel and hospitalized patients</a>
+  <ul class="collapse">
+  <li><a href="#scope-and-reporting-framework" id="toc-scope-and-reporting-framework" class="nav-link" data-scroll-target="#scope-and-reporting-framework">Scope and reporting framework</a></li>
+  <li><a href="#1-problem-description" id="toc-1-problem-description" class="nav-link" data-scroll-target="#1-problem-description">1. Problem description</a></li>
+  <li><a href="#2-available-knowledge-and-rationale" id="toc-2-available-knowledge-and-rationale" class="nav-link" data-scroll-target="#2-available-knowledge-and-rationale">2. Available knowledge and rationale</a></li>
+  <li><a href="#3-specific-aim" id="toc-3-specific-aim" class="nav-link" data-scroll-target="#3-specific-aim">3. Specific aim</a></li>
+  <li><a href="#4-context" id="toc-4-context" class="nav-link" data-scroll-target="#4-context">4. Context</a></li>
+  <li><a href="#5-intervention" id="toc-5-intervention" class="nav-link" data-scroll-target="#5-intervention">5. Intervention</a></li>
+  <li><a href="#6-study-of-the-intervention" id="toc-6-study-of-the-intervention" class="nav-link" data-scroll-target="#6-study-of-the-intervention">6. Study of the intervention</a></li>
+  <li><a href="#7-measures" id="toc-7-measures" class="nav-link" data-scroll-target="#7-measures">7. Measures</a></li>
+  <li><a href="#8-analysis" id="toc-8-analysis" class="nav-link" data-scroll-target="#8-analysis">8. Analysis</a>
+  <ul class="collapse">
+  <li><a href="#81-weekly-estimates" id="toc-81-weekly-estimates" class="nav-link" data-scroll-target="#81-weekly-estimates">8.1 Weekly estimates</a></li>
+  <li><a href="#82-segmented-regression" id="toc-82-segmented-regression" class="nav-link" data-scroll-target="#82-segmented-regression">8.2 Segmented regression</a></li>
+  <li><a href="#83-exploratory-models" id="toc-83-exploratory-models" class="nav-link" data-scroll-target="#83-exploratory-models">8.3 Exploratory models</a></li>
+  <li><a href="#84-figures" id="toc-84-figures" class="nav-link" data-scroll-target="#84-figures">8.4 Figures</a></li>
+  </ul></li>
+  <li><a href="#9-ethical-considerations" id="toc-9-ethical-considerations" class="nav-link" data-scroll-target="#9-ethical-considerations">9. Ethical considerations</a></li>
+  <li><a href="#10-disclosure-control" id="toc-10-disclosure-control" class="nav-link" data-scroll-target="#10-disclosure-control">10. Disclosure control</a></li>
+  <li><a href="#11-limitations-to-address-in-reporting" id="toc-11-limitations-to-address-in-reporting" class="nav-link" data-scroll-target="#11-limitations-to-address-in-reporting">11. Limitations to address in reporting</a></li>
+  <li><a href="#reporting-map" id="toc-reporting-map" class="nav-link" data-scroll-target="#reporting-map">Reporting map</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/VagishHemmige/COVID-infection-control/edit/main/quarto/analysis-plan.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/VagishHemmige/COVID-infection-control/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content"><div class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../quarto/analysis-plan.html">Project documents</a></li><li class="breadcrumb-item"><a href="../quarto/analysis-plan.html">Analysis plan</a></li></ol></nav><div class="quarto-title-tools-only"><h1></h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Vagish Hemmige </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!--
+This page only shows analysis-plan.md from the repository root, which is the one source:
+edit that file, not this page. Its first heading is the page title.
+-->
+<section id="analysis-plan-universal-face-shields-and-sars-cov-2-infections-among-healthcare-personnel-and-hospitalized-patients" class="level1">
+<h1>Analysis plan: Universal face shields and SARS-CoV-2 infections among healthcare personnel and hospitalized patients</h1>
+<p>Status: draft. The plan records the analysis as it was published <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>; it is not a plan for new analysis.</p>
+<section id="scope-and-reporting-framework" class="level2">
+<h2 class="anchored" data-anchor-id="scope-and-reporting-framework">Scope and reporting framework</h2>
+<p>This document is the authoritative specification of the study’s aims, setting, intervention, measures and statistical methods. <code>ARCHITECTURE.md</code> documents the implementation, <code>AGENTS.md</code> the working conventions, and GitHub Issues the open decisions and implementation status. Neither file supersedes this plan.</p>
+<p>The study is a quality-improvement evaluation with an interrupted time series design. Reporting follows SQUIRE 2.0 <span class="citation" data-cites="ogrinc2016squire">(<a href="#ref-ogrinc2016squire" role="doc-biblioref">Ogrinc et al. 2016</a>)</span>. The reporting map at the end links each relevant SQUIRE item to a section of this plan. Every method below is taken from the published article <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span> or from the original 2021 analysis code that produced its results.</p>
+</section>
+<section id="1-problem-description" class="level2">
+<h2 class="anchored" data-anchor-id="1-problem-description">1. Problem description</h2>
+<p>Between April and early July 2020 the hospital had put in place entry restrictions, symptom and temperature screening, universal masking of healthcare personnel and patients, distancing and limits on meeting size. As Texas reopened, SARS-CoV-2 infections among healthcare personnel and hospital-acquired infections among inpatients rose sharply, with clusters in several units <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>.</p>
+</section>
+<section id="2-available-knowledge-and-rationale" class="level2">
+<h2 class="anchored" data-anchor-id="2-available-knowledge-and-rationale">2. Available knowledge and rationale</h2>
+<p>Face shields protect the eyes, nose and mouth from droplets, may discourage touching of the face, and may act as a barrier between staff and from staff to patients. They are cheap, reusable and easy to clean. In a simulation study cited by the article, a face shield sharply reduced exposure to a simulated cough at close range <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>.</p>
+</section>
+<section id="3-specific-aim" class="level2">
+<h2 class="anchored" data-anchor-id="3-specific-aim">3. Specific aim</h2>
+<p>To assess whether a policy of universal face shields for all healthcare personnel, added to the existing measures, was associated with a change in SARS-CoV-2 infection among healthcare personnel and hospitalized patients.</p>
+</section>
+<section id="4-context" class="level2">
+<h2 class="anchored" data-anchor-id="4-context">4. Context</h2>
+<ul>
+<li><strong>Setting:</strong> a quaternary care healthcare system in Houston, Texas, with more than 500 beds and about 8,000 healthcare personnel.</li>
+<li><strong>Surveillance testing</strong> (from 17 April 2020): healthcare personnel in high-risk units (emergency department, transplant units, COVID-19 units) tested biweekly (the article’s word); those in cluster areas (3 or more personnel with COVID-19, or any hospital-acquired infection) tested weekly; other personnel tested on request or after exposure. All patients tested on admission and every 7 days. Testing was voluntary. People with a previous positive test were not tested again.</li>
+<li><strong>Community transmission:</strong> daily COVID-19 cases in Harris County, from the Harris County Public Health COVID Data Dashboard (“Epi Curve”), are shown alongside the hospital series for comparison. They are not modelled.</li>
+</ul>
+</section>
+<section id="5-intervention" class="level2">
+<h2 class="anchored" data-anchor-id="5-intervention">5. Intervention</h2>
+<p>From 6 July 2020, every healthcare person wore a face shield on entering the facility, for patient encounters and for encounters with other staff. Goggles were allowed for those who could not tolerate a face shield. Patients were not given face shields or goggles.</p>
+</section>
+<section id="6-study-of-the-intervention" class="level2">
+<h2 class="anchored" data-anchor-id="6-study-of-the-intervention">6. Study of the intervention</h2>
+<p>Interrupted time series of weekly data:</p>
+<ul>
+<li><strong>Pre-intervention period:</strong> 17 April to 5 July 2020 (universal masking and surveillance testing).</li>
+<li><strong>Intervention period:</strong> 6 July to 7 September 2020 (face shields added).</li>
+<li><strong>Weeks</strong> are numbered as in the surveillance data: week 1 begins 17 April 2020, and week 13, beginning 6 July 2020, is the first intervention week. A week is in the intervention period when its number is 13 or more.</li>
+</ul>
+</section>
+<section id="7-measures" class="level2">
+<h2 class="anchored" data-anchor-id="7-measures">7. Measures</h2>
+<ul>
+<li><strong>Healthcare-personnel test positivity:</strong> for each week, the number of healthcare personnel testing positive for SARS-CoV-2 out of the number tested, from the surveillance clinic.</li>
+<li><strong>Hospital-acquired infection (HAI)</strong>, from the electronic medical record, in patients with no previous positive test:
+<ul>
+<li><em>possible HAI:</em> first positive test 5 to 13 days after admission;</li>
+<li><em>confirmed HAI:</em> first positive test 14 or more days after admission.</li>
+</ul>
+The HAI count for each week is possible and confirmed HAI together.</li>
+<li><strong>Patient-days:</strong> inpatient days in each week, the denominator for the HAI rate.</li>
+<li><strong>Community cases:</strong> daily Harris County cases (section 4).</li>
+</ul>
+</section>
+<section id="8-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="8-analysis">8. Analysis</h2>
+<section id="81-weekly-estimates" class="level3">
+<h3 class="anchored" data-anchor-id="81-weekly-estimates">8.1 Weekly estimates</h3>
+<ul>
+<li>Proportion of healthcare-personnel tests positive each week, with an exact binomial 95% confidence interval.</li>
+<li>HAI rate per 1,000 patient-days each week, with an exact Poisson 95% confidence interval.</li>
+</ul>
+<p>Both are computed with the <code>epitools</code> package <span class="citation" data-cites="epitools">(<a href="#ref-epitools" role="doc-biblioref">Aragon 2020</a>)</span>.</p>
+</section>
+<section id="82-segmented-regression" class="level3">
+<h3 class="anchored" data-anchor-id="82-segmented-regression">8.2 Segmented regression</h3>
+<p>Each outcome is modelled with segmented regression <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>:</p>
+<ul>
+<li><strong>Healthcare-personnel positivity:</strong> logistic regression of positive tests out of tests performed (binomial, logit link).</li>
+<li><strong>HAI:</strong> Poisson regression of weekly HAI counts, with log patient-days as an offset.</li>
+</ul>
+<p>Both models have the same terms: an indicator for the intervention period, the week centred at week 13 (<code>Week2</code> = week − 13), and their interaction. Centring at week 13 makes the intervention term the difference, at week 13, between the predicted value with and without the intervention. The interaction term is the change in slope after the intervention, on the log-odds scale for positivity and the log scale for HAI.</p>
+<p>Reported for each outcome:</p>
+<ul>
+<li>the predicted value at week 13 without and with the intervention, and the P value of the intervention term;</li>
+<li>the P value of the change in slope (the interaction term).</li>
+</ul>
+<p>Significance is P &lt; 0.05. The published analysis used R 4.0.2 <span class="citation" data-cites="rcore2020">(<a href="#ref-rcore2020" role="doc-biblioref">R Core Team 2020</a>)</span>.</p>
+</section>
+<section id="83-exploratory-models" class="level3">
+<h3 class="anchored" data-anchor-id="83-exploratory-models">8.3 Exploratory models</h3>
+<p>The original code also fitted three simpler models for each outcome, which were judged not to fit the data and were not reported in the article:</p>
+<ol type="1">
+<li>week alone, as a linear trend, ignoring the intervention;</li>
+<li>the intervention period alone, ignoring time;</li>
+<li>the intervention period and week, without an interaction (a level change with the same slope before and after).</li>
+</ol>
+<p>They are kept to show why the published model (8.2) was chosen. They are labelled exploratory wherever they appear and are never presented as results of the study.</p>
+</section>
+<section id="84-figures" class="level3">
+<h3 class="anchored" data-anchor-id="84-figures">8.4 Figures</h3>
+<ul>
+<li><strong>Figure 1:</strong> weekly positivity (A) and HAI rate (B) with 95% confidence intervals, point size proportional to tests performed or patient-days, the fitted segmented regression line, and a vertical line between weeks 12 and 13.</li>
+<li><strong>Figure 2:</strong> the same series by date, with daily Harris County cases as bars on a second axis.</li>
+</ul>
+</section>
+</section>
+<section id="9-ethical-considerations" class="level2">
+<h2 class="anchored" data-anchor-id="9-ethical-considerations">9. Ethical considerations</h2>
+<p>The study was deemed exempt from institutional review board review <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>. The analysis uses weekly aggregate counts only; no individual-level data were available or used.</p>
+</section>
+<section id="10-disclosure-control" class="level2">
+<h2 class="anchored" data-anchor-id="10-disclosure-control">10. Disclosure control</h2>
+<p>The weekly counts are institutional quality-improvement data and are not published in this repository. Numbers reported in the article may be quoted, with their location in the article.</p>
+</section>
+<section id="11-limitations-to-address-in-reporting" class="level2">
+<h2 class="anchored" data-anchor-id="11-limitations-to-address-in-reporting">11. Limitations to address in reporting</h2>
+<p>As the article discusses <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>:</p>
+<ul>
+<li>state measures introduced during the intervention period reduced community transmission and may confound the result, although hospital infections fell faster than community cases;</li>
+<li>adherence to other infection-prevention measures was not assessed;</li>
+<li>without individual-level data, effects by role or by unit cannot be examined;</li>
+<li>testing uptake rose during the surge, which may confound the positivity series;</li>
+<li>face shield tolerability was not measured.</li>
+</ul>
+</section>
+<section id="reporting-map" class="level2">
+<h2 class="anchored" data-anchor-id="reporting-map">Reporting map</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>SQUIRE 2.0 item</th>
+<th>Topic</th>
+<th>Plan section</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>4</td>
+<td>Problem description</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>Available knowledge</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>Rationale</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>Specific aims</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>Context</td>
+<td>4</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>Intervention</td>
+<td>5</td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td>Study of the intervention</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td>Measures</td>
+<td>7</td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td>Analysis</td>
+<td>8</td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td>Ethical considerations</td>
+<td>9</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-almohajer2021faceshield" class="csl-entry" role="listitem">
+Al Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. <span>“Association Between Universal Face Shield in a Quaternary Care Center and Reduction of <span>SARS-COV2</span> Infections Among Healthcare Personnel and Hospitalized Patients.”</span> <em>International Journal of Infectious Diseases</em> 105: 252–55. <a href="https://doi.org/10.1016/j.ijid.2021.02.060">https://doi.org/10.1016/j.ijid.2021.02.060</a>.
+</div>
+<div id="ref-epitools" class="csl-entry" role="listitem">
+Aragon, Tomas J. 2020. <em>Epitools: Epidemiology Tools</em>. <a href="https://CRAN.R-project.org/package=epitools">https://CRAN.R-project.org/package=epitools</a>.
+</div>
+<div id="ref-ogrinc2016squire" class="csl-entry" role="listitem">
+Ogrinc, Greg, Louise Davies, Daisy Goodman, Paul Batalden, Frank Davidoff, and David Stevens. 2016. <span>“<span>SQUIRE</span> 2.0 (<span class="nocase">Standards for QUality Improvement Reporting Excellence</span>): Revised Publication Guidelines from a Detailed Consensus Process.”</span> <em>BMJ Quality &amp; Safety</em> 25 (12): 986–92. <a href="https://doi.org/10.1136/bmjqs-2015-004411">https://doi.org/10.1136/bmjqs-2015-004411</a>.
+</div>
+<div id="ref-rcore2020" class="csl-entry" role="listitem">
+R Core Team. 2020. <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>.
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/vagishhemmige\.github\.io\/COVID-infection-control");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link" aria-label="Home">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Home</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../quarto/architecture.html" class="pagination-link" aria-label="Architecture">
+        <span class="nav-page-text">Architecture</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">pagetitle:</span><span class="co"> "Analysis plan"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">from:</span><span class="co"> markdown+gfm_auto_identifiers</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">&lt;!--</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">This page only shows analysis-plan.md from the repository root, which is the one source:</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">edit that file, not this page. Its first heading is the page title.</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">--&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>{{&lt; include ../analysis-plan.md &gt;}}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/VagishHemmige/COVID-infection-control/edit/main/quarto/analysis-plan.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/VagishHemmige/COVID-infection-control/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

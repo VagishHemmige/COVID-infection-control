@@ -1,0 +1,541 @@
+[
+  {
+    "objectID": "quarto/architecture.html",
+    "href": "quarto/architecture.html",
+    "title": "",
+    "section": "",
+    "text": "Project documentsArchitecture Code",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#running-order",
+    "href": "quarto/architecture.html#running-order",
+    "title": "",
+    "section": "Running order",
+    "text": "Running order\nR/main.R sources the scripts in this order. Each script runs in the global environment and leaves the objects listed for later scripts.\n\n\n\n\n\n\n\n\n\n\nOrder\nScript\nNeeds\nProduces\nData\n\n\n\n\n1\nR/setup.R\n—\nAttached packages; every constant\n—\n\n\n2\nR/functions.R\nPackages\nHelper functions\n—\n\n\n3\nR/prepare_data.R\n1, 2; COVID_IC_DATA_DIR\nweekly (one row per week, with exact intervals, Intervention, Week2 and the Figure 2 date); harris (one row per day)\nStudy data\n\n\n4\nR/models.R\n1, 2, 3\npositivity_models, hai_models; positivity_tables, hai_tables; positivity_fitted, hai_fitted; positivity_at_break, hai_at_break\nStudy data (model output)\n\n\n5\nR/figures.R\n1 to 4\nweekly_plots, exploratory_plots, figure_1a, figure_1b, figure_2; TIFF files in figures/\nOutputs, gitignored",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#data-flow",
+    "href": "quarto/architecture.html#data-flow",
+    "title": "",
+    "section": "Data flow",
+    "text": "Data flow\nSurveillance manuscript2 9-19.xlsx ── prepare_data.R ── weekly ─────────┐\n  (Week, Date1, Date2, Tested, Positives, HAI, Ptdays)                   │\n                                                                         ▼\n                                   models.R ── positivity_models, hai_models\n                                      │          (its1_week, its2_intervention,\n                                      │           its3_level_change, its4_segmented)\n                                      ├── positivity_tables, hai_tables\n                                      ├── positivity_fitted, hai_fitted\n                                      └── positivity_at_break, hai_at_break\n                                                                         │\nHarris_data.csv ── prepare_data.R ── harris ─────────────────────────────┤\n  (Date, epicurve_Harris)                                                ▼\n                                   figures.R ── weekly_plots, exploratory_plots,\n                                                figure_1a, figure_1b, figure_2\n                                                 └── figures/*.tiff",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#key-mechanisms",
+    "href": "quarto/architecture.html#key-mechanisms",
+    "title": "",
+    "section": "Key mechanisms",
+    "text": "Key mechanisms\n\nOne intervention week. intervention_week in setup.R defines Intervention and Week2 (prepare_data.R), the step in the fitted lines (build_fitted_line()), the week-13 contrast (predict_at_intervention_week()) and, through intervention_line_week, the vertical line in Figure 1. Figure 2’s line uses intervention_start (the day before it).\nThe published model is centred at week 13. its4_segmented is Intervention * Week2, with Week2 zero at the intervention week, so its Intervention term is the contrast at week 13 and its interaction term is the change in slope. The other three models are exploratory (analysis-plan.md section 8.3).\nFour models per outcome from one list. model_terms in models.R names each model’s right-hand side; the positivity and HAI models are fitted from it with map(), so both outcomes always have the same four models under the same names.\nPoisson rates per patient-day. HAI models take offset = log(Ptdays) in the glm() call. Prediction rows set Ptdays to 1, so a prediction is a rate per patient-day, scaled by hai_rate_per (1,000).\nThe fitted line’s step. build_fitted_line() repeats the week just before the intervention week once without and once with the intervention; geom_path() in plot_weekly_series() draws the pair as a vertical step. Figure 2 draws its line from predictions at the observed weeks, so it has no step, as in the original code.\nWeekly intervals. add_exact_intervals() adds exact binomial (positivity) and exact Poisson (HAI) 95% intervals with epitools.\nInputs are checked. prepare_data.R stops if COVID_IC_DATA_DIR is not set or the workbook lacks any of the seven expected columns; the message names columns only.\nOne plotting function. plot_weekly_series() draws every week-based plot (the weekly series, the exploratory plots and Figure 1); Figure 2 is built directly in figures.R because it is drawn by date with a second axis.",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#dependencies-outside-this-repository",
+    "href": "quarto/architecture.html#dependencies-outside-this-repository",
+    "title": "",
+    "section": "Dependencies outside this repository",
+    "text": "Dependencies outside this repository\n\nThe study data, in the folder named by COVID_IC_DATA_DIR: the weekly surveillance workbook and the Harris County extract. Neither is in the repository; their column names have not yet been checked against the code.\nPackages attached in setup.R: tidyverse, readxl, epitools, gtsummary and cowplot.",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#website",
+    "href": "quarto/architecture.html#website",
+    "title": "",
+    "section": "Website",
+    "text": "Website\nNot yet written. When it is, each script gets a page in quarto/ that shows its labelled sections without running them.",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#tests",
+    "href": "quarto/architecture.html#tests",
+    "title": "",
+    "section": "Tests",
+    "text": "Tests\nNone. The code is shown on the site, not run, and no synthetic data are used.",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#code-references",
+    "href": "quarto/architecture.html#code-references",
+    "title": "",
+    "section": "Code references",
+    "text": "Code references\n\n\n\n\n\n\n\n\nScript\nLabelled sections\nKey symbols\n\n\n\n\nR/setup.R\nload-packages, define-data-files, define-study-dates, define-week-labels, define-estimation-constants, define-plot-constants\ndata_dir, intervention_week, intervention_start, week_labels, hai_rate_per, intervention_line_week, harris_scale_positivity, harris_scale_hai\n\n\nR/functions.R\nadd-exact-intervals, build-fitted-line, predict-at-intervention-week, plot-weekly-series\nadd_exact_intervals(), build_fitted_line(), predict_at_intervention_week(), plot_weekly_series()\n\n\nR/prepare_data.R\ncheck-data-folder, read-surveillance-data, add-weekly-estimates, add-time-series-variables, add-plot-dates, read-harris-county-data\nweekly, harris\n\n\nR/models.R\ndefine-model-terms, fit-positivity-models, fit-hai-models, tabulate-models, build-fitted-lines, predict-published-week-13\nmodel_terms, positivity_models, hai_models, positivity_at_break, hai_at_break\n\n\nR/figures.R\nplot-observed-series, plot-exploratory-models, plot-figure-1, prepare-figure-2-lines, plot-figure-2, save-figures\nfigure_1a, figure_1b, figure_2",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/architecture.html#glossary",
+    "href": "quarto/architecture.html#glossary",
+    "title": "",
+    "section": "Glossary",
+    "text": "Glossary\n\n\n\n\n\n\n\nTerm\nDefinition\n\n\n\n\nWeek2\nWeek minus the intervention week; zero at week 13\n\n\nIntervention\nTRUE from week 13 (6 July 2020) on\n\n\nHAI\nPossible (days 5 to 13 after admission) and confirmed (day 14 on) hospital-acquired SARS-CoV-2 infections together\n\n\nPtdays\nInpatient days in the week\n\n\nits4_segmented\nThe published model; its1_week, its2_intervention and its3_level_change are exploratory",
+    "crumbs": [
+      "Project documents",
+      "Architecture"
+    ]
+  },
+  {
+    "objectID": "quarto/about.html",
+    "href": "quarto/about.html",
+    "title": "About",
+    "section": "",
+    "text": "Al Mohajer M, Panthagani KM, Lasco T, Lembcke B, Hemmige V. Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients. International Journal of Infectious Diseases. 2021;105:252–255 (Al Mohajer et al. 2021).\nVagish Hemmige performed the statistical analysis and maintains this repository. Scientific decisions for this repository are made by Vagish Hemmige.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "quarto/about.html#the-study",
+    "href": "quarto/about.html#the-study",
+    "title": "About",
+    "section": "",
+    "text": "Al Mohajer M, Panthagani KM, Lasco T, Lembcke B, Hemmige V. Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients. International Journal of Infectious Diseases. 2021;105:252–255 (Al Mohajer et al. 2021).\nVagish Hemmige performed the statistical analysis and maintains this repository. Scientific decisions for this repository are made by Vagish Hemmige.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "quarto/about.html#this-repository",
+    "href": "quarto/about.html#this-repository",
+    "title": "About",
+    "section": "This repository",
+    "text": "This repository\nThis repository rebuilds the published analysis from a single R Markdown file into labelled scripts run in order by R/main.R, as a teaching resource. The weekly surveillance data are institutional data and are not in the repository; the code finds them through the COVID_IC_DATA_DIR setting on the computer of an authorized analyst.\nContributions follow the rules in AGENTS.md; open decisions and known issues are tracked in Issues.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "quarto/about.html#how-this-website-was-created",
+    "href": "quarto/about.html#how-this-website-was-created",
+    "title": "About",
+    "section": "How this website was created",
+    "text": "How this website was created\nThe site is built with Quarto from the analysis scripts themselves. Each code page imports the labelled sections of its script from R/ and shows them with an explanation; the site never runs the analysis, so it is built without the study data.\nThe repository was set up with the R Analysis Workflow plugin for AI coding assistants, written by Vagish Hemmige, following the layout of Dialysis-facility-density-USRDS; the architecture document is generated with Posit’s describe-design skill. An AI assistant (Claude) drafted code and documentation under the rules in AGENTS.md: it works only with code and documentation, never with the study data, and every change was reviewed and approved by Vagish Hemmige before it was committed.\nFour documents describe the project:\n\nAnalysis plan: what the analysis does, and why. The published methods, following SQUIRE 2.0.\nArchitecture: how the code does it. The scripts, the order they run in, what each needs and produces, and how data flow between them.\nAGENTS.md: how people and AI assistants work on the project.\nRepository blueprint: the layout every project of this kind starts from.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "quarto/about.html#references",
+    "href": "quarto/about.html#references",
+    "title": "About",
+    "section": "References",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.",
+    "crumbs": [
+      "About"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html",
+    "href": "quarto/repository-blueprint.html",
+    "title": "",
+    "section": "",
+    "text": "Project documentsRepository blueprint Code",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html#analytical-scripts",
+    "href": "quarto/repository-blueprint.html#analytical-scripts",
+    "title": "",
+    "section": "Analytical scripts",
+    "text": "Analytical scripts\n\nR/main.R sources definitive scripts in dependency order.\nTypical workflow: setup → cohort construction → processing → modeling → outputs.\nStudy-specific scripts may be grouped into subdirectories by analytical stage.\nR/tables.R and R/figures.R may generate outputs directly or orchestrate specialized scripts.",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html#documentation",
+    "href": "quarto/repository-blueprint.html#documentation",
+    "title": "",
+    "section": "Documentation",
+    "text": "Documentation\n\nDocument definitive analytical scripts with explanatory Quarto pages; exploratory scripts need not have pages.\nUse Cryptococcus-cost-analysis as an example for Quarto supporting files, chunk imports, callouts, and formatting—not scientific methods.\nQuarto source and rendered output locations may vary by project.",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html#outputs-and-version-control",
+    "href": "quarto/repository-blueprint.html#outputs-and-version-control",
+    "title": "",
+    "section": "Outputs and version control",
+    "text": "Outputs and version control\n\nTrack approved, nonrestricted outputs when useful for publication; otherwise retain them locally and exclude them from Git.\n.gitignore: Exclude restricted data, credentials, caches, temporary files, and generated outputs unless intentionally tracked (e.g., .Rproj.user/, .Rhistory, .RData, .httr-oauth, .quarto/, cache/, figures/, tables/, *.quarto_ipynb); verify exclusions cover actual output paths without hiding necessary source or reference files.",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "",
+    "text": "In July 2020, as SARS-CoV-2 infections rose among staff and inpatients during Houston’s summer surge, a quaternary care center required every healthcare worker to wear a face shield on entering the facility, in addition to universal masking. Al Mohajer and colleagues evaluated the policy as an interrupted time series of weekly data, from 17 April to 5 July 2020 before face shields and 6 July to 7 September 2020 with them (Al Mohajer et al. 2021). Two outcomes were studied:\n\nthe percentage of healthcare-personnel SARS-CoV-2 tests that were positive;\nhospital-acquired infections among inpatients, per 1,000 patient-days.\n\nBoth fell after face shields were introduced. Each outcome was modelled with segmented regression, logistic for test positivity and Poisson for hospital-acquired infections, allowing a change in level and in slope at the intervention.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#the-study",
+    "href": "index.html#the-study",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "",
+    "text": "In July 2020, as SARS-CoV-2 infections rose among staff and inpatients during Houston’s summer surge, a quaternary care center required every healthcare worker to wear a face shield on entering the facility, in addition to universal masking. Al Mohajer and colleagues evaluated the policy as an interrupted time series of weekly data, from 17 April to 5 July 2020 before face shields and 6 July to 7 September 2020 with them (Al Mohajer et al. 2021). Two outcomes were studied:\n\nthe percentage of healthcare-personnel SARS-CoV-2 tests that were positive;\nhospital-acquired infections among inpatients, per 1,000 patient-days.\n\nBoth fell after face shields were introduced. Each outcome was modelled with segmented regression, logistic for test positivity and Poisson for hospital-acquired infections, allowing a change in level and in slope at the intervention.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#what-this-site-does",
+    "href": "index.html#what-this-site-does",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "What this site does",
+    "text": "What this site does\nThis site is a teaching resource. It uses the published study to show how an interrupted time series analysis is built in R, step by step. The original analysis was one R Markdown file of 2021; here it is rebuilt as labelled scripts, and each page explains what a section of the code does and why.\nThe code is shown, not run. The weekly surveillance data are institutional data and are not in this repository, so no result on this site comes from running the code. The study’s results are those published in the article.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#methods",
+    "href": "index.html#methods",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "Methods",
+    "text": "Methods\nThe authoritative specification is analysis-plan.md, which records the published methods. Reporting follows SQUIRE 2.0 (Ogrinc et al. 2016).",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#status",
+    "href": "index.html#status",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "Status",
+    "text": "Status\nThe scripts are written and have been checked by reading; they have not yet been run on the study data. The pages explaining the study design and each script, the differences from the original code, and the published results will be added in turn.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "References",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.\n\n\nOgrinc, Greg, Louise Davies, Daisy Goodman, Paul Batalden, Frank Davidoff, and David Stevens. 2016. “SQUIRE 2.0 (Standards for QUality Improvement Reporting Excellence): Revised Publication Guidelines from a Detailed Consensus Process.” BMJ Quality & Safety 25 (12): 986–92. https://doi.org/10.1136/bmjqs-2015-004411.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html",
+    "href": "quarto/agents.html",
+    "title": "",
+    "section": "",
+    "text": "Project documentsAGENTS.md Code",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#the-project",
+    "href": "quarto/agents.html#the-project",
+    "title": "",
+    "section": "The project",
+    "text": "The project\nThis repository is a teaching resource built on a published quality-improvement study: the universal face shield policy for healthcare personnel at a quaternary care center in Houston, evaluated as an interrupted time series of weekly healthcare-personnel SARS-CoV-2 test positivity and hospital-acquired infections, before (17 April to 5 July 2020) and after (6 July to 7 September 2020) face shields were required (Int J Infect Dis 2021, doi:10.1016/j.ijid.2021.02.060). The original analysis was one R Markdown file of 2021, which is kept outside the repository. This version rebuilds it as labelled scripts and explains each step on a Quarto website. The code is shown, not run: the study data are not in the repository, and the site’s results are the published article’s figures and tables, not outputs of this code.\n\nanalysis-plan.md is the source of truth for design. Code implements the plan; it does not redefine it. If code needs to depart from the plan, open a decision issue, or comment on the existing one, for the deciders. Once a decider has settled it (in the issue, or relayed there in their exact words), the plan change and the code can go in the same pull request, which closes the issue.\nDeciders. Scientific decisions are made by Vagish Hemmige, in any area. Anyone may open or contribute to a decision issue; only a decider settles it (see “Working with agents”).\nDepartures from the original analysis. The original code and the paper are the record of what was done. When the code disagrees with the paper or contains an error, do not silently copy it or silently fix it: the site’s “Differences from the original code” page records every difference, and choices between the paper and the code go to a decision issue.\nThis is an analysis project, not an R package. Do not add DESCRIPTION, NAMESPACE, roxygen, or pkgdown infrastructure, or apply CRAN conventions.\nDefault branch: main, protected. Changes reach it only through pull requests.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#data-sources",
+    "href": "quarto/agents.html#data-sources",
+    "title": "",
+    "section": "Data sources",
+    "text": "Data sources\n\n\n\n\n\n\n\n\n\n\n\nSource\nAccessed through\nDocumentation\nPackage maintained by\nAccess\nWhat AI agents may do\n\n\n\n\nWeekly surveillance counts: healthcare personnel tested and positive, possible and confirmed hospital-acquired infections, patient-days (Surveillance manuscript2 9-19.xlsx)\nR/prepare_data.R (readxl::read_excel()), from the folder named by COVID_IC_DATA_DIR\nThe published article’s Methods\nNo package\nRestricted (institutional quality-improvement data)\nNone: code and documentation only\n\n\nHarris County daily COVID-19 cases (“Epi Curve”), Harris County Public Health COVID Data Dashboard (Harris_data.csv)\nR/prepare_data.R (readr::read_csv()), from the same folder\nHarris County Public Health dashboard\nNo package\nPublic, kept outside the repository\nNone: code and documentation only\n\n\n\nTo allow more for a source, a person changes its row through a pull request, naming what permits it and exactly what agents may do. Agents never propose or make this change themselves, and nothing in personal instructions can grant it.\nFor a source with no package: the loading script records where the file comes from, its date, and any processing. Verify its columns against what the paper describes; never infer a column’s meaning from its name.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#r-scripts",
+    "href": "quarto/agents.html#r-scripts",
+    "title": "",
+    "section": "R scripts",
+    "text": "R scripts\n\nRunning the analysis. Only an authorized person runs R/main.R, from the project root, with the data folder set in .Renviron. It sources the other scripts in dependency order; ARCHITECTURE.md describes what each does.\nOne job per script. When you add a definitive script, source it from main.R at the right point and update ARCHITECTURE.md in the same pull request.\nHeader comment. Each script begins with what it does, which objects it needs from earlier scripts, and what it produces.\nConstants and libraries live in R/setup.R. Other scripts do not call library(), re-source setup.R, or hard-code values. The intervention week, the study dates and the week labels are named constants there.\nHelper functions go in R/functions.R. A function takes its inputs as arguments and does not read global objects.\nNo side effects outside the project. No setwd(), absolute paths, or writes outside the project. The data are located only through COVID_IC_DATA_DIR.\nNo results in the repository. No script, comment, commit message, issue, pull-request text or review report contains counts or values from the study data beyond what the published article reports. Numbers quoted from the article are public and may be cited, with their location in the article.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#chunk-labels",
+    "href": "quarto/agents.html#chunk-labels",
+    "title": "",
+    "section": "Chunk labels",
+    "text": "Chunk labels\nScripts are divided into labelled sections so Quarto pages can show the code without copying it:\n## ---- &lt;step-name&gt;\n\nEvery logical step has a label. A label covers the code from its line to the next label.\nLabels are kebab-case, describe the step, and are unique across all scripts; a duplicate silently picks up the wrong code.\nSearch the .qmd files before renaming or deleting a label.\nLabels are comments and never change what the code does.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#quarto-website",
+    "href": "quarto/agents.html#quarto-website",
+    "title": "",
+    "section": "Quarto website",
+    "text": "Quarto website\nThe site documents the code. It does not run the analysis.\n\n_quarto.yml, index.qmd, 404.qmd and styles.css sit at the root; quarto/ has one page per definitive script, named after it. The custom-callout extension in _extensions/ provides the Rcode, Results and Pending callouts.\nEach page loads its script with knitr::read_chunk(\"../R/&lt;script&gt;.R\") in a hidden chunk and shows each labelled section with #| eval: false, with prose explaining what the section does and why. Pages link to the script on GitHub and to the scripts it depends on.\nVisual cues. Each kind of page has one icon and colour, set by its sidebar entry’s icon: in _quarto.yml and coloured by styles.css:\n\n\n\nKind\nSidebar icon\nColour\nCallout\n\n\n\n\nBackground\nbook\nblue\n—\n\n\nStudy design and methods\ndiagram-3\norange\n—\n\n\nR code\nlaptop\npink\nRcode (💻)\n\n\nResults\nclipboard-data\ngreen\nResults (📊)\n\n\nProject documents\nfile-earmark-ruled\ngrey\n—\n\n\n\nThe differences page is study design and methods; the published results page is results, and its notice says the figures and tables are reproduced from the article, not produced by this code.\nPublished figures and tables are stored in images/published/ and shown unchanged, each cited to its place in the article. They are added only after the article’s licence, or the authors’ rights to reuse them, is confirmed; the page notice states that permission. Until then the page links to the article instead.\nProvisional content. quarto/_pending.lua highlights in yellow every paragraph that starts with Decision pending:, every paragraph of the plan’s page that contains the plan’s Open: marker, and any [text]{.pending}, and adds a ⏳ Pending callout to pages that have a mark. Mark only what an open decision could change, link its decision issue, and remove the mark when the decision is settled.\nNever evaluate analysis code in the site. The only chunks that run are the hidden read_chunk() imports and the Architecture page’s reader of ARCHITECTURE.md.\nThe site renders to docs/, which is not committed. .github/workflows/publish.yml renders it on every pull request as a check and, on each push to main, publishes it to the gh-pages branch, which GitHub Pages serves. When you add a script, add its page and sidebar entry in the same pull request.\nProse must match the code. If a change alters what a section does, update its explanation in the same pull request.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#outputs",
+    "href": "quarto/agents.html#outputs",
+    "title": "",
+    "section": "Outputs",
+    "text": "Outputs\n\nR/figures.R writes figures to figures/, which is gitignored: they are made from the study data and are not published. The site shows the journal’s figures instead.\nPublished figures need alt text.\nREADME.Rmd is the source of README.md; edit the .Rmd and re-knit.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#restricted-data-applies-to-everyone",
+    "href": "quarto/agents.html#restricted-data-applies-to-everyone",
+    "title": "",
+    "section": "Restricted data (applies to everyone)",
+    "text": "Restricted data (applies to everyone)\n\nNever commit data, extracts, saved objects, or outputs made from the study data. Check .gitignore before adding a new output type.\nAI agents never read the study data. Anything an agent opens, prints, or summarizes is sent to the model provider. Agents do not open the data files or outputs made from them. Agents write and review code; only an authorized person runs it on the data.\nCredentials. Never commit keys, tokens, or .Renviron.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#coding-conventions",
+    "href": "quarto/agents.html#coding-conventions",
+    "title": "",
+    "section": "Coding conventions",
+    "text": "Coding conventions\n\nWeeks and dates. Week numbers, the intervention week and the week labels on the figures come from the constants in setup.R, so they cannot drift apart. The centred week (Week2, zero at the intervention week) is computed from the same constant.\nConfidence intervals for weekly proportions and rates use the exact binomial and Poisson methods, as in the original code (epitools).\nCode that turns model output into reported numbers (predicted values at the intervention week, rate ratios) lives in named functions in R/functions.R.\nPackage APIs: read the help page and NEWS for the installed version before calling a package; don’t write calls from memory.\nStyle: readable tidyverse code, following the tidyverse style guide: dplyr pipelines (|&gt;), one step per line; case_when() rather than nested ifelse(); models, rows and columns selected by name, never by position. A plot repeated with different data is one function, not copied code. Style changes go in their own commits.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#checks-for-any-change",
+    "href": "quarto/agents.html#checks-for-any-change",
+    "title": "",
+    "section": "Checks for any change",
+    "text": "Checks for any change\n\nPlan: does the change implement the plan as written, and does it leave every open decision open?\nDepartures: does every difference from the original code appear on the differences page, and is each either a correction of an error or linked to a decision issue?\nTime series: is the intervention week the same in the models, the centred week, the vertical line and the labels; do the Poisson models carry the log patient-day offset?\nReported numbers: does site prose say what the code computes, and is every number quoted from the article cited to its place there?\nStructure: is ARCHITECTURE.md current; are chunk labels unique and found by their pages; does every definitive script have a page and a sidebar entry with its kind’s icon; does any site chunk run analysis code?\nDisclosure: search changed files, commit messages and pull-request text for counts or values from the study data that the article does not report.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/agents.html#working-with-agents",
+    "href": "quarto/agents.html#working-with-agents",
+    "title": "",
+    "section": "Working with agents",
+    "text": "Working with agents\n\nAutonomy. The person directing an agent decides how much it may do, and may give it stricter rules of their own; those take precedence. By default an agent may edit code and documentation, render the site, and commit to a branch and open a pull request.\nDecisions. Anyone, including an agent, may add options and evidence to a decision issue. A decider states the choice in the issue. Agents implement decisions; they never choose among options on their own, in the issue, the plan, or the code.\nEvery agent, under any autonomy: never merges a pull request; follows the restricted-data rules; and shows a person the exact text before posting or sending anything as them, unless that person’s own instructions waive this.\nPull requests opened by an agent are focused. Each says which plan section or issue it addresses and what was checked, and how.\nReferences: cite the source documentation and literature used, in references.bib.",
+    "crumbs": [
+      "Project documents",
+      "AGENTS.md"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html",
+    "href": "quarto/analysis-plan.html",
+    "title": "",
+    "section": "",
+    "text": "Project documentsAnalysis plan Code",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#scope-and-reporting-framework",
+    "href": "quarto/analysis-plan.html#scope-and-reporting-framework",
+    "title": "",
+    "section": "Scope and reporting framework",
+    "text": "Scope and reporting framework\nThis document is the authoritative specification of the study’s aims, setting, intervention, measures and statistical methods. ARCHITECTURE.md documents the implementation, AGENTS.md the working conventions, and GitHub Issues the open decisions and implementation status. Neither file supersedes this plan.\nThe study is a quality-improvement evaluation with an interrupted time series design. Reporting follows SQUIRE 2.0 (Ogrinc et al. 2016). The reporting map at the end links each relevant SQUIRE item to a section of this plan. Every method below is taken from the published article (Al Mohajer et al. 2021) or from the original 2021 analysis code that produced its results.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#1-problem-description",
+    "href": "quarto/analysis-plan.html#1-problem-description",
+    "title": "",
+    "section": "1. Problem description",
+    "text": "1. Problem description\nBetween April and early July 2020 the hospital had put in place entry restrictions, symptom and temperature screening, universal masking of healthcare personnel and patients, distancing and limits on meeting size. As Texas reopened, SARS-CoV-2 infections among healthcare personnel and hospital-acquired infections among inpatients rose sharply, with clusters in several units (Al Mohajer et al. 2021).",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#2-available-knowledge-and-rationale",
+    "href": "quarto/analysis-plan.html#2-available-knowledge-and-rationale",
+    "title": "",
+    "section": "2. Available knowledge and rationale",
+    "text": "2. Available knowledge and rationale\nFace shields protect the eyes, nose and mouth from droplets, may discourage touching of the face, and may act as a barrier between staff and from staff to patients. They are cheap, reusable and easy to clean. In a simulation study cited by the article, a face shield sharply reduced exposure to a simulated cough at close range (Al Mohajer et al. 2021).",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#3-specific-aim",
+    "href": "quarto/analysis-plan.html#3-specific-aim",
+    "title": "",
+    "section": "3. Specific aim",
+    "text": "3. Specific aim\nTo assess whether a policy of universal face shields for all healthcare personnel, added to the existing measures, was associated with a change in SARS-CoV-2 infection among healthcare personnel and hospitalized patients.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#4-context",
+    "href": "quarto/analysis-plan.html#4-context",
+    "title": "",
+    "section": "4. Context",
+    "text": "4. Context\n\nSetting: a quaternary care healthcare system in Houston, Texas, with more than 500 beds and about 8,000 healthcare personnel.\nSurveillance testing (from 17 April 2020): healthcare personnel in high-risk units (emergency department, transplant units, COVID-19 units) tested biweekly (the article’s word); those in cluster areas (3 or more personnel with COVID-19, or any hospital-acquired infection) tested weekly; other personnel tested on request or after exposure. All patients tested on admission and every 7 days. Testing was voluntary. People with a previous positive test were not tested again.\nCommunity transmission: daily COVID-19 cases in Harris County, from the Harris County Public Health COVID Data Dashboard (“Epi Curve”), are shown alongside the hospital series for comparison. They are not modelled.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#5-intervention",
+    "href": "quarto/analysis-plan.html#5-intervention",
+    "title": "",
+    "section": "5. Intervention",
+    "text": "5. Intervention\nFrom 6 July 2020, every healthcare person wore a face shield on entering the facility, for patient encounters and for encounters with other staff. Goggles were allowed for those who could not tolerate a face shield. Patients were not given face shields or goggles.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#6-study-of-the-intervention",
+    "href": "quarto/analysis-plan.html#6-study-of-the-intervention",
+    "title": "",
+    "section": "6. Study of the intervention",
+    "text": "6. Study of the intervention\nInterrupted time series of weekly data:\n\nPre-intervention period: 17 April to 5 July 2020 (universal masking and surveillance testing).\nIntervention period: 6 July to 7 September 2020 (face shields added).\nWeeks are numbered as in the surveillance data: week 1 begins 17 April 2020, and week 13, beginning 6 July 2020, is the first intervention week. A week is in the intervention period when its number is 13 or more.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#7-measures",
+    "href": "quarto/analysis-plan.html#7-measures",
+    "title": "",
+    "section": "7. Measures",
+    "text": "7. Measures\n\nHealthcare-personnel test positivity: for each week, the number of healthcare personnel testing positive for SARS-CoV-2 out of the number tested, from the surveillance clinic.\nHospital-acquired infection (HAI), from the electronic medical record, in patients with no previous positive test:\n\npossible HAI: first positive test 5 to 13 days after admission;\nconfirmed HAI: first positive test 14 or more days after admission.\n\nThe HAI count for each week is possible and confirmed HAI together.\nPatient-days: inpatient days in each week, the denominator for the HAI rate.\nCommunity cases: daily Harris County cases (section 4).",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#8-analysis",
+    "href": "quarto/analysis-plan.html#8-analysis",
+    "title": "",
+    "section": "8. Analysis",
+    "text": "8. Analysis\n\n8.1 Weekly estimates\n\nProportion of healthcare-personnel tests positive each week, with an exact binomial 95% confidence interval.\nHAI rate per 1,000 patient-days each week, with an exact Poisson 95% confidence interval.\n\nBoth are computed with the epitools package (Aragon 2020).\n\n\n8.2 Segmented regression\nEach outcome is modelled with segmented regression (Al Mohajer et al. 2021):\n\nHealthcare-personnel positivity: logistic regression of positive tests out of tests performed (binomial, logit link).\nHAI: Poisson regression of weekly HAI counts, with log patient-days as an offset.\n\nBoth models have the same terms: an indicator for the intervention period, the week centred at week 13 (Week2 = week − 13), and their interaction. Centring at week 13 makes the intervention term the difference, at week 13, between the predicted value with and without the intervention. The interaction term is the change in slope after the intervention, on the log-odds scale for positivity and the log scale for HAI.\nReported for each outcome:\n\nthe predicted value at week 13 without and with the intervention, and the P value of the intervention term;\nthe P value of the change in slope (the interaction term).\n\nSignificance is P &lt; 0.05. The published analysis used R 4.0.2 (R Core Team 2020).\n\n\n8.3 Exploratory models\nThe original code also fitted three simpler models for each outcome, which were judged not to fit the data and were not reported in the article:\n\nweek alone, as a linear trend, ignoring the intervention;\nthe intervention period alone, ignoring time;\nthe intervention period and week, without an interaction (a level change with the same slope before and after).\n\nThey are kept to show why the published model (8.2) was chosen. They are labelled exploratory wherever they appear and are never presented as results of the study.\n\n\n8.4 Figures\n\nFigure 1: weekly positivity (A) and HAI rate (B) with 95% confidence intervals, point size proportional to tests performed or patient-days, the fitted segmented regression line, and a vertical line between weeks 12 and 13.\nFigure 2: the same series by date, with daily Harris County cases as bars on a second axis.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#9-ethical-considerations",
+    "href": "quarto/analysis-plan.html#9-ethical-considerations",
+    "title": "",
+    "section": "9. Ethical considerations",
+    "text": "9. Ethical considerations\nThe study was deemed exempt from institutional review board review (Al Mohajer et al. 2021). The analysis uses weekly aggregate counts only; no individual-level data were available or used.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#10-disclosure-control",
+    "href": "quarto/analysis-plan.html#10-disclosure-control",
+    "title": "",
+    "section": "10. Disclosure control",
+    "text": "10. Disclosure control\nThe weekly counts are institutional quality-improvement data and are not published in this repository. Numbers reported in the article may be quoted, with their location in the article.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#11-limitations-to-address-in-reporting",
+    "href": "quarto/analysis-plan.html#11-limitations-to-address-in-reporting",
+    "title": "",
+    "section": "11. Limitations to address in reporting",
+    "text": "11. Limitations to address in reporting\nAs the article discusses (Al Mohajer et al. 2021):\n\nstate measures introduced during the intervention period reduced community transmission and may confound the result, although hospital infections fell faster than community cases;\nadherence to other infection-prevention measures was not assessed;\nwithout individual-level data, effects by role or by unit cannot be examined;\ntesting uptake rose during the surge, which may confound the positivity series;\nface shield tolerability was not measured.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#reporting-map",
+    "href": "quarto/analysis-plan.html#reporting-map",
+    "title": "",
+    "section": "Reporting map",
+    "text": "Reporting map\n\n\n\nSQUIRE 2.0 item\nTopic\nPlan section\n\n\n\n\n4\nProblem description\n1\n\n\n5\nAvailable knowledge\n2\n\n\n6\nRationale\n2\n\n\n7\nSpecific aims\n3\n\n\n8\nContext\n4\n\n\n9\nIntervention\n5\n\n\n10\nStudy of the intervention\n6\n\n\n11\nMeasures\n7\n\n\n12\nAnalysis\n8\n\n\n13\nEthical considerations\n9",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/analysis-plan.html#references",
+    "href": "quarto/analysis-plan.html#references",
+    "title": "",
+    "section": "References",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.\n\n\nAragon, Tomas J. 2020. Epitools: Epidemiology Tools. https://CRAN.R-project.org/package=epitools.\n\n\nOgrinc, Greg, Louise Davies, Daisy Goodman, Paul Batalden, Frank Davidoff, and David Stevens. 2016. “SQUIRE 2.0 (Standards for QUality Improvement Reporting Excellence): Revised Publication Guidelines from a Detailed Consensus Process.” BMJ Quality & Safety 25 (12): 986–92. https://doi.org/10.1136/bmjqs-2015-004411.\n\n\nR Core Team. 2020. R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing. https://www.R-project.org/.",
+    "crumbs": [
+      "Project documents",
+      "Analysis plan"
+    ]
+  }
+]
