@@ -72,7 +72,7 @@ hai_fitted <- map(
   scale = hai_rate_per
 )
 
-## ---- predict-at-intervention-week
+## ---- predict-published-week-13
 # The values the article reports from the published model: the predicted
 # percentage positive and HAI rate at week 13 without and with face shields,
 # and the P value of the intervention term

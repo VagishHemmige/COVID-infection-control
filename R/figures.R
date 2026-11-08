@@ -8,7 +8,7 @@
 # plot_weekly_series() (R/functions.R).
 # Produces: weekly_plots, exploratory_plots, figure_1a, figure_1b, figure_2.
 
-## ---- plot-weekly-series
+## ---- plot-observed-series
 # The observed series with 95% intervals, before any model (analysis-plan.md
 # section 8.1)
 weekly_plots <- list(

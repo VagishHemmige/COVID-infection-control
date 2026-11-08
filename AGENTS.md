@@ -39,7 +39,7 @@ To allow more for a source, a person changes its row through a pull request, nam
 - **Running the analysis.** Only an authorized person runs `R/main.R`, from the project root, with the data folder set in `.Renviron`. It sources the other scripts in dependency order; `ARCHITECTURE.md` describes what each does.
 - **One job per script.** When you add a definitive script, source it from `main.R` at the right point and update `ARCHITECTURE.md` in the same pull request.
 - **Header comment.** Each script begins with what it does, which objects it needs from earlier scripts, and what it produces.
-- **Constants and libraries** live in `R/setup.R`. Other scripts do not call `library()`, re-source `setup.R`, or hard-code values. The intervention week, the study dates, the week labels and the HAI day windows are named constants there.
+- **Constants and libraries** live in `R/setup.R`. Other scripts do not call `library()`, re-source `setup.R`, or hard-code values. The intervention week, the study dates and the week labels are named constants there.
 - **Helper functions** go in `R/functions.R`. A function takes its inputs as arguments and does not read global objects.
 - **No side effects outside the project.** No `setwd()`, absolute paths, or writes outside the project. The data are located only through `COVID_IC_DATA_DIR`.
 - **No results in the repository.** No script, comment, commit message, issue, pull-request text or review report contains counts or values from the study data beyond what the published article reports. Numbers quoted from the article are public and may be cited, with their location in the article.
