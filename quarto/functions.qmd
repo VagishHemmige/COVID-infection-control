@@ -1,0 +1,89 @@
+---
+title: "Functions"
+format: html
+---
+
+Four helpers used by the analysis scripts. Each takes its inputs as arguments and reads no global objects, so it can be read and checked on its own.
+
+::: {.Rcode title="Source code"}
+The full R script is available at:
+
+-   [`R/functions.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/functions.R)
+
+This R script file is itself reliant on the following files:
+
+-   [`R/setup.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/setup.R)
+
+The code sections below are imported directly from that script when this page is rendered.
+:::
+
+```{r}
+#| include: false
+#| eval: true
+#| cache: false
+knitr::read_chunk("../R/functions.R")
+```
+
+## Weekly estimates with exact intervals
+
+`add_exact_intervals()`
+
+For each week, the percentage of healthcare-personnel tests that were positive, and the HAI rate per 1,000 patient-days, each with a 95% confidence interval (analysis plan, section 8.1).
+
+Both intervals are *exact*: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series, whose weekly counts run from 0 to 7. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. `binom.exact()` gives the Clopper–Pearson interval and `pois.exact()` the exact Poisson interval, with patient-days as the exposure.
+
+The original code computed the same intervals and attached them with `cbind()`; here they are added by name with `mutate()`, so a reordered table cannot attach them to the wrong rows.
+
+**Used in the analysis:** [Data: weekly estimates](prepare_data.qmd#weekly-estimates).
+
+```{r}
+#| label: add-exact-intervals
+#| eval: false
+```
+
+## The fitted line
+
+`build_fitted_line()`
+
+The predicted value of a fitted model for every week, for drawing its line on a plot. At the intervention the published model jumps: it predicts one value at week 13 without the intervention and another with it. To draw that jump, the function includes the break twice, once on each side, so the line rises to the pre-intervention prediction and drops straight down to the post-intervention one.
+
+The original code did this by adding two placeholder rows to the data at week 12.9999, which then had to be ignored by the models. Building the line separately keeps the data as they are.
+
+For the HAI models, the prediction is made with `Ptdays` set to 1, so the model returns a rate per patient-day, which `scale` turns into a rate per 1,000.
+
+**Used in the analysis:** [Models: fitted lines](models.qmd#fitted-lines).
+
+```{r}
+#| label: build-fitted-line
+#| eval: false
+```
+
+## Values at the intervention week
+
+`predict_at_intervention_week()`
+
+The article reports, for each outcome, what the published model predicts at week 13 without face shields and with them, and whether the two differ. Because the models centre week at 13 (`Week2` is zero there), the `Intervention` coefficient is exactly that difference, on the log-odds or log-rate scale, and its P value is the test the article reports. The function returns the two predicted values and that P value.
+
+The original code did not compute these values; it printed the model summaries, from which they were read.
+
+**Used in the analysis:** [Models: values at week 13](models.qmd#values-at-week-13).
+
+```{r}
+#| label: predict-at-intervention-week
+#| eval: false
+```
+
+## Plotting a weekly series
+
+`plot_weekly_series()`
+
+Every week-based plot in the analysis has the same parts: a point for each week, sized by how many tests or patient-days it contributed; its 95% interval; a red line at the intervention; and, for a model plot, the model's fitted line in blue. The original code wrote out a full `ggplot()` call for each of its ten plots; here one function draws them all, and the plots differ only in what they are given.
+
+Columns are passed unquoted (for example `y = percent_positive`); the function uses `{{ }}` to pass them on to `ggplot2`.
+
+**Used in the analysis:** [Figures](figures.qmd).
+
+```{r}
+#| label: plot-weekly-series
+#| eval: false
+```
