@@ -24,7 +24,7 @@ The authoritative specification is [`analysis-plan.md`](quarto/analysis-plan.qmd
 
 ## Status
 
-The scripts are written and have been checked by reading; they have not yet been run on the study data. The pages explaining the study design and each script, the differences from the original code, and the published results will be added in turn.
+The scripts are written and have been checked by reading; they have not yet been run on the study data. The [published results](quarto/results.qmd) are quoted from the article; its figures will be shown once permission to reuse them is confirmed. A page on more modern alternatives to the published analysis is to come.
 
 ## References
 
