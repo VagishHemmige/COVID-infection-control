@@ -19,8 +19,8 @@ website:
   repo-actions: [edit, issue]
   page-navigation: true
 
-  # Sections for background, study design, code and published results are
-  # added with their pages
+  # Sections for background, study design and published results are added
+  # with their pages
   sidebar:
     style: docked
     collapse-level: 3
@@ -29,6 +29,29 @@ website:
       - href: index.qmd
         text: Home
         icon: house
+
+      - section: Code
+        contents:
+          - section: Setup and helper functions
+            contents:
+              - href: quarto/setup.qmd
+                text: Setup
+                icon: laptop
+              - href: quarto/functions.qmd
+                text: Functions
+                icon: laptop
+
+          - section: Data, models and figures
+            contents:
+              - href: quarto/prepare_data.qmd
+                text: 1. Data
+                icon: laptop
+              - href: quarto/models.qmd
+                text: 2. Models
+                icon: laptop
+              - href: quarto/figures.qmd
+                text: 3. Figures
+                icon: laptop
 
       - section: Project documents
         contents:

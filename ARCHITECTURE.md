@@ -52,7 +52,7 @@ Harris_data.csv ── prepare_data.R ── harris ─────────�
 
 ## Website
 
-Not yet written. When it is, each script gets a page in `quarto/` that shows its labelled sections without running them.
+`_quarto.yml`, `index.qmd`, `404.qmd` and `styles.css` at the root; pages in `quarto/`. Each script has a code page of the same name (`setup.qmd`, `functions.qmd`, `prepare_data.qmd`, `models.qmd`, `figures.qmd`) that imports its labelled sections with `knitr::read_chunk()` and shows them without running them. The four project-document pages show the root files, and `about.qmd` describes the project. `.github/workflows/publish.yml` renders the site on pull requests and publishes it to `gh-pages` on each push to `main`.
 
 ## Tests
 

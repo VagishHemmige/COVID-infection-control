@@ -1,0 +1,100 @@
+---
+title: "2. Models"
+format: html
+---
+
+This script fits the interrupted time series models, for both outcomes, and builds what the tables and figures need from them.
+
+The original analysis fitted four models for each outcome, each adding to the one before. Only the fourth, the segmented regression model, was reported in the article; the other three were exploratory, and show why the fourth was needed. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).
+
+::: {.Rcode title="Source code"}
+The full R script is available at:
+
+-   [`R/models.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/models.R)
+
+This R script file is itself reliant on the following files:
+
+-   [`R/setup.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/setup.R)
+-   [`R/functions.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/functions.R)
+-   [`R/prepare_data.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/prepare_data.R)
+
+The code sections below are imported directly from that script when this page is rendered.
+:::
+
+```{r}
+#| include: false
+#| eval: true
+#| cache: false
+knitr::read_chunk("../R/models.R")
+```
+
+## The four models
+
+Each model is written once, as the right-hand side of its formula, and used for both outcomes:
+
+| Model | Terms | What it assumes |
+|---|---|---|
+| `its1_week` (exploratory) | `Week` | One steady trend over the whole period; the intervention changes nothing |
+| `its2_intervention` (exploratory) | `Intervention` | A different level before and after, with no trend over time |
+| `its3_level_change` (exploratory) | `Intervention + Week` | One trend, with a jump in level at the intervention |
+| `its4_segmented` (published) | `Intervention * Week2` | A jump in level at the intervention *and* a change in the trend |
+
+The fourth model is segmented regression, the standard model for an interrupted time series. `Intervention * Week2` expands to three terms: the trend before the intervention (`Week2`), the jump at week 13 (`Intervention`), and the change in trend after it (`Intervention:Week2`). The earlier models are simplifications of it, each leaving out one or more of these terms.
+
+```{r}
+#| label: define-model-terms
+#| eval: false
+```
+
+## Test positivity
+
+Logistic regression of the positive tests out of all tests in each week. `cbind(Positives, Tested - Positives)` gives the model the numbers of positive and negative tests, so each week counts in proportion to how many tests it had: a week with many tests carries more weight than a week with few.
+
+```{r}
+#| label: fit-positivity-models
+#| eval: false
+```
+
+## Hospital-acquired infections
+
+Poisson regression of the number of HAIs each week. The number of inpatients varies from week to week, so the count is modelled relative to patient-days through an *offset*: `log(Ptdays)` enters the model with its coefficient fixed at 1, which makes the model one for the rate of HAIs per patient-day.
+
+```{r}
+#| label: fit-hai-models
+#| eval: false
+```
+
+## Model tables
+
+`tbl_regression(exponentiate = TRUE)` turns each model's coefficients into odds ratios (positivity) or incidence rate ratios (HAI), with 95% confidence intervals and P values.
+
+For the published model, the ratios read as follows:
+
+-   **`Week2`**: the change from one week to the next *before* the intervention.
+-   **`Intervention`**: the jump at week 13, from the value the pre-intervention trend predicts to the value with the intervention.
+-   **`Intervention:Week2`**: how much the week-to-week change *after* the intervention differs from the change before it. A ratio below 1 means the trend bent downwards.
+
+The confidence intervals in these tables are profile-likelihood intervals, which is what `confint()` gives for these models. The P values are Wald tests.
+
+```{r}
+#| label: tabulate-models
+#| eval: false
+```
+
+## Fitted lines
+
+For each model, its predicted value for every week, for drawing on the figures, from [`build_fitted_line()`](functions.qmd#the-fitted-line). Positivity is shown as a percentage, so its predictions are multiplied by 100; HAI rates are per 1,000 patient-days.
+
+```{r}
+#| label: build-fitted-lines
+#| eval: false
+```
+
+## Values at week 13
+
+The comparison the article reports: what the published model predicts at week 13 without face shields and with them, and the P value of the difference, from [`predict_at_intervention_week()`](functions.qmd#values-at-the-intervention-week). The article also reports the P value of the change in slope, which is the `Intervention:Week2` row of the model table.
+
+```{r}
+#| label: predict-published-week-13
+#| eval: false
+```

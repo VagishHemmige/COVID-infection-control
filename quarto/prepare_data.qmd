@@ -1,0 +1,89 @@
+---
+title: "1. Data"
+format: html
+---
+
+This script reads the two data files and adds what the models and figures need: the weekly estimates with their intervals, the variables that describe the interrupted time series, and the dates used in Figure 2.
+
+Only a person authorized to use the data runs it. The data are not in this repository, and nothing on this site comes from running it.
+
+::: {.Rcode title="Source code"}
+The full R script is available at:
+
+-   [`R/prepare_data.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/prepare_data.R)
+
+This R script file is itself reliant on the following files:
+
+-   [`R/setup.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/setup.R)
+-   [`R/functions.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/functions.R)
+
+The code sections below are imported directly from that script when this page is rendered.
+:::
+
+```{r}
+#| include: false
+#| eval: true
+#| cache: false
+knitr::read_chunk("../R/prepare_data.R")
+```
+
+## Finding the data
+
+If `COVID_IC_DATA_DIR` has not been set, the script stops at once with a message saying how to set it, rather than failing later with a missing-file error.
+
+```{r}
+#| label: check-data-folder
+#| eval: false
+```
+
+## The weekly surveillance data
+
+One row per week, with the number of healthcare personnel tested and the number positive, the number of hospital-acquired infections (possible and confirmed together; see the [analysis plan](analysis-plan.qmd), section 7) and the number of patient-days. The data are aggregate counts: no individual-level data were available or used.
+
+The script checks that the seven columns the code expects are present, and stops if any is missing. The message names only the missing columns, never any values.
+
+```{r}
+#| label: read-surveillance-data
+#| eval: false
+```
+
+## Weekly estimates
+
+The percentage positive and the HAI rate for each week, with exact 95% intervals, from [`add_exact_intervals()`](functions.qmd#weekly-estimates-with-exact-intervals). These are the points and error bars in the figures.
+
+```{r}
+#| label: add-weekly-estimates
+#| eval: false
+```
+
+## Time series variables
+
+An interrupted time series model needs two things beyond the outcome: a time variable, and an indicator of whether each week falls after the intervention.
+
+-   `Intervention` is `TRUE` from week 13, the first week with face shields.
+-   `Week2` is the week number minus 13, so it is zero at the intervention week.
+
+Centring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with `Week2` zero at week 13, the `Intervention` coefficient becomes the difference between the predicted values with and without the intervention *at week 13*, which is the comparison the article reports. Without centring, it would be that difference at week 0, which lies outside the study.
+
+```{r}
+#| label: add-time-series-variables
+#| eval: false
+```
+
+## Plot dates
+
+Figure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. `Date2` is the last day of each week's range, a Friday; two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its `Date2`, as in the original code.
+
+```{r}
+#| label: add-plot-dates
+#| eval: false
+```
+
+## Harris County cases
+
+Daily COVID-19 cases in Harris County, from the Harris County Public Health COVID Data Dashboard "Epi Curve", give the community background in Figure 2. They are shown for comparison and are not used in the models. The dates are read as text first, so they are converted with the format the file uses (month/day/two-digit year) rather than guessed.
+
+```{r}
+#| label: read-harris-county-data
+#| eval: false
+```

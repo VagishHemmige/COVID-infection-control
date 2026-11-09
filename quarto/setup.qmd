@@ -1,0 +1,79 @@
+---
+title: "Setup"
+format: html
+---
+
+This script attaches every package the analysis uses and defines every value a reader might want to change. The other scripts never call `library()` or type a number that belongs here: the intervention week, for example, is set once and used by the models, the fitted lines and both figures.
+
+::: {.Rcode title="Source code"}
+The full R script is available at:
+
+-   [`R/setup.R`](https://github.com/VagishHemmige/COVID-infection-control/blob/main/R/setup.R)
+
+The code sections below are imported directly from that script when this page is rendered.
+:::
+
+```{r}
+#| include: false
+#| eval: true
+#| cache: false
+knitr::read_chunk("../R/setup.R")
+```
+
+## Packages
+
+`readxl` reads the weekly surveillance workbook, `epitools` computes the exact confidence intervals for each week, `gtsummary` turns the fitted models into tables of odds ratios and rate ratios, and `cowplot` stacks the two panels of Figure 2. The tidyverse provides the data handling (`dplyr`), reading the Harris County file (`readr`) and the plots (`ggplot2`).
+
+The original R Markdown file also loaded `reshape2`, `svglite`, `flextable`, `knitr` and `ggthemr`, and loaded `dplyr` and `ggplot2` twice. None of these is needed by the analysis, and `ggthemr` is not on CRAN, so they are not loaded here.
+
+```{r}
+#| label: load-packages
+#| eval: false
+```
+
+## Where the data are
+
+The data are not in this repository. The person running the analysis puts the folder that holds them in `COVID_IC_DATA_DIR`, in their `.Renviron` file, and the scripts find both files there. The original code expected the files in the working directory, with a reminder to set it (`#setwd here`).
+
+```{r}
+#| label: define-data-files
+#| eval: false
+```
+
+## Study dates
+
+These implement section 6 of the [analysis plan](analysis-plan.qmd). Week 1 begins on Friday 17 April 2020, when surveillance testing started; later weeks begin on Mondays. Face shields were required from Monday 6 July 2020, the first day of week 13, so `intervention_week` is 13. Every other part of the code that depends on the timing of the intervention takes it from here.
+
+```{r}
+#| label: define-study-dates
+#| eval: false
+```
+
+## Week labels
+
+The figures label weeks 2 to 22 by the Monday each begins. The original code typed the 21 labels out by hand in each of its ten plots; here they are computed once from the first Monday, 20 April 2020.
+
+```{r}
+#| label: define-week-labels
+#| eval: false
+```
+
+## Estimation constants
+
+Weekly intervals are 95% intervals, and hospital-acquired infection (HAI) rates are expressed per 1,000 patient-days (analysis plan, section 8.1).
+
+```{r}
+#| label: define-estimation-constants
+#| eval: false
+```
+
+## Plot constants
+
+The red line marking the intervention falls halfway between week 12 and week 13. Point sizes, which show how many tests or patient-days each week contributed, range from 1 to 3.
+
+Figure 2 draws daily Harris County cases on a second axis. `ggplot2` allows a second axis only as a transformation of the first, so the cases are divided by a scale factor to share the left axis, and the second axis multiplies them back. The factors are kept exactly as in the original code.
+
+```{r}
+#| label: define-plot-constants
+#| eval: false
+```
