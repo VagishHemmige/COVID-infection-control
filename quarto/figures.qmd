@@ -49,7 +49,7 @@ Each exploratory model's fitted line over the observed series. Laid side by side
 
 The published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, rising until week 12, stepping down at the intervention, and then falling.
 
-The size legend of panel A reads "# patients tested", as in the original code, although the points are sized by the number of healthcare-personnel tests.
+The size legend of panel A reads "# HCP tests", the number of healthcare-personnel tests each week. The original code labelled it "# patients tested"; it is corrected here and in Figure 2.
 
 ```{r}
 #| label: plot-figure-1

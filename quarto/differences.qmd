@@ -1,0 +1,69 @@
+---
+title: "Differences from the original code"
+format: html
+---
+
+This page lists every way the scripts on this site differ from the original analysis: a single R Markdown file of March 2021 (`Mayar_R_markdown_2021-3-1.Rmd`), which produced the figures and model results of the published article [@almohajer2021faceshield]. The original file is kept outside this repository.
+
+Each entry is one of five kinds:
+
+-   **Corrected**: a mistake in the original code, corrected here.
+-   **Same result**: the code is written differently, and gives the same numbers and figures.
+-   **Added**: something the original code did not do.
+-   **Removed**: something the original code did that is no longer needed.
+-   **Kept**: something in the original code that looks unusual, kept as it was so the code still matches what was published.
+
+No entry changes the models, the weekly estimates or the published results; the one correction changes a legend label.
+
+::: callout-note
+## Status
+The scripts have been checked by reading; they have not yet been run on the study data. "Same result" means the code is written to give the same numbers and figures as the original; that is to be confirmed on the first run.
+:::
+
+## Setup
+
+| Original code | Kind | This analysis | Effect |
+|---|---|---|---|
+| Loaded `reshape2`, `svglite`, `flextable`, `knitr` and `ggthemr` (not on CRAN), none of them used by the analysis, and loaded `dplyr` and `ggplot2` twice. | Removed | Only the packages the analysis uses are attached, once each ([Setup](setup.qmd#packages)). | None |
+| Read the data from the working directory, with a reminder to set it (`#setwd here`). | Same result | The data folder is named by `COVID_IC_DATA_DIR` in `.Renviron` ([Setup](setup.qmd#where-the-data-are)). | None |
+| Typed the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (" May 11"). | Same result | Computed once from the first Monday ([Setup](setup.qmd#week-labels)). | None visible |
+| Set the intervention at `Vertline <- 12.9999` and drew the red line at `Vertline - 0.5`, week 12.4999. | Same result | `intervention_week` is 13 and the line is at week 12.5 ([Setup](setup.qmd#plot-constants)). | None visible |
+
+## Data
+
+| Original code | Kind | This analysis | Effect |
+|---|---|---|---|
+| Did not check the workbook's columns. | Added | Stops if any of the seven expected columns is missing, naming only the missing columns ([1. Data](prepare_data.qmd#the-weekly-surveillance-data)). | None |
+| Attached the weekly intervals with `cbind()`, which relies on the rows staying in order. | Same result | Added by name with `mutate()` ([Functions](functions.qmd#weekly-estimates-with-exact-intervals)). | None |
+| `Intervention` was `Week > 12.9999`. | Same result | `Week >= 13` ([1. Data](prepare_data.qmd#time-series-variables)). | None for whole-number weeks |
+| Added two placeholder rows at week 12.9999, with no outcome data, so the plotted line could step at the intervention. The models dropped them because their outcomes were missing. | Removed | The fitted lines are built separately, with the step, by `build_fitted_line()` ([Functions](functions.qmd#the-fitted-line)). The data hold one row per week. | None |
+| Placed each week in Figure 2 at one day before `Date2` (week 1) or two days before (other weeks), with no note of what `Date2` is. | Kept | The same rule, with a note: `Date2` is the last day of each week's range, as recalled by the author ([1. Data](prepare_data.qmd#plot-dates)). | None |
+| Read the Harris County file with `read.table()` and the date format `"%m / %d / %y"`. | Same result | `read_csv()`, with the date read as text and converted with `"%m/%d/%y"`; R reads a space in a date format as "zero or more spaces", so both formats read `07/05/20` the same way ([1. Data](prepare_data.qmd#harris-county-cases)). | None |
+| A sentence meant to report the total number of tests and positives printed the R code instead of the numbers (its inline code lacked the `r`). | Removed | Not reproduced; the article reports the totals. | None |
+
+## Models
+
+| Original code | Kind | This analysis | Effect |
+|---|---|---|---|
+| Wrote out each of the eight models (`logistic1` to `logistic4`, `poisson1` to `poisson4`) in its own code chunk. | Same result | Each model's terms are written once and fitted for both outcomes; the models are kept in named lists ([2. Models](models.qmd#the-four-models)). | None |
+| Fitted the exploratory models on `Week` and the published model on `Week2` (week minus 13). | Kept | As in the original. The exploratory models have no interaction, so centring the week would change only their intercepts, not their fit or their other coefficients. | None |
+| Printed `summary()` for every model, and converted every table but one (the second HAI model) to a flextable. | Removed | The tables are `gtsummary` tables throughout ([2. Models](models.qmd#model-tables)). | None |
+| Did not compute the values at week 13 that the article reports; they were read from the model output. | Added | `predict_at_intervention_week()` computes them from the published model ([2. Models](models.qmd#values-at-week-13)). | None, if they match the article; to be confirmed on the first run |
+| The weeks spanned by the fitted lines followed the data rows. | Same result | Taken from the first and last week in the data ([2. Models](models.qmd#fitted-lines)). | None |
+
+## Figures
+
+| Original code | Kind | This analysis | Effect |
+|---|---|---|---|
+| Ten near-identical `ggplot()` calls. | Same result | One function, `plot_weekly_series()` ([Functions](functions.qmd#plotting-a-weekly-series)). | None for Figure 1 |
+| The exploratory plots had a different point-size range, legend position and axis-title size from Figure 1. | Same result | The exploratory plots share Figure 1's styling ([3. Figures](figures.qmd#the-exploratory-models)). | The exploratory plots look slightly different; they were not published |
+| Figure 1A's size legend read "# patients tested", although the points are sized by healthcare-personnel tests. Figure 2A had the same label. | Corrected | "# HCP tests" in both ([3. Figures](figures.qmd#figure-1)). | The legend text of Figures 1A and 2A |
+| Figure 2's fitted line joined the predictions at the observed weeks, so it showed no step at the intervention, unlike Figure 1. | Kept | As in the original ([3. Figures](figures.qmd#figure-2-lines-by-date)). | None |
+| Figure 2's red line was placed with `as.Date("07/05/2020", format = "%m / %d / %y", size = 1)`; the `size = 1` was passed to `as.Date()`, which ignores it. | Same result | `intervention_start - 1`, the same date ([3. Figures](figures.qmd#figure-2-lines-by-date)). | None |
+| Drew the Harris County bars with `geom_bar(stat = "identity")`. | Same result | `geom_col()`, which is the same thing ([3. Figures](figures.qmd#figure-2)). | None |
+| Saved Figure 1's panels as "Fig 1A 2020-9-19.tiff" and "Fig 1B 2020-9-19.tiff" in the working directory, with no size set. Figure 2 was not saved. | Added | All three figures are saved to `figures/` as `figure_1a.tiff`, `figure_1b.tiff` and `figure_2.tiff`, still with no size set, so their size depends on the graphics device ([3. Figures](figures.qmd#saving-the-figures)). | None |
+
+## References
+
+::: {#refs}
+:::

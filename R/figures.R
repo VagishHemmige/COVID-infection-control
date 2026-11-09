@@ -84,8 +84,9 @@ exploratory_plots <- list(
 
 ## ---- plot-figure-1
 # Figure 1 (analysis-plan.md section 8.4): the published segmented model.
-# The size legend of panel A reads "# patients tested", as in the original
-# code, although the points are sized by healthcare-personnel tests.
+# The size legend of panel A reads "# HCP tests": the points are sized by
+# healthcare-personnel tests. The original code labelled it "# patients
+# tested".
 figure_1a <- plot_weekly_series(
   weekly,
   y = percent_positive,
@@ -93,7 +94,7 @@ figure_1a <- plot_weekly_series(
   upper = percent_upper,
   size = Tested,
   y_label = "Percentage of HCP \ntests positive",
-  size_label = "# patients tested",
+  size_label = "# HCP tests",
   line_week = intervention_line_week,
   week_breaks = labelled_weeks,
   week_labels = week_labels,
@@ -162,7 +163,7 @@ figure_2a <- ggplot(harris) +
     aes(x = Date, y = positivity_fitted),
     color = "blue"
   ) +
-  labs(size = "# patients tested") +
+  labs(size = "# HCP tests") +
   theme(
     legend.justification = c(0, 0.5),
     axis.title.y = element_text(size = 10),
