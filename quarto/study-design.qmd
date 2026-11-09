@@ -1,0 +1,55 @@
+---
+title: "Study design"
+format: html
+---
+
+The authoritative description of the methods is the [analysis plan](analysis-plan.qmd). This page explains the design in plainer terms.
+
+## An interrupted time series
+
+When an intervention starts at a known moment for everyone, and an outcome is measured regularly before and after it, the series of measurements can show whether the outcome changed when the intervention began. This is an *interrupted time series*: the trend before the intervention is used to predict what would have happened without it, and the observed values after it are compared with that prediction [@bernal2017its].
+
+Here the series is weekly, and the interruption is 6 July 2020 [@almohajer2021faceshield]:
+
+-   **Before** (17 April to 5 July 2020): universal masking and surveillance testing.
+-   **After** (6 July to 7 September 2020): face shields added for every healthcare worker.
+
+Week 1 begins on Friday 17 April; week 13, beginning Monday 6 July, is the first week with face shields.
+
+## The outcomes
+
+-   **Healthcare-personnel test positivity**: each week, the number of staff testing positive for SARS-CoV-2 out of those tested. Staff in high-risk units (the emergency department, transplant units and COVID-19 units) were tested biweekly, staff in units with a cluster of cases weekly, and others on request or after an exposure. Testing was voluntary, and anyone who had already tested positive was not tested again.
+-   **Hospital-acquired infection (HAI)**: each week, the number of inpatients with a first positive test 5 to 13 days after admission (*possible* HAI) or 14 or more days after admission (*confirmed* HAI), per 1,000 patient-days. Patients were tested on admission and every 7 days.
+
+Both outcomes are weekly totals. No individual-level data were available.
+
+## Segmented regression
+
+The standard analysis of an interrupted time series is *segmented regression*: a regression of the outcome on time, in which the line can change at the interruption [@bernal2017its]. Two changes are possible:
+
+-   a **change in level**: an immediate jump up or down when the intervention starts;
+-   a **change in slope**: a different trend afterwards.
+
+The published model allows both. Test positivity is a proportion, so it is modelled with logistic regression; HAIs are counts over a varying number of patient-days, so they are modelled with Poisson regression, with patient-days as the offset. The [Models](models.qmd) page shows the code and explains how each coefficient is read.
+
+To check that both changes were needed, the original analysis also fitted three simpler models: a single trend, a change in level only, and a change in level with one shared trend. Each was judged inadequate to explain the data, and none was reported in the article. They are shown on this site as exploratory steps.
+
+## What the design cannot rule out
+
+An interrupted time series rests on the assumption that, without the intervention, the trend before it would have continued. Anything else that changed at the same time can mimic an effect of the intervention [@bernal2017its]. The article names the main concerns [@almohajer2021faceshield]:
+
+-   Texas introduced measures during the same period that reduced community transmission. The article notes that infections in the hospital fell more quickly than cases in Harris County, which is why Figure 2 shows the two together.
+-   Adherence to the other infection-prevention measures was not assessed.
+-   Without individual-level data, effects by role or unit cannot be examined.
+-   Testing uptake rose during the surge.
+
+Ways to strengthen the analysis are described on the page of more modern alternatives, to come.
+
+## Reporting
+
+The study is a quality-improvement evaluation, and the analysis plan maps its sections to the SQUIRE 2.0 reporting guideline [@ogrinc2016squire].
+
+## References
+
+::: {#refs}
+:::

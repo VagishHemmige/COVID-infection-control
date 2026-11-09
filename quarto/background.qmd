@@ -1,0 +1,30 @@
+---
+title: "Background"
+format: html
+---
+
+## The problem in summer 2020
+
+In 2020, preventing SARS-CoV-2 transmission to healthcare workers and hospitalized patients was a major challenge for hospitals. By mid-April 2020 the hospital in this study, a quaternary care system in Houston, Texas, with more than 500 beds and about 8,000 healthcare personnel, had put in place a set of measures: limited entry to the facility, screening for symptoms and temperature, universal masking of staff and patients, distancing at meals, and meetings of fewer than 10 people. From 17 April it also ran a surveillance testing program for staff and patients [@almohajer2021faceshield].
+
+As Texas began to reopen, infections rose. In the week of 29 June to 5 July 2020, 112 employees (15.9%) tested positive, with clusters in two intensive care units, the operating room, environmental services and the cardiac catheterization laboratory, and there were 7 hospital-acquired infections among inpatients, 3.4 per 1,000 patient-days. Most clusters began in the community and spread from staff member to staff member [@almohajer2021faceshield].
+
+## Why face shields
+
+On 6 July 2020 the hospital required every healthcare worker to wear a face shield on entering the facility, for encounters with patients and with other staff; goggles were allowed for those who could not tolerate a shield. The article gives the reasons [@almohajer2021faceshield]:
+
+-   a face shield protects the eyes, nose and mouth from droplets;
+-   it may stop the wearer touching their face, reducing self-inoculation;
+-   it may act as a barrier between staff, and from staff to patients;
+-   it is cheap (about US\$2 when 3D printed locally), reusable and easy to clean.
+
+The article also cites a simulation study in which a face shield greatly reduced exposure to a simulated cough at close range.
+
+## The question
+
+Did adding universal face shields to the existing measures go with fewer SARS-CoV-2 infections among healthcare personnel and hospitalized patients? The hospital could not randomize: the policy applied to everyone at once. What it had was weekly surveillance data before and after the change, which is the setting for an [interrupted time series](study-design.qmd).
+
+## References
+
+::: {#refs}
+:::

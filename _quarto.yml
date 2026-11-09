@@ -19,7 +19,7 @@ website:
   repo-actions: [edit, issue]
   page-navigation: true
 
-  # Sections for background and published results are added with their pages
+  # The published results section is added with its page
   sidebar:
     style: docked
     collapse-level: 3
@@ -29,8 +29,15 @@ website:
         text: Home
         icon: house
 
+      - href: quarto/background.qmd
+        text: Background
+        icon: book
+
       - section: Study design and methods
         contents:
+          - href: quarto/study-design.qmd
+            text: Study design
+            icon: diagram-3
           - href: quarto/differences.qmd
             text: Differences from the original code
             icon: diagram-3
