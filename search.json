@@ -99,6 +99,83 @@
     ]
   },
   {
+    "objectID": "quarto/study-design.html",
+    "href": "quarto/study-design.html",
+    "title": "Study design",
+    "section": "",
+    "text": "The authoritative description of the methods is the analysis plan. This page explains the design in plainer terms.",
+    "crumbs": [
+      "Study design and methods",
+      "Study design"
+    ]
+  },
+  {
+    "objectID": "quarto/study-design.html#an-interrupted-time-series",
+    "href": "quarto/study-design.html#an-interrupted-time-series",
+    "title": "Study design",
+    "section": "An interrupted time series",
+    "text": "An interrupted time series\nWhen an intervention starts at a known moment for everyone, and an outcome is measured regularly before and after it, the series of measurements can show whether the outcome changed when the intervention began. This is an interrupted time series: the trend before the intervention is used to predict what would have happened without it, and the observed values after it are compared with that prediction (Bernal et al. 2017).\nHere the series is weekly, and the interruption is 6 July 2020 (Al Mohajer et al. 2021):\n\nBefore (17 April to 5 July 2020): universal masking and surveillance testing.\nAfter (6 July to 7 September 2020): face shields added for every healthcare worker.\n\nWeek 1 begins on Friday 17 April; week 13, beginning Monday 6 July, is the first week with face shields.",
+    "crumbs": [
+      "Study design and methods",
+      "Study design"
+    ]
+  },
+  {
+    "objectID": "quarto/study-design.html#the-outcomes",
+    "href": "quarto/study-design.html#the-outcomes",
+    "title": "Study design",
+    "section": "The outcomes",
+    "text": "The outcomes\n\nHealthcare-personnel test positivity: each week, the number of staff testing positive for SARS-CoV-2 out of those tested. Staff in high-risk units (the emergency department, transplant units and COVID-19 units) were tested biweekly, staff in units with a cluster of cases weekly, and others on request or after an exposure. Testing was voluntary, and anyone who had already tested positive was not tested again.\nHospital-acquired infection (HAI): each week, the number of inpatients with a first positive test 5 to 13 days after admission (possible HAI) or 14 or more days after admission (confirmed HAI), per 1,000 patient-days. Patients were tested on admission and every 7 days.\n\nBoth outcomes are weekly totals. No individual-level data were available.",
+    "crumbs": [
+      "Study design and methods",
+      "Study design"
+    ]
+  },
+  {
+    "objectID": "quarto/study-design.html#segmented-regression",
+    "href": "quarto/study-design.html#segmented-regression",
+    "title": "Study design",
+    "section": "Segmented regression",
+    "text": "Segmented regression\nThe standard analysis of an interrupted time series is segmented regression: a regression of the outcome on time, in which the line can change at the interruption (Bernal et al. 2017). Two changes are possible:\n\na change in level: an immediate jump up or down when the intervention starts;\na change in slope: a different trend afterwards.\n\nThe published model allows both. Test positivity is a proportion, so it is modelled with logistic regression; HAIs are counts over a varying number of patient-days, so they are modelled with Poisson regression, with patient-days as the offset. The Models page shows the code and explains how each coefficient is read.\nTo check that both changes were needed, the original analysis also fitted three simpler models: a single trend, a change in level only, and a change in level with one shared trend. Each was judged inadequate to explain the data, and none was reported in the article. They are shown on this site as exploratory steps.",
+    "crumbs": [
+      "Study design and methods",
+      "Study design"
+    ]
+  },
+  {
+    "objectID": "quarto/study-design.html#what-the-design-cannot-rule-out",
+    "href": "quarto/study-design.html#what-the-design-cannot-rule-out",
+    "title": "Study design",
+    "section": "What the design cannot rule out",
+    "text": "What the design cannot rule out\nAn interrupted time series rests on the assumption that, without the intervention, the trend before it would have continued. Anything else that changed at the same time can mimic an effect of the intervention (Bernal et al. 2017). The article names the main concerns (Al Mohajer et al. 2021):\n\nTexas introduced measures during the same period that reduced community transmission. The article notes that infections in the hospital fell more quickly than cases in Harris County, which is why Figure 2 shows the two together.\nAdherence to the other infection-prevention measures was not assessed.\nWithout individual-level data, effects by role or unit cannot be examined.\nTesting uptake rose during the surge.\n\nWays to strengthen the analysis are described on the page of more modern alternatives, to come.",
+    "crumbs": [
+      "Study design and methods",
+      "Study design"
+    ]
+  },
+  {
+    "objectID": "quarto/study-design.html#reporting",
+    "href": "quarto/study-design.html#reporting",
+    "title": "Study design",
+    "section": "Reporting",
+    "text": "Reporting\nThe study is a quality-improvement evaluation, and the analysis plan maps its sections to the SQUIRE 2.0 reporting guideline (Ogrinc et al. 2016).",
+    "crumbs": [
+      "Study design and methods",
+      "Study design"
+    ]
+  },
+  {
+    "objectID": "quarto/study-design.html#references",
+    "href": "quarto/study-design.html#references",
+    "title": "Study design",
+    "section": "References",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.\n\n\nBernal, James Lopez, Steven Cummins, and Antonio Gasparrini. 2017. “Interrupted Time Series Regression for the Evaluation of Public Health Interventions: A Tutorial.” International Journal of Epidemiology 46 (1): 348–55. https://doi.org/10.1093/ije/dyw098.\n\n\nOgrinc, Greg, Louise Davies, Daisy Goodman, Paul Batalden, Frank Davidoff, and David Stevens. 2016. “SQUIRE 2.0 (Standards for QUality Improvement Reporting Excellence): Revised Publication Guidelines from a Detailed Consensus Process.” BMJ Quality & Safety 25 (12): 986–92. https://doi.org/10.1136/bmjqs-2015-004411.",
+    "crumbs": [
+      "Study design and methods",
+      "Study design"
+    ]
+  },
+  {
     "objectID": "quarto/setup.html",
     "href": "quarto/setup.html",
     "title": "Setup",
@@ -998,6 +1075,56 @@
     "crumbs": [
       "Project documents",
       "Analysis plan"
+    ]
+  },
+  {
+    "objectID": "quarto/background.html",
+    "href": "quarto/background.html",
+    "title": "Background",
+    "section": "",
+    "text": "In 2020, preventing SARS-CoV-2 transmission to healthcare workers and hospitalized patients was a major challenge for hospitals. By mid-April 2020 the hospital in this study, a quaternary care system in Houston, Texas, with more than 500 beds and about 8,000 healthcare personnel, had put in place a set of measures: limited entry to the facility, screening for symptoms and temperature, universal masking of staff and patients, distancing at meals, and meetings of fewer than 10 people. From 17 April it also ran a surveillance testing program for staff and patients (Al Mohajer et al. 2021).\nAs Texas began to reopen, infections rose. In the week of 29 June to 5 July 2020, 112 employees (15.9%) tested positive, with clusters in two intensive care units, the operating room, environmental services and the cardiac catheterization laboratory, and there were 7 hospital-acquired infections among inpatients, 3.4 per 1,000 patient-days. Most clusters began in the community and spread from staff member to staff member (Al Mohajer et al. 2021).",
+    "crumbs": [
+      "Background"
+    ]
+  },
+  {
+    "objectID": "quarto/background.html#the-problem-in-summer-2020",
+    "href": "quarto/background.html#the-problem-in-summer-2020",
+    "title": "Background",
+    "section": "",
+    "text": "In 2020, preventing SARS-CoV-2 transmission to healthcare workers and hospitalized patients was a major challenge for hospitals. By mid-April 2020 the hospital in this study, a quaternary care system in Houston, Texas, with more than 500 beds and about 8,000 healthcare personnel, had put in place a set of measures: limited entry to the facility, screening for symptoms and temperature, universal masking of staff and patients, distancing at meals, and meetings of fewer than 10 people. From 17 April it also ran a surveillance testing program for staff and patients (Al Mohajer et al. 2021).\nAs Texas began to reopen, infections rose. In the week of 29 June to 5 July 2020, 112 employees (15.9%) tested positive, with clusters in two intensive care units, the operating room, environmental services and the cardiac catheterization laboratory, and there were 7 hospital-acquired infections among inpatients, 3.4 per 1,000 patient-days. Most clusters began in the community and spread from staff member to staff member (Al Mohajer et al. 2021).",
+    "crumbs": [
+      "Background"
+    ]
+  },
+  {
+    "objectID": "quarto/background.html#why-face-shields",
+    "href": "quarto/background.html#why-face-shields",
+    "title": "Background",
+    "section": "Why face shields",
+    "text": "Why face shields\nOn 6 July 2020 the hospital required every healthcare worker to wear a face shield on entering the facility, for encounters with patients and with other staff; goggles were allowed for those who could not tolerate a shield. The article gives the reasons (Al Mohajer et al. 2021):\n\na face shield protects the eyes, nose and mouth from droplets;\nit may stop the wearer touching their face, reducing self-inoculation;\nit may act as a barrier between staff, and from staff to patients;\nit is cheap (about US$2 when 3D printed locally), reusable and easy to clean.\n\nThe article also cites a simulation study in which a face shield greatly reduced exposure to a simulated cough at close range.",
+    "crumbs": [
+      "Background"
+    ]
+  },
+  {
+    "objectID": "quarto/background.html#the-question",
+    "href": "quarto/background.html#the-question",
+    "title": "Background",
+    "section": "The question",
+    "text": "The question\nDid adding universal face shields to the existing measures go with fewer SARS-CoV-2 infections among healthcare personnel and hospitalized patients? The hospital could not randomize: the policy applied to everyone at once. What it had was weekly surveillance data before and after the change, which is the setting for an interrupted time series.",
+    "crumbs": [
+      "Background"
+    ]
+  },
+  {
+    "objectID": "quarto/background.html#references",
+    "href": "quarto/background.html#references",
+    "title": "Background",
+    "section": "References",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.",
+    "crumbs": [
+      "Background"
     ]
   }
 ]
