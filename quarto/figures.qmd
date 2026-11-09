@@ -3,7 +3,7 @@ title: "3. Figures"
 format: html
 ---
 
-This script draws the plots: the observed weekly series, the exploratory models, and the article's two figures. It saves the figures to `figures/`, which is not in the repository, because they are made from the study data. The published figures are on the published results page.
+This script draws the plots: the observed weekly series, the exploratory models, and the article's two figures. It saves the figures to `figures/`, which is not in the repository, because they are made from the study data. The article's own figures are not reproduced on this site while permission to reuse them is confirmed; the [Published results](results.qmd) page links to them in the [published article](https://doi.org/10.1016/j.ijid.2021.02.060).
 
 ::: {.Rcode title="Source code"}
 The full R script is available at:
@@ -38,7 +38,7 @@ The first look at the data, before any model: each week's percentage positive an
 
 ## The exploratory models
 
-Each exploratory model's fitted line over the observed series. Laid side by side with Figure 1, they show what each simpler model misses: a single trend cannot follow the rise and fall, a level change alone ignores the trend, and a level change with one shared trend cannot bend after the intervention. These plots were not in the article.
+Each exploratory model's fitted line over the observed series. These plots are not shown on this site, because they are made from the study data, and they were not in the article. What each simpler model can and cannot draw follows from its form: a single trend cannot rise and then fall; a level change alone has no trend; and a level change with one shared trend cannot change slope after the intervention.
 
 ```{r}
 #| label: plot-exploratory-models
@@ -47,7 +47,7 @@ Each exploratory model's fitted line over the observed series. Laid side by side
 
 ## Figure 1
 
-The published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, rising until week 12, stepping down at the intervention, and then falling.
+The published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, which allows one trend before the intervention, a step at it, and a different trend after it.
 
 The size legend of panel A reads "# HCP tests", the number of healthcare-personnel tests each week. The original code labelled it "# patients tested"; it is corrected here and in Figure 2.
 

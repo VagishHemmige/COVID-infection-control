@@ -43,7 +43,7 @@ An interrupted time series rests on the assumption that, without the interventio
 -   Without individual-level data, effects by role or unit cannot be examined.
 -   Testing uptake rose during the surge.
 
-Ways to strengthen the analysis are described on the page of more modern alternatives, to come.
+A page describing some more modern alternatives to the published analysis is planned; it would describe other approaches, not change the analysis reproduced here.
 
 ## Reporting
 

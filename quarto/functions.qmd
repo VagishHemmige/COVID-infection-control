@@ -30,9 +30,9 @@ knitr::read_chunk("../R/functions.R")
 
 For each week, the percentage of healthcare-personnel tests that were positive, and the HAI rate per 1,000 patient-days, each with a 95% confidence interval (analysis plan, section 8.1).
 
-Both intervals are *exact*: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series, whose weekly counts run from 0 to 7. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. `binom.exact()` gives the Clopper–Pearson interval and `pois.exact()` the exact Poisson interval, with patient-days as the exposure.
+Both intervals are *exact*: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series: the article reports weekly HAI counts rising from 0 to 7 before face shields and falling to 0 after them [@almohajer2021faceshield]. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. `binom.exact()` gives the Clopper–Pearson interval and `pois.exact()` the exact Poisson interval, with patient-days as the exposure.
 
-The original code computed the same intervals and attached them with `cbind()`; here they are added by name with `mutate()`, so a reordered table cannot attach them to the wrong rows.
+The original code computed the same intervals and attached them with `cbind()`; here they are added as named columns with `mutate()`, which makes clear what each column is. Either way, each value is matched to its week by position: `binom.exact()` and `pois.exact()` return one row per input row, in the same order, so the weekly table must not be reordered or filtered between computing the intervals and adding them. The function does both in one step, so nothing can come between them.
 
 **Used in the analysis:** [Data: weekly estimates](prepare_data.qmd#weekly-estimates).
 

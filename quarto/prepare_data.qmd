@@ -63,7 +63,7 @@ An interrupted time series model needs two things beyond the outcome: a time var
 -   `Intervention` is `TRUE` from week 13, the first week with face shields.
 -   `Week2` is the week number minus 13, so it is zero at the intervention week.
 
-Centring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with `Week2` zero at week 13, the `Intervention` coefficient becomes the difference between the predicted values with and without the intervention *at week 13*, which is the comparison the article reports. Without centring, it would be that difference at week 0, which lies outside the study.
+Centring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with `Week2` zero at week 13, the `Intervention` coefficient becomes the difference between the predictions with and without the intervention *at week 13*, which is the comparison the article reports. That difference is on the model's scale: a difference in log-odds for test positivity, and in log rates for HAI. Exponentiated, it is an odds ratio or a rate ratio, not a difference in percentage points or in rates. Without centring, it would be that difference at week 0, which lies outside the study.
 
 ```{r}
 #| label: add-time-series-variables
@@ -72,7 +72,7 @@ Centring the week at 13 does not change how well the model fits, or its predicti
 
 ## Plot dates
 
-Figure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. `Date2` is the last day of each week's range, a Friday; two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its `Date2`, as in the original code.
+Figure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. `Date2` is taken to be the last day of each week's range, as the author recalls; this is not documented in the data. On that reading it is a Friday, and two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its `Date2`, as in the original code.
 
 ```{r}
 #| label: add-plot-dates
