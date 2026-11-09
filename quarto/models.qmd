@@ -5,7 +5,7 @@ format: html
 
 This script fits the interrupted time series models, for both outcomes, and builds what the tables and figures need from them.
 
-The original analysis fitted four models for each outcome, each adding to the one before. Only the fourth, the segmented regression model, was reported in the article; the other three were exploratory, and show why the fourth was needed. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).
+The original analysis fitted four alternative models for each outcome: three simpler forms, each leaving out part of the published model, and the segmented regression model itself. Only the segmented model was reported in the article. The original file describes each of the other three as inadequate to explain the data; it records no formal model-selection procedure. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).
 
 ::: {.Rcode title="Source code"}
 The full R script is available at:
@@ -70,9 +70,11 @@ Poisson regression of the number of HAIs each week. The number of inpatients var
 
 For the published model, the ratios read as follows:
 
--   **`Week2`**: the change from one week to the next *before* the intervention.
--   **`Intervention`**: the jump at week 13, from the value the pre-intervention trend predicts to the value with the intervention.
--   **`Intervention:Week2`**: how much the week-to-week change *after* the intervention differs from the change before it. A ratio below 1 means the trend bent downwards.
+-   **`Week2`**: the ratio from one week to the next *before* the intervention (odds ratio for positivity, rate ratio for HAI).
+-   **`Intervention`**: the ratio at week 13 between the prediction with the intervention and the prediction the pre-intervention trend gives without it.
+-   **`Intervention:Week2`**: how the week-to-week ratio *after* the intervention differs from the one before it. The week-to-week ratio after the intervention is the `Week2` ratio multiplied by this one.
+
+A ratio below 1 for the interaction means the slope decreased on the log-odds or log-rate scale. It does not by itself mean the outcome was falling after the intervention: if the `Week2` ratio is 1.3 and the interaction ratio 0.8, the ratio after the intervention is 1.3 × 0.8 = 1.04, still rising, only more slowly.
 
 The confidence intervals in these tables are profile-likelihood intervals, which is what `confint()` gives for these models. The P values are Wald tests.
 

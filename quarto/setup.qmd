@@ -24,7 +24,7 @@ knitr::read_chunk("../R/setup.R")
 
 `readxl` reads the weekly surveillance workbook, `epitools` computes the exact confidence intervals for each week, `gtsummary` turns the fitted models into tables of odds ratios and rate ratios, and `cowplot` stacks the two panels of Figure 2. The tidyverse provides the data handling (`dplyr`), reading the Harris County file (`readr`) and the plots (`ggplot2`).
 
-The original R Markdown file also loaded `reshape2`, `svglite`, `flextable`, `knitr` and `ggthemr`, and loaded `dplyr` and `ggplot2` twice. None of these is needed by the analysis, and `ggthemr` is not on CRAN, so they are not loaded here.
+The original R Markdown file also loaded `flextable`, which it used to convert the model tables for its Word output; the tables here stay `gtsummary` tables, so it is not needed. It loaded `reshape2`, `svglite`, `knitr` and `ggthemr` (not on CRAN) without using them, and loaded `dplyr` and `ggplot2` twice. None of these is loaded here.
 
 ```{r}
 #| label: load-packages
