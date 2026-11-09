@@ -1,0 +1,44 @@
+---
+title: "Published results"
+format: html
+---
+
+::: {.Results title="Quoted from the published article"}
+The results on this page are quoted from Al Mohajer M, Panthagani KM, Lasco T, Lembcke B, Hemmige V. Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients. *International Journal of Infectious Diseases*. 2021;105:252–255 [@almohajer2021faceshield], from its Results section. They were **not** produced by this repository's code, which has not been run on the study data.
+
+The article's figures are not reproduced here while permission to reuse them is confirmed. They can be seen in the [published article](https://doi.org/10.1016/j.ijid.2021.02.060), which also has the full statistical analysis in its appendix.
+:::
+
+## Healthcare-personnel test positivity
+
+-   Of 6,527 healthcare personnel tested, 246 tested positive for SARS-CoV-2 (3.8%).
+-   Before face shields, the weekly positivity rate rose from 0% to 12.9%. With face shields, it fell to 2.3%.
+-   The segmented regression model predicted a change in the proportion positive at week 13 from 22.9% without the intervention to 2.7% with it (P < 0.001), and a change in slope after the intervention on the log-odds scale (P < 0.001).
+
+These come from the logistic model on the [Models](models.qmd#test-positivity) page; the week-13 values are those [`predict_at_intervention_week()`](functions.qmd#values-at-the-intervention-week) is written to compute.
+
+## Hospital-acquired infections
+
+-   25 hospital-acquired infections were identified: 16 possible and 9 confirmed.
+-   Before face shields, weekly HAI cases rose from 0 to 7. With face shields, they fell to 0.
+-   The model's predicted HAI rate at week 13 was 8.7 per 1,000 patient-days without the intervention and 1.7 with it (P < 0.001), and the slope changed after the intervention on the log scale (P < 0.001).
+
+These come from the Poisson model on the [Models](models.qmd#hospital-acquired-infections) page.
+
+## The community
+
+The article compares the hospital series with daily COVID-19 cases in Harris County, from the Harris County Public Health COVID Data Dashboard "Epi Curve". Infections among healthcare personnel and inpatients fell more quickly than cases in the community, which the article notes when discussing whether the fall reflected only the community wave. This comparison is drawn by Figure 2 on the [Figures](figures.qmd#figure-2) page.
+
+## The article's figures
+
+The code on this site draws the two figures of the original analysis:
+
+-   **Figure 1**: weekly test positivity (A) and HAI rate (B), with 95% intervals and the segmented regression line ([3. Figures](figures.qmd#figure-1)).
+-   **Figure 2**: the same series by date, with daily Harris County cases ([3. Figures](figures.qmd#figure-2)).
+
+The published versions are in the [article](https://doi.org/10.1016/j.ijid.2021.02.060). The size legend of panel A of each figure was labelled "# patients tested" in the original code; the code here labels it "# HCP tests" ([Differences from the original code](differences.qmd#figures)).
+
+## References
+
+::: {#refs}
+:::

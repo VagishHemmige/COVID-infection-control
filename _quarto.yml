@@ -19,7 +19,6 @@ website:
   repo-actions: [edit, issue]
   page-navigation: true
 
-  # The published results section is added with its page
   sidebar:
     style: docked
     collapse-level: 3
@@ -64,6 +63,10 @@ website:
               - href: quarto/figures.qmd
                 text: 3. Figures
                 icon: laptop
+
+      - href: quarto/results.qmd
+        text: Published results
+        icon: clipboard-data
 
       - section: Project documents
         contents:
