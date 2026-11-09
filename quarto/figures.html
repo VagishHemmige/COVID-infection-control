@@ -112,17 +112,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>
-div.callout-Pending.callout {
-  border-left-color: #f0c400;
-}
-div.callout-Pending.callout-style-default > .callout-header {
-  background-color: rgba(240, 196, 0, 0.13);
-}
-div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
-  content: '⏳';
-  background-image: none;
-}
 div.callout-Rcode.callout {
   border-left-color: #d63384;
 }
@@ -132,6 +121,17 @@ div.callout-Rcode.callout-style-default > .callout-header {
 div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
   content: '💻';
+  background-image: none;
+}
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
+}
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
+}
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
   background-image: none;
 }
 div.callout-Results.callout {
@@ -392,7 +392,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 </header>
 
 
-<p>This script draws the plots: the observed weekly series, the exploratory models, and the article’s two figures. It saves the figures to <code>figures/</code>, which is not in the repository, because they are made from the study data. The published figures are on the published results page.</p>
+<p>This script draws the plots: the observed weekly series, the exploratory models, and the article’s two figures. It saves the figures to <code>figures/</code>, which is not in the repository, because they are made from the study data. The article’s own figures are not reproduced on this site while permission to reuse them is confirmed; the <a href="../quarto/results.html">Published results</a> page links to them in the <a href="https://doi.org/10.1016/j.ijid.2021.02.060">published article</a>.</p>
 <div class="callout callout-style-default callout-Rcode callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -458,7 +458,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 </section>
 <section id="the-exploratory-models" class="level2">
 <h2 class="anchored" data-anchor-id="the-exploratory-models">The exploratory models</h2>
-<p>Each exploratory model’s fitted line over the observed series. Laid side by side with Figure 1, they show what each simpler model misses: a single trend cannot follow the rise and fall, a level change alone ignores the trend, and a level change with one shared trend cannot bend after the intervention. These plots were not in the article.</p>
+<p>Each exploratory model’s fitted line over the observed series. These plots are not shown on this site, because they are made from the study data, and they were not in the article. What each simpler model can and cannot draw follows from its form: a single trend cannot rise and then fall; a level change alone has no trend; and a level change with one shared trend cannot change slope after the intervention.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Click to show/hide R Code</summary>
@@ -507,7 +507,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 </section>
 <section id="figure-1" class="level2">
 <h2 class="anchored" data-anchor-id="figure-1">Figure 1</h2>
-<p>The published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, rising until week 12, stepping down at the intervention, and then falling.</p>
+<p>The published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, which allows one trend before the intervention, a step at it, and a different trend after it.</p>
 <p>The size legend of panel A reads “# HCP tests”, the number of healthcare-personnel tests each week. The original code labelled it “# patients tested”; it is corrected here and in Figure 2.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1149,7 +1149,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>This script draws the plots: the observed weekly series, the exploratory models, and the article's two figures. It saves the figures to <span class="in">`figures/`</span>, which is not in the repository, because they are made from the study data. The published figures are on the published results page.</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>This script draws the plots: the observed weekly series, the exploratory models, and the article's two figures. It saves the figures to <span class="in">`figures/`</span>, which is not in the repository, because they are made from the study data. The article's own figures are not reproduced on this site while permission to reuse them is confirmed; the <span class="co">[</span><span class="ot">Published results</span><span class="co">](results.qmd)</span> page links to them in the <span class="co">[</span><span class="ot">published article</span><span class="co">](https://doi.org/10.1016/j.ijid.2021.02.060)</span>.</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>::: {.Rcode title="Source code"}</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>The full R script is available at:</span>
@@ -1184,7 +1184,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="fu">## The exploratory models</span></span>
 <span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>Each exploratory model's fitted line over the observed series. Laid side by side with Figure 1, they show what each simpler model misses: a single trend cannot follow the rise and fall, a level change alone ignores the trend, and a level change with one shared trend cannot bend after the intervention. These plots were not in the article.</span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>Each exploratory model's fitted line over the observed series. These plots are not shown on this site, because they are made from the study data, and they were not in the article. What each simpler model can and cannot draw follows from its form: a single trend cannot rise and then fall; a level change alone has no trend; and a level change with one shared trend cannot change slope after the intervention.</span>
 <span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: plot-exploratory-models</span></span>
@@ -1193,7 +1193,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figure 1</span></span>
 <span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>The published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, rising until week 12, stepping down at the intervention, and then falling.</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a>The published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, which allows one trend before the intervention, a step at it, and a different trend after it.</span>
 <span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a>The size legend of panel A reads "# HCP tests", the number of healthcare-personnel tests each week. The original code labelled it "# patients tested"; it is corrected here and in Figure 2.</span>
 <span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a></span>

@@ -62,7 +62,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -112,17 +131,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>
-div.callout-Pending.callout {
-  border-left-color: #f0c400;
-}
-div.callout-Pending.callout-style-default > .callout-header {
-  background-color: rgba(240, 196, 0, 0.13);
-}
-div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
-  content: '⏳';
-  background-image: none;
-}
 div.callout-Rcode.callout {
   border-left-color: #d63384;
 }
@@ -143,6 +151,17 @@ div.callout-Results.callout-style-default > .callout-header {
 div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
   content: '📊';
+  background-image: none;
+}
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
+}
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
+}
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
   background-image: none;
 }
 </style>
@@ -416,8 +435,8 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <h2 class="anchored" data-anchor-id="weekly-estimates-with-exact-intervals">Weekly estimates with exact intervals</h2>
 <p><code>add_exact_intervals()</code></p>
 <p>For each week, the percentage of healthcare-personnel tests that were positive, and the HAI rate per 1,000 patient-days, each with a 95% confidence interval (analysis plan, section 8.1).</p>
-<p>Both intervals are <em>exact</em>: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series, whose weekly counts run from 0 to 7. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. <code>binom.exact()</code> gives the Clopper–Pearson interval and <code>pois.exact()</code> the exact Poisson interval, with patient-days as the exposure.</p>
-<p>The original code computed the same intervals and attached them with <code>cbind()</code>; here they are added by name with <code>mutate()</code>, so a reordered table cannot attach them to the wrong rows.</p>
+<p>Both intervals are <em>exact</em>: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series: the article reports weekly HAI counts rising from 0 to 7 before face shields and falling to 0 after them <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. <code>binom.exact()</code> gives the Clopper–Pearson interval and <code>pois.exact()</code> the exact Poisson interval, with patient-days as the exposure.</p>
+<p>The original code computed the same intervals and attached them with <code>cbind()</code>; here they are added as named columns with <code>mutate()</code>, which makes clear what each column is. Either way, each value is matched to its week by position: <code>binom.exact()</code> and <code>pois.exact()</code> return one row per input row, in the same order, so the weekly table must not be reordered or filtered between computing the intervals and adding them. The function does both in one step, so nothing can come between them.</p>
 <p><strong>Used in the analysis:</strong> <a href="../quarto/prepare_data.html#weekly-estimates">Data: weekly estimates</a>.</p>
 <div class="cell">
 <details class="code-fold">
@@ -581,9 +600,14 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 
 <!-- -->
 
+
 </section>
 
-</main> <!-- /main -->
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-almohajer2021faceshield" class="csl-entry" role="listitem">
+Al Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. <span>“Association Between Universal Face Shield in a Quaternary Care Center and Reduction of <span>SARS-COV2</span> Infections Among Healthcare Personnel and Hospitalized Patients.”</span> <em>International Journal of Infectious Diseases</em> 105: 252–55. <a href="https://doi.org/10.1016/j.ijid.2021.02.060">https://doi.org/10.1016/j.ijid.2021.02.060</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1079,9 +1103,9 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>For each week, the percentage of healthcare-personnel tests that were positive, and the HAI rate per 1,000 patient-days, each with a 95% confidence interval (analysis plan, section 8.1).</span>
 <span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>Both intervals are *exact*: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series, whose weekly counts run from 0 to 7. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. <span class="in">`binom.exact()`</span> gives the Clopper–Pearson interval and <span class="in">`pois.exact()`</span> the exact Poisson interval, with patient-days as the exposure.</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>Both intervals are *exact*: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series: the article reports weekly HAI counts rising from 0 to 7 before face shields and falling to 0 after them <span class="co">[</span><span class="ot">@almohajer2021faceshield</span><span class="co">]</span>. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. <span class="in">`binom.exact()`</span> gives the Clopper–Pearson interval and <span class="in">`pois.exact()`</span> the exact Poisson interval, with patient-days as the exposure.</span>
 <span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>The original code computed the same intervals and attached them with <span class="in">`cbind()`</span>; here they are added by name with <span class="in">`mutate()`</span>, so a reordered table cannot attach them to the wrong rows.</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>The original code computed the same intervals and attached them with <span class="in">`cbind()`</span>; here they are added as named columns with <span class="in">`mutate()`</span>, which makes clear what each column is. Either way, each value is matched to its week by position: <span class="in">`binom.exact()`</span> and <span class="in">`pois.exact()`</span> return one row per input row, in the same order, so the weekly table must not be reordered or filtered between computing the intervals and adding them. The function does both in one step, so nothing can come between them.</span>
 <span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>**Used in the analysis:** <span class="co">[</span><span class="ot">Data: weekly estimates</span><span class="co">](prepare_data.qmd#weekly-estimates)</span>.</span>
 <span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a></span>

@@ -123,17 +123,6 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
   content: '⏳';
   background-image: none;
 }
-div.callout-Results.callout {
-  border-left-color: #198754;
-}
-div.callout-Results.callout-style-default > .callout-header {
-  background-color: rgba(25, 135, 84, 0.13);
-}
-div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
-  content: '📊';
-  background-image: none;
-}
 div.callout-Rcode.callout {
   border-left-color: #d63384;
 }
@@ -143,6 +132,17 @@ div.callout-Rcode.callout-style-default > .callout-header {
 div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
   content: '💻';
+  background-image: none;
+}
+div.callout-Results.callout {
+  border-left-color: #198754;
+}
+div.callout-Results.callout-style-default > .callout-header {
+  background-color: rgba(25, 135, 84, 0.13);
+}
+div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
+  content: '📊';
   background-image: none;
 }
 </style>
@@ -393,7 +393,7 @@ div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode
 
 
 <p>This script fits the interrupted time series models, for both outcomes, and builds what the tables and figures need from them.</p>
-<p>The original analysis fitted four models for each outcome, each adding to the one before. Only the fourth, the segmented regression model, was reported in the article; the other three were exploratory, and show why the fourth was needed. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).</p>
+<p>The original analysis fitted four alternative models for each outcome: three simpler forms, each leaving out part of the published model, and the segmented regression model itself. Only the segmented model was reported in the article. The original file describes each of the other three as inadequate to explain the data; it records no formal model-selection procedure. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).</p>
 <div class="callout callout-style-default callout-Rcode callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -515,10 +515,11 @@ div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode
 <p><code>tbl_regression(exponentiate = TRUE)</code> turns each model’s coefficients into odds ratios (positivity) or incidence rate ratios (HAI), with 95% confidence intervals and P values.</p>
 <p>For the published model, the ratios read as follows:</p>
 <ul>
-<li><strong><code>Week2</code></strong>: the change from one week to the next <em>before</em> the intervention.</li>
-<li><strong><code>Intervention</code></strong>: the jump at week 13, from the value the pre-intervention trend predicts to the value with the intervention.</li>
-<li><strong><code>Intervention:Week2</code></strong>: how much the week-to-week change <em>after</em> the intervention differs from the change before it. A ratio below 1 means the trend bent downwards.</li>
+<li><strong><code>Week2</code></strong>: the ratio from one week to the next <em>before</em> the intervention (odds ratio for positivity, rate ratio for HAI).</li>
+<li><strong><code>Intervention</code></strong>: the ratio at week 13 between the prediction with the intervention and the prediction the pre-intervention trend gives without it.</li>
+<li><strong><code>Intervention:Week2</code></strong>: how the week-to-week ratio <em>after</em> the intervention differs from the one before it. The week-to-week ratio after the intervention is the <code>Week2</code> ratio multiplied by this one.</li>
 </ul>
+<p>A ratio below 1 for the interaction means the slope decreased on the log-odds or log-rate scale. It does not by itself mean the outcome was falling after the intervention: if the <code>Week2</code> ratio is 1.3 and the interaction ratio 0.8, the ratio after the intervention is 1.3 × 0.8 = 1.04, still rising, only more slowly.</p>
 <p>The confidence intervals in these tables are profile-likelihood intervals, which is what <code>confint()</code> gives for these models. The P values are Wald tests.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1057,7 +1058,7 @@ div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>This script fits the interrupted time series models, for both outcomes, and builds what the tables and figures need from them.</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>The original analysis fitted four models for each outcome, each adding to the one before. Only the fourth, the segmented regression model, was reported in the article; the other three were exploratory, and show why the fourth was needed. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>The original analysis fitted four alternative models for each outcome: three simpler forms, each leaving out part of the published model, and the segmented regression model itself. Only the segmented model was reported in the article. The original file describes each of the other three as inadequate to explain the data; it records no formal model-selection procedure. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).</span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>::: {.Rcode title="Source code"}</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>The full R script is available at:</span>
@@ -1122,34 +1123,36 @@ div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode
 <span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a>For the published model, the ratios read as follows:</span>
 <span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`Week2`**: the change from one week to the next *before* the intervention.</span>
-<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`Intervention`**: the jump at week 13, from the value the pre-intervention trend predicts to the value with the intervention.</span>
-<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`Intervention:Week2`**: how much the week-to-week change *after* the intervention differs from the change before it. A ratio below 1 means the trend bent downwards.</span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`Week2`**: the ratio from one week to the next *before* the intervention (odds ratio for positivity, rate ratio for HAI).</span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`Intervention`**: the ratio at week 13 between the prediction with the intervention and the prediction the pre-intervention trend gives without it.</span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**`Intervention:Week2`**: how the week-to-week ratio *after* the intervention differs from the one before it. The week-to-week ratio after the intervention is the <span class="in">`Week2`</span> ratio multiplied by this one.</span>
 <span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>The confidence intervals in these tables are profile-likelihood intervals, which is what <span class="in">`confint()`</span> gives for these models. The P values are Wald tests.</span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>A ratio below 1 for the interaction means the slope decreased on the log-odds or log-rate scale. It does not by itself mean the outcome was falling after the intervention: if the <span class="in">`Week2`</span> ratio is 1.3 and the interaction ratio 0.8, the ratio after the intervention is 1.3 × 0.8 = 1.04, still rising, only more slowly.</span>
 <span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tabulate-models</span></span>
-<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fitted lines</span></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>The confidence intervals in these tables are profile-likelihood intervals, which is what <span class="in">`confint()`</span> gives for these models. The P values are Wald tests.</span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tabulate-models</span></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a>For each model, its predicted value for every week, for drawing on the figures, from <span class="co">[</span><span class="ot">`build_fitted_line()`</span><span class="co">](functions.qmd#the-fitted-line)</span>. Positivity is shown as a percentage, so its predictions are multiplied by 100; HAI rates are per 1,000 patient-days.</span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a><span class="fu">## Fitted lines</span></span>
 <span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: build-fitted-lines</span></span>
-<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="fu">## Values at week 13</span></span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a>For each model, its predicted value for every week, for drawing on the figures, from <span class="co">[</span><span class="ot">`build_fitted_line()`</span><span class="co">](functions.qmd#the-fitted-line)</span>. Positivity is shown as a percentage, so its predictions are multiplied by 100; HAI rates are per 1,000 patient-days.</span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: build-fitted-lines</span></span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>The comparison the article reports: what the published model predicts at week 13 without face shields and with them, and the P value of the difference, from <span class="co">[</span><span class="ot">`predict_at_intervention_week()`</span><span class="co">](functions.qmd#values-at-the-intervention-week)</span>. The article also reports the P value of the change in slope, which is the <span class="in">`Intervention:Week2`</span> row of the model table.</span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a><span class="fu">## Values at week 13</span></span>
 <span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: predict-published-week-13</span></span>
-<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>The comparison the article reports: what the published model predicts at week 13 without face shields and with them, and the P value of the difference, from <span class="co">[</span><span class="ot">`predict_at_intervention_week()`</span><span class="co">](functions.qmd#values-at-the-intervention-week)</span>. The article also reports the P value of the change in slope, which is the <span class="in">`Intervention:Week2`</span> row of the model table.</span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: predict-published-week-13</span></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

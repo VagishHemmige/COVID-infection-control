@@ -131,6 +131,17 @@ div.csl-indent {
   }
 }</script>
 <style>
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
+}
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
+}
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
+  background-image: none;
+}
 div.callout-Rcode.callout {
   border-left-color: #d63384;
 }
@@ -151,17 +162,6 @@ div.callout-Results.callout-style-default > .callout-header {
 div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
   content: '📊';
-  background-image: none;
-}
-div.callout-Pending.callout {
-  border-left-color: #f0c400;
-}
-div.callout-Pending.callout-style-default > .callout-header {
-  background-color: rgba(240, 196, 0, 0.13);
-}
-div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
-  content: '⏳';
   background-image: none;
 }
 </style>
@@ -411,10 +411,11 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 
 
 <p>This page lists every way the scripts on this site differ from the original analysis: a single R Markdown file of March 2021 (<code>Mayar_R_markdown_2021-3-1.Rmd</code>), which produced the figures and model results of the published article <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>. The original file is kept outside this repository.</p>
-<p>Each entry is one of five kinds:</p>
+<p>Each entry is one of six kinds:</p>
 <ul>
 <li><strong>Corrected</strong>: a mistake in the original code, corrected here.</li>
-<li><strong>Same result</strong>: the code is written differently, and gives the same numbers and figures.</li>
+<li><strong>Same result intended</strong>: the code is written differently and is meant to give the same numbers and figures. This has been checked by reading the code only, not by running it (see the status note).</li>
+<li><strong>Presentation only</strong>: a change to how something looks, not to any number.</li>
 <li><strong>Added</strong>: something the original code did not do.</li>
 <li><strong>Removed</strong>: something the original code did that is no longer needed.</li>
 <li><strong>Kept</strong>: something in the original code that looks unusual, kept as it was so the code still matches what was published.</li>
@@ -430,7 +431,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>The scripts have been checked by reading; they have not yet been run on the study data. “Same result” means the code is written to give the same numbers and figures as the original; that is to be confirmed on the first run.</p>
+<p>The scripts have been checked by reading the code. Rendering this website does not run them: it only displays their code. They have not been run on the study data or on synthetic data, so no entry here has been confirmed by comparing outputs. Whether “same result intended” holds is to be confirmed when the scripts are first run on the study data, against the original analysis and the published article.</p>
 </div>
 </div>
 <section id="setup" class="level2">
@@ -446,26 +447,26 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 </thead>
 <tbody>
 <tr class="odd">
-<td>Loaded <code>reshape2</code>, <code>svglite</code>, <code>flextable</code>, <code>knitr</code> and <code>ggthemr</code> (not on CRAN), none of them used by the analysis, and loaded <code>dplyr</code> and <code>ggplot2</code> twice.</td>
+<td>Loaded <code>flextable</code>, used to convert the model tables with <code>as_flextable()</code> for the Word document the file produced. Also loaded <code>reshape2</code>, <code>svglite</code>, <code>knitr</code> and <code>ggthemr</code> (not on CRAN), which the analysis did not use, and loaded <code>dplyr</code> and <code>ggplot2</code> twice.</td>
 <td>Removed</td>
-<td>Only the packages the analysis uses are attached, once each (<a href="../quarto/setup.html#packages">Setup</a>).</td>
+<td>The model tables stay <code>gtsummary</code> tables, so <code>flextable</code> is not needed; the unused packages are not loaded, and each package is attached once (<a href="../quarto/setup.html#packages">Setup</a>).</td>
 <td>None</td>
 </tr>
 <tr class="even">
 <td>Read the data from the working directory, with a reminder to set it (<code>#setwd here</code>).</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td>The data folder is named by <code>COVID_IC_DATA_DIR</code> in <code>.Renviron</code> (<a href="../quarto/setup.html#where-the-data-are">Setup</a>).</td>
 <td>None</td>
 </tr>
 <tr class="odd">
 <td>Typed the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (” May 11”).</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td>Computed once from the first Monday (<a href="../quarto/setup.html#week-labels">Setup</a>).</td>
 <td>None visible</td>
 </tr>
 <tr class="even">
 <td>Set the intervention at <code>Vertline &lt;- 12.9999</code> and drew the red line at <code>Vertline - 0.5</code>, week 12.4999.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td><code>intervention_week</code> is 13 and the line is at week 12.5 (<a href="../quarto/setup.html#plot-constants">Setup</a>).</td>
 <td>None visible</td>
 </tr>
@@ -491,14 +492,14 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <td>None</td>
 </tr>
 <tr class="even">
-<td>Attached the weekly intervals with <code>cbind()</code>, which relies on the rows staying in order.</td>
-<td>Same result</td>
-<td>Added by name with <code>mutate()</code> (<a href="../quarto/functions.html#weekly-estimates-with-exact-intervals">Functions</a>).</td>
+<td>Attached the weekly intervals with <code>cbind()</code>, matching each value to its week by position.</td>
+<td>Same result intended</td>
+<td>Added as named columns with <code>mutate()</code>, still matched by position, in the same step as they are computed (<a href="../quarto/functions.html#weekly-estimates-with-exact-intervals">Functions</a>).</td>
 <td>None</td>
 </tr>
 <tr class="odd">
 <td><code>Intervention</code> was <code>Week &gt; 12.9999</code>.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td><code>Week &gt;= 13</code> (<a href="../quarto/prepare_data.html#time-series-variables">1. Data</a>).</td>
 <td>None for whole-number weeks</td>
 </tr>
@@ -516,7 +517,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 </tr>
 <tr class="even">
 <td>Read the Harris County file with <code>read.table()</code> and the date format <code>"%m / %d / %y"</code>.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td><code>read_csv()</code>, with the date read as text and converted with <code>"%m/%d/%y"</code>; R reads a space in a date format as “zero or more spaces”, so both formats read <code>07/05/20</code> the same way (<a href="../quarto/prepare_data.html#harris-county-cases">1. Data</a>).</td>
 <td>None</td>
 </tr>
@@ -543,7 +544,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <tbody>
 <tr class="odd">
 <td>Wrote out each of the eight models (<code>logistic1</code> to <code>logistic4</code>, <code>poisson1</code> to <code>poisson4</code>) in its own code chunk.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td>Each model’s terms are written once and fitted for both outcomes; the models are kept in named lists (<a href="../quarto/models.html#the-four-models">2. Models</a>).</td>
 <td>None</td>
 </tr>
@@ -554,10 +555,10 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <td>None</td>
 </tr>
 <tr class="odd">
-<td>Printed <code>summary()</code> for every model, and converted every table but one (the second HAI model) to a flextable.</td>
+<td>Printed <code>summary()</code> for every model, and converted every table but one (the second HAI model) to a flextable for the Word output.</td>
 <td>Removed</td>
-<td>The tables are <code>gtsummary</code> tables throughout (<a href="../quarto/models.html#model-tables">2. Models</a>).</td>
-<td>None</td>
+<td>The tables are <code>gtsummary</code> tables throughout, for the website (<a href="../quarto/models.html#model-tables">2. Models</a>).</td>
+<td>None to the numbers; the tables’ format</td>
 </tr>
 <tr class="even">
 <td>Did not compute the values at week 13 that the article reports; they were read from the model output.</td>
@@ -567,7 +568,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 </tr>
 <tr class="odd">
 <td>The weeks spanned by the fitted lines followed the data rows.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td>Taken from the first and last week in the data (<a href="../quarto/models.html#fitted-lines">2. Models</a>).</td>
 <td>None</td>
 </tr>
@@ -588,13 +589,13 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <tbody>
 <tr class="odd">
 <td>Ten near-identical <code>ggplot()</code> calls.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td>One function, <code>plot_weekly_series()</code> (<a href="../quarto/functions.html#plotting-a-weekly-series">Functions</a>).</td>
 <td>None for Figure 1</td>
 </tr>
 <tr class="even">
 <td>The exploratory plots had a different point-size range, legend position and axis-title size from Figure 1.</td>
-<td>Same result</td>
+<td>Presentation only</td>
 <td>The exploratory plots share Figure 1’s styling (<a href="../quarto/figures.html#the-exploratory-models">3. Figures</a>).</td>
 <td>The exploratory plots look slightly different; they were not published</td>
 </tr>
@@ -612,13 +613,13 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 </tr>
 <tr class="odd">
 <td>Figure 2’s red line was placed with <code>as.Date("07/05/2020", format = "%m / %d / %y", size = 1)</code>; the <code>size = 1</code> was passed to <code>as.Date()</code>, which ignores it.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td><code>intervention_start - 1</code>, the same date (<a href="../quarto/figures.html#figure-2-lines-by-date">3. Figures</a>).</td>
 <td>None</td>
 </tr>
 <tr class="even">
 <td>Drew the Harris County bars with <code>geom_bar(stat = "identity")</code>.</td>
-<td>Same result</td>
+<td>Same result intended</td>
 <td><code>geom_col()</code>, which is the same thing (<a href="../quarto/figures.html#figure-2">3. Figures</a>).</td>
 <td>None</td>
 </tr>
@@ -1115,68 +1116,69 @@ Al Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>This page lists every way the scripts on this site differ from the original analysis: a single R Markdown file of March 2021 (<span class="in">`Mayar_R_markdown_2021-3-1.Rmd`</span>), which produced the figures and model results of the published article <span class="co">[</span><span class="ot">@almohajer2021faceshield</span><span class="co">]</span>. The original file is kept outside this repository.</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Each entry is one of five kinds:</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Each entry is one of six kinds:</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Corrected**: a mistake in the original code, corrected here.</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Same result**: the code is written differently, and gives the same numbers and figures.</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Added**: something the original code did not do.</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Removed**: something the original code did that is no longer needed.</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Kept**: something in the original code that looks unusual, kept as it was so the code still matches what was published.</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>No entry changes the models, the weekly estimates or the published results; the one correction changes a legend label.</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Status</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>The scripts have been checked by reading; they have not yet been run on the study data. "Same result" means the code is written to give the same numbers and figures as the original; that is to be confirmed on the first run.</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Loaded <span class="in">`reshape2`</span>, <span class="in">`svglite`</span>, <span class="in">`flextable`</span>, <span class="in">`knitr`</span> and <span class="in">`ggthemr`</span> (not on CRAN), none of them used by the analysis, and loaded <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> twice. <span class="pp">|</span> Removed <span class="pp">|</span> Only the packages the analysis uses are attached, once each (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#packages)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Read the data from the working directory, with a reminder to set it (<span class="in">`#setwd here`</span>). <span class="pp">|</span> Same result <span class="pp">|</span> The data folder is named by <span class="in">`COVID_IC_DATA_DIR`</span> in <span class="in">`.Renviron`</span> (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#where-the-data-are)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Typed the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (" May 11"). <span class="pp">|</span> Same result <span class="pp">|</span> Computed once from the first Monday (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#week-labels)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Set the intervention at <span class="in">`Vertline &lt;- 12.9999`</span> and drew the red line at <span class="in">`Vertline - 0.5`</span>, week 12.4999. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`intervention_week`</span> is 13 and the line is at week 12.5 (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#plot-constants)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Did not check the workbook's columns. <span class="pp">|</span> Added <span class="pp">|</span> Stops if any of the seven expected columns is missing, naming only the missing columns (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#the-weekly-surveillance-data)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Attached the weekly intervals with <span class="in">`cbind()`</span>, which relies on the rows staying in order. <span class="pp">|</span> Same result <span class="pp">|</span> Added by name with <span class="in">`mutate()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#weekly-estimates-with-exact-intervals)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Intervention`</span> was <span class="in">`Week &gt; 12.9999`</span>. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`Week &gt;= 13`</span> (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#time-series-variables)</span>). <span class="pp">|</span> None for whole-number weeks <span class="pp">|</span></span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Added two placeholder rows at week 12.9999, with no outcome data, so the plotted line could step at the intervention. The models dropped them because their outcomes were missing. <span class="pp">|</span> Removed <span class="pp">|</span> The fitted lines are built separately, with the step, by <span class="in">`build_fitted_line()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#the-fitted-line)</span>). The data hold one row per week. <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Placed each week in Figure 2 at one day before <span class="in">`Date2`</span> (week 1) or two days before (other weeks), with no note of what <span class="in">`Date2`</span> is. <span class="pp">|</span> Kept <span class="pp">|</span> The same rule, with a note: <span class="in">`Date2`</span> is the last day of each week's range, as recalled by the author (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#plot-dates)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Read the Harris County file with <span class="in">`read.table()`</span> and the date format <span class="in">`"%m / %d / %y"`</span>. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`read_csv()`</span>, with the date read as text and converted with <span class="in">`"%m/%d/%y"`</span>; R reads a space in a date format as "zero or more spaces", so both formats read <span class="in">`07/05/20`</span> the same way (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#harris-county-cases)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A sentence meant to report the total number of tests and positives printed the R code instead of the numbers (its inline code lacked the <span class="in">`r`</span>). <span class="pp">|</span> Removed <span class="pp">|</span> Not reproduced; the article reports the totals. <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Models</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Wrote out each of the eight models (<span class="in">`logistic1`</span> to <span class="in">`logistic4`</span>, <span class="in">`poisson1`</span> to <span class="in">`poisson4`</span>) in its own code chunk. <span class="pp">|</span> Same result <span class="pp">|</span> Each model's terms are written once and fitted for both outcomes; the models are kept in named lists (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#the-four-models)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Fitted the exploratory models on <span class="in">`Week`</span> and the published model on <span class="in">`Week2`</span> (week minus 13). <span class="pp">|</span> Kept <span class="pp">|</span> As in the original. The exploratory models have no interaction, so centring the week would change only their intercepts, not their fit or their other coefficients. <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Printed <span class="in">`summary()`</span> for every model, and converted every table but one (the second HAI model) to a flextable. <span class="pp">|</span> Removed <span class="pp">|</span> The tables are <span class="in">`gtsummary`</span> tables throughout (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#model-tables)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Did not compute the values at week 13 that the article reports; they were read from the model output. <span class="pp">|</span> Added <span class="pp">|</span> <span class="in">`predict_at_intervention_week()`</span> computes them from the published model (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#values-at-week-13)</span>). <span class="pp">|</span> None, if they match the article; to be confirmed on the first run <span class="pp">|</span></span>
-<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> The weeks spanned by the fitted lines followed the data rows. <span class="pp">|</span> Same result <span class="pp">|</span> Taken from the first and last week in the data (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#fitted-lines)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figures</span></span>
-<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
-<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Ten near-identical <span class="in">`ggplot()`</span> calls. <span class="pp">|</span> Same result <span class="pp">|</span> One function, <span class="in">`plot_weekly_series()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#plotting-a-weekly-series)</span>). <span class="pp">|</span> None for Figure 1 <span class="pp">|</span></span>
-<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> The exploratory plots had a different point-size range, legend position and axis-title size from Figure 1. <span class="pp">|</span> Same result <span class="pp">|</span> The exploratory plots share Figure 1's styling (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#the-exploratory-models)</span>). <span class="pp">|</span> The exploratory plots look slightly different; they were not published <span class="pp">|</span></span>
-<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 1A's size legend read "# patients tested", although the points are sized by healthcare-personnel tests. Figure 2A had the same label. <span class="pp">|</span> Corrected <span class="pp">|</span> "# HCP tests" in both (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-1)</span>). <span class="pp">|</span> The legend text of Figures 1A and 2A <span class="pp">|</span></span>
-<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 2's fitted line joined the predictions at the observed weeks, so it showed no step at the intervention, unlike Figure 1. <span class="pp">|</span> Kept <span class="pp">|</span> As in the original (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2-lines-by-date)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 2's red line was placed with <span class="in">`as.Date("07/05/2020", format = "%m / %d / %y", size = 1)`</span>; the <span class="in">`size = 1`</span> was passed to <span class="in">`as.Date()`</span>, which ignores it. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`intervention_start - 1`</span>, the same date (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2-lines-by-date)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Drew the Harris County bars with <span class="in">`geom_bar(stat = "identity")`</span>. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`geom_col()`</span>, which is the same thing (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Saved Figure 1's panels as "Fig 1A 2020-9-19.tiff" and "Fig 1B 2020-9-19.tiff" in the working directory, with no size set. Figure 2 was not saved. <span class="pp">|</span> Added <span class="pp">|</span> All three figures are saved to <span class="in">`figures/`</span> as <span class="in">`figure_1a.tiff`</span>, <span class="in">`figure_1b.tiff`</span> and <span class="in">`figure_2.tiff`</span>, still with no size set, so their size depends on the graphics device (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#saving-the-figures)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
-<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>::: {#refs}</span>
-<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Same result intended**: the code is written differently and is meant to give the same numbers and figures. This has been checked by reading the code only, not by running it (see the status note).</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Presentation only**: a change to how something looks, not to any number.</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Added**: something the original code did not do.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Removed**: something the original code did that is no longer needed.</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Kept**: something in the original code that looks unusual, kept as it was so the code still matches what was published.</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>No entry changes the models, the weekly estimates or the published results; the one correction changes a legend label.</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">## Status</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>The scripts have been checked by reading the code. Rendering this website does not run them: it only displays their code. They have not been run on the study data or on synthetic data, so no entry here has been confirmed by comparing outputs. Whether "same result intended" holds is to be confirmed when the scripts are first run on the study data, against the original analysis and the published article.</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Loaded <span class="in">`flextable`</span>, used to convert the model tables with <span class="in">`as_flextable()`</span> for the Word document the file produced. Also loaded <span class="in">`reshape2`</span>, <span class="in">`svglite`</span>, <span class="in">`knitr`</span> and <span class="in">`ggthemr`</span> (not on CRAN), which the analysis did not use, and loaded <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> twice. <span class="pp">|</span> Removed <span class="pp">|</span> The model tables stay <span class="in">`gtsummary`</span> tables, so <span class="in">`flextable`</span> is not needed; the unused packages are not loaded, and each package is attached once (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#packages)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Read the data from the working directory, with a reminder to set it (<span class="in">`#setwd here`</span>). <span class="pp">|</span> Same result intended <span class="pp">|</span> The data folder is named by <span class="in">`COVID_IC_DATA_DIR`</span> in <span class="in">`.Renviron`</span> (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#where-the-data-are)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Typed the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (" May 11"). <span class="pp">|</span> Same result intended <span class="pp">|</span> Computed once from the first Monday (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#week-labels)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Set the intervention at <span class="in">`Vertline &lt;- 12.9999`</span> and drew the red line at <span class="in">`Vertline - 0.5`</span>, week 12.4999. <span class="pp">|</span> Same result intended <span class="pp">|</span> <span class="in">`intervention_week`</span> is 13 and the line is at week 12.5 (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#plot-constants)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Did not check the workbook's columns. <span class="pp">|</span> Added <span class="pp">|</span> Stops if any of the seven expected columns is missing, naming only the missing columns (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#the-weekly-surveillance-data)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Attached the weekly intervals with <span class="in">`cbind()`</span>, matching each value to its week by position. <span class="pp">|</span> Same result intended <span class="pp">|</span> Added as named columns with <span class="in">`mutate()`</span>, still matched by position, in the same step as they are computed (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#weekly-estimates-with-exact-intervals)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Intervention`</span> was <span class="in">`Week &gt; 12.9999`</span>. <span class="pp">|</span> Same result intended <span class="pp">|</span> <span class="in">`Week &gt;= 13`</span> (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#time-series-variables)</span>). <span class="pp">|</span> None for whole-number weeks <span class="pp">|</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Added two placeholder rows at week 12.9999, with no outcome data, so the plotted line could step at the intervention. The models dropped them because their outcomes were missing. <span class="pp">|</span> Removed <span class="pp">|</span> The fitted lines are built separately, with the step, by <span class="in">`build_fitted_line()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#the-fitted-line)</span>). The data hold one row per week. <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Placed each week in Figure 2 at one day before <span class="in">`Date2`</span> (week 1) or two days before (other weeks), with no note of what <span class="in">`Date2`</span> is. <span class="pp">|</span> Kept <span class="pp">|</span> The same rule, with a note: <span class="in">`Date2`</span> is the last day of each week's range, as recalled by the author (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#plot-dates)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Read the Harris County file with <span class="in">`read.table()`</span> and the date format <span class="in">`"%m / %d / %y"`</span>. <span class="pp">|</span> Same result intended <span class="pp">|</span> <span class="in">`read_csv()`</span>, with the date read as text and converted with <span class="in">`"%m/%d/%y"`</span>; R reads a space in a date format as "zero or more spaces", so both formats read <span class="in">`07/05/20`</span> the same way (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#harris-county-cases)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A sentence meant to report the total number of tests and positives printed the R code instead of the numbers (its inline code lacked the <span class="in">`r`</span>). <span class="pp">|</span> Removed <span class="pp">|</span> Not reproduced; the article reports the totals. <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="fu">## Models</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Wrote out each of the eight models (<span class="in">`logistic1`</span> to <span class="in">`logistic4`</span>, <span class="in">`poisson1`</span> to <span class="in">`poisson4`</span>) in its own code chunk. <span class="pp">|</span> Same result intended <span class="pp">|</span> Each model's terms are written once and fitted for both outcomes; the models are kept in named lists (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#the-four-models)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Fitted the exploratory models on <span class="in">`Week`</span> and the published model on <span class="in">`Week2`</span> (week minus 13). <span class="pp">|</span> Kept <span class="pp">|</span> As in the original. The exploratory models have no interaction, so centring the week would change only their intercepts, not their fit or their other coefficients. <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Printed <span class="in">`summary()`</span> for every model, and converted every table but one (the second HAI model) to a flextable for the Word output. <span class="pp">|</span> Removed <span class="pp">|</span> The tables are <span class="in">`gtsummary`</span> tables throughout, for the website (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#model-tables)</span>). <span class="pp">|</span> None to the numbers; the tables' format <span class="pp">|</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Did not compute the values at week 13 that the article reports; they were read from the model output. <span class="pp">|</span> Added <span class="pp">|</span> <span class="in">`predict_at_intervention_week()`</span> computes them from the published model (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#values-at-week-13)</span>). <span class="pp">|</span> None, if they match the article; to be confirmed on the first run <span class="pp">|</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> The weeks spanned by the fitted lines followed the data rows. <span class="pp">|</span> Same result intended <span class="pp">|</span> Taken from the first and last week in the data (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#fitted-lines)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figures</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Ten near-identical <span class="in">`ggplot()`</span> calls. <span class="pp">|</span> Same result intended <span class="pp">|</span> One function, <span class="in">`plot_weekly_series()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#plotting-a-weekly-series)</span>). <span class="pp">|</span> None for Figure 1 <span class="pp">|</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> The exploratory plots had a different point-size range, legend position and axis-title size from Figure 1. <span class="pp">|</span> Presentation only <span class="pp">|</span> The exploratory plots share Figure 1's styling (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#the-exploratory-models)</span>). <span class="pp">|</span> The exploratory plots look slightly different; they were not published <span class="pp">|</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 1A's size legend read "# patients tested", although the points are sized by healthcare-personnel tests. Figure 2A had the same label. <span class="pp">|</span> Corrected <span class="pp">|</span> "# HCP tests" in both (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-1)</span>). <span class="pp">|</span> The legend text of Figures 1A and 2A <span class="pp">|</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 2's fitted line joined the predictions at the observed weeks, so it showed no step at the intervention, unlike Figure 1. <span class="pp">|</span> Kept <span class="pp">|</span> As in the original (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2-lines-by-date)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 2's red line was placed with <span class="in">`as.Date("07/05/2020", format = "%m / %d / %y", size = 1)`</span>; the <span class="in">`size = 1`</span> was passed to <span class="in">`as.Date()`</span>, which ignores it. <span class="pp">|</span> Same result intended <span class="pp">|</span> <span class="in">`intervention_start - 1`</span>, the same date (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2-lines-by-date)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Drew the Harris County bars with <span class="in">`geom_bar(stat = "identity")`</span>. <span class="pp">|</span> Same result intended <span class="pp">|</span> <span class="in">`geom_col()`</span>, which is the same thing (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Saved Figure 1's panels as "Fig 1A 2020-9-19.tiff" and "Fig 1B 2020-9-19.tiff" in the working directory, with no size set. Figure 2 was not saved. <span class="pp">|</span> Added <span class="pp">|</span> All three figures are saved to <span class="in">`figures/`</span> as <span class="in">`figure_1a.tiff`</span>, <span class="in">`figure_1b.tiff`</span> and <span class="in">`figure_2.tiff`</span>, still with no size set, so their size depends on the graphics device (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#saving-the-figures)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>::: {#refs}</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 

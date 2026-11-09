@@ -112,15 +112,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>
-div.callout-Rcode.callout {
-  border-left-color: #d63384;
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
 }
-div.callout-Rcode.callout-style-default > .callout-header {
-  background-color: rgba(214, 51, 132, 0.13);
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
 }
-div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
-  content: '💻';
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
   background-image: none;
 }
 div.callout-Results.callout {
@@ -134,15 +134,15 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
   content: '📊';
   background-image: none;
 }
-div.callout-Pending.callout {
-  border-left-color: #f0c400;
+div.callout-Rcode.callout {
+  border-left-color: #d63384;
 }
-div.callout-Pending.callout-style-default > .callout-header {
-  background-color: rgba(240, 196, 0, 0.13);
+div.callout-Rcode.callout-style-default > .callout-header {
+  background-color: rgba(214, 51, 132, 0.13);
 }
-div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
-  content: '⏳';
+div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
+  content: '💻';
   background-image: none;
 }
 </style>
@@ -479,7 +479,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <li><code>Intervention</code> is <code>TRUE</code> from week 13, the first week with face shields.</li>
 <li><code>Week2</code> is the week number minus 13, so it is zero at the intervention week.</li>
 </ul>
-<p>Centring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with <code>Week2</code> zero at week 13, the <code>Intervention</code> coefficient becomes the difference between the predicted values with and without the intervention <em>at week 13</em>, which is the comparison the article reports. Without centring, it would be that difference at week 0, which lies outside the study.</p>
+<p>Centring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with <code>Week2</code> zero at week 13, the <code>Intervention</code> coefficient becomes the difference between the predictions with and without the intervention <em>at week 13</em>, which is the comparison the article reports. That difference is on the model’s scale: a difference in log-odds for test positivity, and in log rates for HAI. Exponentiated, it is an odds ratio or a rate ratio, not a difference in percentage points or in rates. Without centring, it would be that difference at week 0, which lies outside the study.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Click to show/hide R Code</summary>
@@ -496,7 +496,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 </section>
 <section id="plot-dates" class="level2">
 <h2 class="anchored" data-anchor-id="plot-dates">Plot dates</h2>
-<p>Figure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. <code>Date2</code> is the last day of each week’s range, a Friday; two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its <code>Date2</code>, as in the original code.</p>
+<p>Figure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. <code>Date2</code> is taken to be the last day of each week’s range, as the author recalls; this is not documented in the data. On that reading it is a Friday, and two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its <code>Date2</code>, as in the original code.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Click to show/hide R Code</summary>
@@ -1064,7 +1064,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Intervention`</span> is <span class="in">`TRUE`</span> from week 13, the first week with face shields.</span>
 <span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`Week2`</span> is the week number minus 13, so it is zero at the intervention week.</span>
 <span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>Centring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with <span class="in">`Week2`</span> zero at week 13, the <span class="in">`Intervention`</span> coefficient becomes the difference between the predicted values with and without the intervention *at week 13*, which is the comparison the article reports. Without centring, it would be that difference at week 0, which lies outside the study.</span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>Centring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with <span class="in">`Week2`</span> zero at week 13, the <span class="in">`Intervention`</span> coefficient becomes the difference between the predictions with and without the intervention *at week 13*, which is the comparison the article reports. That difference is on the model's scale: a difference in log-odds for test positivity, and in log rates for HAI. Exponentiated, it is an odds ratio or a rate ratio, not a difference in percentage points or in rates. Without centring, it would be that difference at week 0, which lies outside the study.</span>
 <span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: add-time-series-variables</span></span>
@@ -1073,7 +1073,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Plot dates</span></span>
 <span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>Figure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. <span class="in">`Date2`</span> is the last day of each week's range, a Friday; two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its <span class="in">`Date2`</span>, as in the original code.</span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>Figure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. <span class="in">`Date2`</span> is taken to be the last day of each week's range, as the author recalls; this is not documented in the data. On that reading it is a Friday, and two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its <span class="in">`Date2`</span>, as in the original code.</span>
 <span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: add-plot-dates</span></span>

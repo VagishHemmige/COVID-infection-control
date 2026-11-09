@@ -123,17 +123,6 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
   content: '⏳';
   background-image: none;
 }
-div.callout-Rcode.callout {
-  border-left-color: #d63384;
-}
-div.callout-Rcode.callout-style-default > .callout-header {
-  background-color: rgba(214, 51, 132, 0.13);
-}
-div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
-  content: '💻';
-  background-image: none;
-}
 div.callout-Results.callout {
   border-left-color: #198754;
 }
@@ -143,6 +132,17 @@ div.callout-Results.callout-style-default > .callout-header {
 div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
   content: '📊';
+  background-image: none;
+}
+div.callout-Rcode.callout {
+  border-left-color: #d63384;
+}
+div.callout-Rcode.callout-style-default > .callout-header {
+  background-color: rgba(214, 51, 132, 0.13);
+}
+div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
+  content: '💻';
   background-image: none;
 }
 </style>
@@ -413,7 +413,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <section id="packages" class="level2">
 <h2 class="anchored" data-anchor-id="packages">Packages</h2>
 <p><code>readxl</code> reads the weekly surveillance workbook, <code>epitools</code> computes the exact confidence intervals for each week, <code>gtsummary</code> turns the fitted models into tables of odds ratios and rate ratios, and <code>cowplot</code> stacks the two panels of Figure 2. The tidyverse provides the data handling (<code>dplyr</code>), reading the Harris County file (<code>readr</code>) and the plots (<code>ggplot2</code>).</p>
-<p>The original R Markdown file also loaded <code>reshape2</code>, <code>svglite</code>, <code>flextable</code>, <code>knitr</code> and <code>ggthemr</code>, and loaded <code>dplyr</code> and <code>ggplot2</code> twice. None of these is needed by the analysis, and <code>ggthemr</code> is not on CRAN, so they are not loaded here.</p>
+<p>The original R Markdown file also loaded <code>flextable</code>, which it used to convert the model tables for its Word output; the tables here stay <code>gtsummary</code> tables, so it is not needed. It loaded <code>reshape2</code>, <code>svglite</code>, <code>knitr</code> and <code>ggthemr</code> (not on CRAN) without using them, and loaded <code>dplyr</code> and <code>ggplot2</code> twice. None of these is loaded here.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Click to show/hide R Code</summary>
@@ -1001,7 +1001,7 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="in">`readxl`</span> reads the weekly surveillance workbook, <span class="in">`epitools`</span> computes the exact confidence intervals for each week, <span class="in">`gtsummary`</span> turns the fitted models into tables of odds ratios and rate ratios, and <span class="in">`cowplot`</span> stacks the two panels of Figure 2. The tidyverse provides the data handling (<span class="in">`dplyr`</span>), reading the Harris County file (<span class="in">`readr`</span>) and the plots (<span class="in">`ggplot2`</span>).</span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>The original R Markdown file also loaded <span class="in">`reshape2`</span>, <span class="in">`svglite`</span>, <span class="in">`flextable`</span>, <span class="in">`knitr`</span> and <span class="in">`ggthemr`</span>, and loaded <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> twice. None of these is needed by the analysis, and <span class="in">`ggthemr`</span> is not on CRAN, so they are not loaded here.</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>The original R Markdown file also loaded <span class="in">`flextable`</span>, which it used to convert the model tables for its Word output; the tables here stay <span class="in">`gtsummary`</span> tables, so it is not needed. It loaded <span class="in">`reshape2`</span>, <span class="in">`svglite`</span>, <span class="in">`knitr`</span> and <span class="in">`ggthemr`</span> (not on CRAN) without using them, and loaded <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> twice. None of these is loaded here.</span>
 <span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: load-packages</span></span>
