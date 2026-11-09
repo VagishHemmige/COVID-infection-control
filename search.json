@@ -183,53 +183,419 @@
     ]
   },
   {
-    "objectID": "quarto/about.html",
-    "href": "quarto/about.html",
-    "title": "About",
+    "objectID": "quarto/prepare_data.html",
+    "href": "quarto/prepare_data.html",
+    "title": "1. Data",
     "section": "",
-    "text": "Al Mohajer M, Panthagani KM, Lasco T, Lembcke B, Hemmige V. Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients. International Journal of Infectious Diseases. 2021;105:252–255 (Al Mohajer et al. 2021).\nVagish Hemmige performed the statistical analysis and maintains this repository. Scientific decisions for this repository are made by Vagish Hemmige.",
+    "text": "This script reads the two data files and adds what the models and figures need: the weekly estimates with their intervals, the variables that describe the interrupted time series, and the dates used in Figure 2.\nOnly a person authorized to use the data runs it. The data are not in this repository, and nothing on this site comes from running it.",
     "crumbs": [
-      "About"
+      "Code",
+      "Data, models and figures",
+      "1. Data"
     ]
   },
   {
-    "objectID": "quarto/about.html#the-study",
-    "href": "quarto/about.html#the-study",
-    "title": "About",
+    "objectID": "quarto/prepare_data.html#finding-the-data",
+    "href": "quarto/prepare_data.html#finding-the-data",
+    "title": "1. Data",
+    "section": "Finding the data",
+    "text": "Finding the data\nIf COVID_IC_DATA_DIR has not been set, the script stops at once with a message saying how to set it, rather than failing later with a missing-file error.\n\n\nClick to show/hide R Code\nif (data_dir == \"\") {\n  stop(\n    \"COVID_IC_DATA_DIR is not set. Add it to .Renviron and restart R.\",\n    call. = FALSE\n  )\n}",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "1. Data"
+    ]
+  },
+  {
+    "objectID": "quarto/prepare_data.html#the-weekly-surveillance-data",
+    "href": "quarto/prepare_data.html#the-weekly-surveillance-data",
+    "title": "1. Data",
+    "section": "The weekly surveillance data",
+    "text": "The weekly surveillance data\nOne row per week, with the number of healthcare personnel tested and the number positive, the number of hospital-acquired infections (possible and confirmed together; see the analysis plan, section 7) and the number of patient-days. The data are aggregate counts: no individual-level data were available or used.\nThe script checks that the seven columns the code expects are present, and stops if any is missing. The message names only the missing columns, never any values.\n\n\nClick to show/hide R Code\n# One row per week. The original code expects these columns: Week, Date1 and\n# Date2 (dates for the week), Tested and Positives (healthcare-personnel\n# tests), HAI (possible and confirmed hospital-acquired infections together)\n# and Ptdays (patient-days).\nweekly_raw &lt;- read_excel(file.path(data_dir, surveillance_file))\n\nexpected_columns &lt;- c(\"Week\", \"Date1\", \"Date2\", \"Tested\", \"Positives\", \"HAI\", \"Ptdays\")\nmissing_columns &lt;- setdiff(expected_columns, names(weekly_raw))\nif (length(missing_columns) &gt; 0) {\n  stop(\n    \"The surveillance workbook has no column named: \",\n    str_flatten_comma(missing_columns),\n    call. = FALSE\n  )\n}",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "1. Data"
+    ]
+  },
+  {
+    "objectID": "quarto/prepare_data.html#weekly-estimates",
+    "href": "quarto/prepare_data.html#weekly-estimates",
+    "title": "1. Data",
+    "section": "Weekly estimates",
+    "text": "Weekly estimates\nThe percentage positive and the HAI rate for each week, with exact 95% intervals, from add_exact_intervals(). These are the points and error bars in the figures.\n\n\nClick to show/hide R Code\n# analysis-plan.md section 8.1\nweekly &lt;- weekly_raw |&gt;\n  mutate(\n    Date1 = as.Date(Date1),\n    Date2 = as.Date(Date2)\n  ) |&gt;\n  add_exact_intervals(conf_level = confidence_level, rate_per = hai_rate_per)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "1. Data"
+    ]
+  },
+  {
+    "objectID": "quarto/prepare_data.html#time-series-variables",
+    "href": "quarto/prepare_data.html#time-series-variables",
+    "title": "1. Data",
+    "section": "Time series variables",
+    "text": "Time series variables\nAn interrupted time series model needs two things beyond the outcome: a time variable, and an indicator of whether each week falls after the intervention.\n\nIntervention is TRUE from week 13, the first week with face shields.\nWeek2 is the week number minus 13, so it is zero at the intervention week.\n\nCentring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with Week2 zero at week 13, the Intervention coefficient becomes the difference between the predicted values with and without the intervention at week 13, which is the comparison the article reports. Without centring, it would be that difference at week 0, which lies outside the study.\n\n\nClick to show/hide R Code\n# analysis-plan.md sections 6 and 8.2. Intervention is TRUE from the\n# intervention week on. Week2 is the week centred at the intervention week,\n# so the intervention term in the models is the contrast at week 13.\nweekly &lt;- weekly |&gt;\n  mutate(\n    Intervention = Week &gt;= intervention_week,\n    Week2 = Week - intervention_week\n  )",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "1. Data"
+    ]
+  },
+  {
+    "objectID": "quarto/prepare_data.html#plot-dates",
+    "href": "quarto/prepare_data.html#plot-dates",
+    "title": "1. Data",
+    "section": "Plot dates",
+    "text": "Plot dates\nFigure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. Date2 is the last day of each week’s range, a Friday; two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its Date2, as in the original code.\n\n\nClick to show/hide R Code\n# The date each week is drawn at in Figure 2, alongside the daily Harris\n# County bars. Date2 is the last day of each week's range (recalled by the\n# author, not documented in the data): a Friday, so two days before it is the\n# Wednesday in the middle of the week. Week 1 began on Friday 17 April 2020,\n# so its Date2 is that day; the original code drew it one day earlier. Both\n# rules are kept as in the original code.\nweekly &lt;- weekly |&gt;\n  mutate(\n    Date = if_else(Date2 == study_start, Date2 - 1, Date2 - 2)\n  )",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "1. Data"
+    ]
+  },
+  {
+    "objectID": "quarto/prepare_data.html#harris-county-cases",
+    "href": "quarto/prepare_data.html#harris-county-cases",
+    "title": "1. Data",
+    "section": "Harris County cases",
+    "text": "Harris County cases\nDaily COVID-19 cases in Harris County, from the Harris County Public Health COVID Data Dashboard “Epi Curve”, give the community background in Figure 2. They are shown for comparison and are not used in the models. The dates are read as text first, so they are converted with the format the file uses (month/day/two-digit year) rather than guessed.\n\n\nClick to show/hide R Code\n# Daily COVID-19 cases in Harris County, from the Harris County Public Health\n# COVID Data Dashboard \"Epi Curve\". The original code expects the columns\n# Date (written month/day/two-digit year) and epicurve_Harris (cases).\nharris &lt;- read_csv(\n  file.path(data_dir, harris_file),\n  col_types = cols(Date = col_character(), .default = col_guess())\n) |&gt;\n  mutate(Date = as.Date(Date, format = \"%m/%d/%y\"))",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "1. Data"
+    ]
+  },
+  {
+    "objectID": "quarto/functions.html",
+    "href": "quarto/functions.html",
+    "title": "Functions",
     "section": "",
-    "text": "Al Mohajer M, Panthagani KM, Lasco T, Lembcke B, Hemmige V. Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients. International Journal of Infectious Diseases. 2021;105:252–255 (Al Mohajer et al. 2021).\nVagish Hemmige performed the statistical analysis and maintains this repository. Scientific decisions for this repository are made by Vagish Hemmige.",
+    "text": "Four helpers used by the analysis scripts. Each takes its inputs as arguments and reads no global objects, so it can be read and checked on its own.",
     "crumbs": [
-      "About"
+      "Code",
+      "Setup and helper functions",
+      "Functions"
     ]
   },
   {
-    "objectID": "quarto/about.html#this-repository",
-    "href": "quarto/about.html#this-repository",
-    "title": "About",
-    "section": "This repository",
-    "text": "This repository\nThis repository rebuilds the published analysis from a single R Markdown file into labelled scripts run in order by R/main.R, as a teaching resource. The weekly surveillance data are institutional data and are not in the repository; the code finds them through the COVID_IC_DATA_DIR setting on the computer of an authorized analyst.\nContributions follow the rules in AGENTS.md; open decisions and known issues are tracked in Issues.",
+    "objectID": "quarto/functions.html#weekly-estimates-with-exact-intervals",
+    "href": "quarto/functions.html#weekly-estimates-with-exact-intervals",
+    "title": "Functions",
+    "section": "Weekly estimates with exact intervals",
+    "text": "Weekly estimates with exact intervals\nadd_exact_intervals()\nFor each week, the percentage of healthcare-personnel tests that were positive, and the HAI rate per 1,000 patient-days, each with a 95% confidence interval (analysis plan, section 8.1).\nBoth intervals are exact: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series, whose weekly counts run from 0 to 7. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. binom.exact() gives the Clopper–Pearson interval and pois.exact() the exact Poisson interval, with patient-days as the exposure.\nThe original code computed the same intervals and attached them with cbind(); here they are added by name with mutate(), so a reordered table cannot attach them to the wrong rows.\nUsed in the analysis: Data: weekly estimates.\n\n\nClick to show/hide R Code\n# Adds the weekly estimates of analysis-plan.md section 8.1: the percentage\n# of healthcare-personnel tests positive, with an exact binomial interval,\n# and the HAI rate, with an exact Poisson interval using patient-days as the\n# exposure. `weekly` has one row per week with the columns Positives, Tested,\n# HAI and Ptdays.\nadd_exact_intervals &lt;- function(weekly, conf_level, rate_per) {\n  positivity &lt;- binom.exact(\n    weekly$Positives,\n    weekly$Tested,\n    conf.level = conf_level\n  )\n  hai &lt;- pois.exact(\n    weekly$HAI,\n    weekly$Ptdays,\n    conf.level = conf_level\n  )\n\n  weekly |&gt;\n    mutate(\n      percent_positive = 100 * positivity$proportion,\n      percent_lower = 100 * positivity$lower,\n      percent_upper = 100 * positivity$upper,\n      hai_rate = rate_per * hai$rate,\n      hai_rate_lower = rate_per * hai$lower,\n      hai_rate_upper = rate_per * hai$upper\n    )\n}",
     "crumbs": [
-      "About"
+      "Code",
+      "Setup and helper functions",
+      "Functions"
     ]
   },
   {
-    "objectID": "quarto/about.html#how-this-website-was-created",
-    "href": "quarto/about.html#how-this-website-was-created",
-    "title": "About",
-    "section": "How this website was created",
-    "text": "How this website was created\nThe site is built with Quarto from the analysis scripts themselves. Each code page imports the labelled sections of its script from R/ and shows them with an explanation; the site never runs the analysis, so it is built without the study data.\nThe repository was set up with the R Analysis Workflow plugin for AI coding assistants, written by Vagish Hemmige, following the layout of Dialysis-facility-density-USRDS; the architecture document is generated with Posit’s describe-design skill. An AI assistant (Claude) drafted code and documentation under the rules in AGENTS.md: it works only with code and documentation, never with the study data, and every change was reviewed and approved by Vagish Hemmige before it was committed.\nFour documents describe the project:\n\nAnalysis plan: what the analysis does, and why. The published methods, following SQUIRE 2.0.\nArchitecture: how the code does it. The scripts, the order they run in, what each needs and produces, and how data flow between them.\nAGENTS.md: how people and AI assistants work on the project.\nRepository blueprint: the layout every project of this kind starts from.",
+    "objectID": "quarto/functions.html#the-fitted-line",
+    "href": "quarto/functions.html#the-fitted-line",
+    "title": "Functions",
+    "section": "The fitted line",
+    "text": "The fitted line\nbuild_fitted_line()\nThe predicted value of a fitted model for every week, for drawing its line on a plot. At the intervention the published model jumps: it predicts one value at week 13 without the intervention and another with it. To draw that jump, the function includes the break twice, once on each side, so the line rises to the pre-intervention prediction and drops straight down to the post-intervention one.\nThe original code did this by adding two placeholder rows to the data at week 12.9999, which then had to be ignored by the models. Building the line separately keeps the data as they are.\nFor the HAI models, the prediction is made with Ptdays set to 1, so the model returns a rate per patient-day, which scale turns into a rate per 1,000.\nUsed in the analysis: Models: fitted lines.\n\n\nClick to show/hide R Code\n# Predicted values from a fitted model for every week, for drawing its line.\n# The week just before the intervention week appears twice, once without and\n# once with the intervention, so the line shows the jump at the intervention.\n# `scale` turns the prediction into the plotted unit: 100 for a percentage\n# from a logistic model, or the rate denominator (1,000) for a Poisson model,\n# whose prediction is per patient-day because Ptdays is set to 1.\nbuild_fitted_line &lt;- function(model, first_week, last_week, intervention_week, scale) {\n  break_week &lt;- intervention_week - 1e-4\n\n  before &lt;- tibble(\n    Week = c(first_week:(intervention_week - 1), break_week),\n    Intervention = FALSE\n  )\n  after &lt;- tibble(\n    Week = c(break_week, intervention_week:last_week),\n    Intervention = TRUE\n  )\n\n  bind_rows(before, after) |&gt;\n    mutate(\n      Week2 = Week - intervention_week,\n      Ptdays = 1,\n      fitted_value = scale * predict(model, newdata = pick(everything()), type = \"response\")\n    )\n}",
     "crumbs": [
-      "About"
+      "Code",
+      "Setup and helper functions",
+      "Functions"
     ]
   },
   {
-    "objectID": "quarto/about.html#references",
-    "href": "quarto/about.html#references",
-    "title": "About",
+    "objectID": "quarto/functions.html#values-at-the-intervention-week",
+    "href": "quarto/functions.html#values-at-the-intervention-week",
+    "title": "Functions",
+    "section": "Values at the intervention week",
+    "text": "Values at the intervention week\npredict_at_intervention_week()\nThe article reports, for each outcome, what the published model predicts at week 13 without face shields and with them, and whether the two differ. Because the models centre week at 13 (Week2 is zero there), the Intervention coefficient is exactly that difference, on the log-odds or log-rate scale, and its P value is the test the article reports. The function returns the two predicted values and that P value.\nThe original code did not compute these values; it printed the model summaries, from which they were read.\nUsed in the analysis: Models: values at week 13.\n\n\nClick to show/hide R Code\n# The paper's headline contrast (analysis-plan.md section 8.2): the predicted\n# value in the intervention week without and with the intervention, and the\n# P value of the intervention term. The models centre week at the\n# intervention week (Week2 = 0), so the intervention term is that contrast.\npredict_at_intervention_week &lt;- function(model, scale) {\n  tibble(\n    Week2 = 0,\n    Intervention = c(FALSE, TRUE),\n    Ptdays = 1\n  ) |&gt;\n    mutate(\n      scenario = if_else(Intervention, \"With face shields\", \"Without face shields\"),\n      predicted = scale * predict(model, newdata = pick(everything()), type = \"response\"),\n      p_value = coef(summary(model))[\"InterventionTRUE\", \"Pr(&gt;|z|)\"]\n    ) |&gt;\n    select(scenario, predicted, p_value)\n}",
+    "crumbs": [
+      "Code",
+      "Setup and helper functions",
+      "Functions"
+    ]
+  },
+  {
+    "objectID": "quarto/functions.html#plotting-a-weekly-series",
+    "href": "quarto/functions.html#plotting-a-weekly-series",
+    "title": "Functions",
+    "section": "Plotting a weekly series",
+    "text": "Plotting a weekly series\nplot_weekly_series()\nEvery week-based plot in the analysis has the same parts: a point for each week, sized by how many tests or patient-days it contributed; its 95% interval; a red line at the intervention; and, for a model plot, the model’s fitted line in blue. The original code wrote out a full ggplot() call for each of its ten plots; here one function draws them all, and the plots differ only in what they are given.\nColumns are passed unquoted (for example y = percent_positive); the function uses { } to pass them on to ggplot2.\nUsed in the analysis: Figures.\n\n\nClick to show/hide R Code\n# One weekly series as in Figure 1: points sized by tests or patient-days,\n# 95% intervals, a red line between the last week before and the first week\n# with the intervention, and, when `fitted` is given, a model's fitted line in\n# blue. Columns are passed unquoted, for example y = percent_positive.\nplot_weekly_series &lt;- function(weekly,\n                               y,\n                               lower,\n                               upper,\n                               size,\n                               y_label,\n                               size_label,\n                               line_week,\n                               week_breaks,\n                               week_labels,\n                               size_range,\n                               fitted = NULL,\n                               x_label = \"Week\") {\n  weekly_plot &lt;- ggplot(weekly) +\n    geom_point(aes(x = Week, y = {{ y }}, size = {{ size }})) +\n    geom_errorbar(\n      aes(x = Week, ymin = {{ lower }}, ymax = {{ upper }}),\n      width = 0.2\n    ) +\n    geom_vline(xintercept = line_week, color = \"red\") +\n    scale_x_continuous(\n      breaks = week_breaks,\n      labels = week_labels,\n      minor_breaks = NULL\n    ) +\n    scale_size(range = size_range) +\n    labs(x = x_label, y = y_label, size = size_label) +\n    theme_light() +\n    theme(\n      axis.text.x = element_text(angle = 45, hjust = 1, size = 6),\n      axis.title.y = element_text(size = 10),\n      legend.justification = c(0, 0.5)\n    )\n\n  # geom_path() draws the fitted values in the order given, so the two points\n  # at the break week join as a vertical step\n  if (!is.null(fitted)) {\n    weekly_plot &lt;- weekly_plot +\n      geom_path(data = fitted, aes(x = Week, y = fitted_value), color = \"blue\")\n  }\n\n  weekly_plot\n}",
+    "crumbs": [
+      "Code",
+      "Setup and helper functions",
+      "Functions"
+    ]
+  },
+  {
+    "objectID": "quarto/models.html",
+    "href": "quarto/models.html",
+    "title": "2. Models",
+    "section": "",
+    "text": "This script fits the interrupted time series models, for both outcomes, and builds what the tables and figures need from them.\nThe original analysis fitted four models for each outcome, each adding to the one before. Only the fourth, the segmented regression model, was reported in the article; the other three were exploratory, and show why the fourth was needed. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "2. Models"
+    ]
+  },
+  {
+    "objectID": "quarto/models.html#the-four-models",
+    "href": "quarto/models.html#the-four-models",
+    "title": "2. Models",
+    "section": "The four models",
+    "text": "The four models\nEach model is written once, as the right-hand side of its formula, and used for both outcomes:\n\n\n\n\n\n\n\n\nModel\nTerms\nWhat it assumes\n\n\n\n\nits1_week (exploratory)\nWeek\nOne steady trend over the whole period; the intervention changes nothing\n\n\nits2_intervention (exploratory)\nIntervention\nA different level before and after, with no trend over time\n\n\nits3_level_change (exploratory)\nIntervention + Week\nOne trend, with a jump in level at the intervention\n\n\nits4_segmented (published)\nIntervention * Week2\nA jump in level at the intervention and a change in the trend\n\n\n\nThe fourth model is segmented regression, the standard model for an interrupted time series. Intervention * Week2 expands to three terms: the trend before the intervention (Week2), the jump at week 13 (Intervention), and the change in trend after it (Intervention:Week2). The earlier models are simplifications of it, each leaving out one or more of these terms.\n\n\nClick to show/hide R Code\n# The right-hand side of each model (analysis-plan.md sections 8.2 and 8.3).\n# its4_segmented is the model reported in the article; the other three are\n# exploratory and were not reported. Week2 is the week centred at the\n# intervention week, so in its4_segmented the Intervention term is the\n# contrast at week 13 and the interaction term is the change in slope.\nmodel_terms &lt;- c(\n  its1_week = \"Week\",\n  its2_intervention = \"Intervention\",\n  its3_level_change = \"Intervention + Week\",\n  its4_segmented = \"Intervention * Week2\"\n)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "2. Models"
+    ]
+  },
+  {
+    "objectID": "quarto/models.html#test-positivity",
+    "href": "quarto/models.html#test-positivity",
+    "title": "2. Models",
+    "section": "Test positivity",
+    "text": "Test positivity\nLogistic regression of the positive tests out of all tests in each week. cbind(Positives, Tested - Positives) gives the model the numbers of positive and negative tests, so each week counts in proportion to how many tests it had: a week with many tests carries more weight than a week with few.\n\n\nClick to show/hide R Code\n# Logistic regression of positive healthcare-personnel tests out of tests\n# performed\npositivity_models &lt;- map(model_terms, \\(terms) {\n  glm(\n    as.formula(str_c(\"cbind(Positives, Tested - Positives) ~ \", terms)),\n    family = binomial,\n    data = weekly\n  )\n})",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "2. Models"
+    ]
+  },
+  {
+    "objectID": "quarto/models.html#hospital-acquired-infections",
+    "href": "quarto/models.html#hospital-acquired-infections",
+    "title": "2. Models",
+    "section": "Hospital-acquired infections",
+    "text": "Hospital-acquired infections\nPoisson regression of the number of HAIs each week. The number of inpatients varies from week to week, so the count is modelled relative to patient-days through an offset: log(Ptdays) enters the model with its coefficient fixed at 1, which makes the model one for the rate of HAIs per patient-day.\n\n\nClick to show/hide R Code\n# Poisson regression of weekly HAI counts, with log patient-days as an offset\nhai_models &lt;- map(model_terms, \\(terms) {\n  glm(\n    as.formula(str_c(\"HAI ~ \", terms)),\n    offset = log(Ptdays),\n    family = poisson(link = \"log\"),\n    data = weekly\n  )\n})",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "2. Models"
+    ]
+  },
+  {
+    "objectID": "quarto/models.html#model-tables",
+    "href": "quarto/models.html#model-tables",
+    "title": "2. Models",
+    "section": "Model tables",
+    "text": "Model tables\ntbl_regression(exponentiate = TRUE) turns each model’s coefficients into odds ratios (positivity) or incidence rate ratios (HAI), with 95% confidence intervals and P values.\nFor the published model, the ratios read as follows:\n\nWeek2: the change from one week to the next before the intervention.\nIntervention: the jump at week 13, from the value the pre-intervention trend predicts to the value with the intervention.\nIntervention:Week2: how much the week-to-week change after the intervention differs from the change before it. A ratio below 1 means the trend bent downwards.\n\nThe confidence intervals in these tables are profile-likelihood intervals, which is what confint() gives for these models. The P values are Wald tests.\n\n\nClick to show/hide R Code\n# Odds ratios (positivity) and incidence rate ratios (HAI), as in the\n# original code. In its4_segmented, the Week2 ratio compares each week with\n# the one before it before the intervention, and the interaction ratio\n# compares that week-to-week change after the intervention with the change\n# before it.\npositivity_tables &lt;- map(positivity_models, tbl_regression, exponentiate = TRUE)\nhai_tables &lt;- map(hai_models, tbl_regression, exponentiate = TRUE)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "2. Models"
+    ]
+  },
+  {
+    "objectID": "quarto/models.html#fitted-lines",
+    "href": "quarto/models.html#fitted-lines",
+    "title": "2. Models",
+    "section": "Fitted lines",
+    "text": "Fitted lines\nFor each model, its predicted value for every week, for drawing on the figures, from build_fitted_line(). Positivity is shown as a percentage, so its predictions are multiplied by 100; HAI rates are per 1,000 patient-days.\n\n\nClick to show/hide R Code\nfirst_week &lt;- min(weekly$Week)\nlast_week &lt;- max(weekly$Week)\n\npositivity_fitted &lt;- map(\n  positivity_models,\n  build_fitted_line,\n  first_week = first_week,\n  last_week = last_week,\n  intervention_week = intervention_week,\n  scale = 100\n)\nhai_fitted &lt;- map(\n  hai_models,\n  build_fitted_line,\n  first_week = first_week,\n  last_week = last_week,\n  intervention_week = intervention_week,\n  scale = hai_rate_per\n)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "2. Models"
+    ]
+  },
+  {
+    "objectID": "quarto/models.html#values-at-week-13",
+    "href": "quarto/models.html#values-at-week-13",
+    "title": "2. Models",
+    "section": "Values at week 13",
+    "text": "Values at week 13\nThe comparison the article reports: what the published model predicts at week 13 without face shields and with them, and the P value of the difference, from predict_at_intervention_week(). The article also reports the P value of the change in slope, which is the Intervention:Week2 row of the model table.\n\n\nClick to show/hide R Code\n# The values the article reports from the published model: the predicted\n# percentage positive and HAI rate at week 13 without and with face shields,\n# and the P value of the intervention term\npositivity_at_break &lt;- predict_at_intervention_week(\n  positivity_models$its4_segmented,\n  scale = 100\n)\nhai_at_break &lt;- predict_at_intervention_week(\n  hai_models$its4_segmented,\n  scale = hai_rate_per\n)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "2. Models"
+    ]
+  },
+  {
+    "objectID": "quarto/figures.html",
+    "href": "quarto/figures.html",
+    "title": "3. Figures",
+    "section": "",
+    "text": "This script draws the plots: the observed weekly series, the exploratory models, and the article’s two figures. It saves the figures to figures/, which is not in the repository, because they are made from the study data. The published figures are on the published results page.",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "3. Figures"
+    ]
+  },
+  {
+    "objectID": "quarto/figures.html#the-observed-series",
+    "href": "quarto/figures.html#the-observed-series",
+    "title": "3. Figures",
+    "section": "The observed series",
+    "text": "The observed series\nThe first look at the data, before any model: each week’s percentage positive and HAI rate, with their 95% intervals, and a red line at the intervention. Every week-based plot is drawn by plot_weekly_series().\n\n\nClick to show/hide R Code\n# The observed series with 95% intervals, before any model (analysis-plan.md\n# section 8.1)\nweekly_plots &lt;- list(\n  positivity = plot_weekly_series(\n    weekly,\n    y = percent_positive,\n    lower = percent_lower,\n    upper = percent_upper,\n    size = Tested,\n    y_label = \"Proportion of tests positive with 95% CIs\",\n    size_label = \"Tested\",\n    line_week = intervention_line_week,\n    week_breaks = labelled_weeks,\n    week_labels = week_labels,\n    size_range = point_size_range\n  ),\n  hai = plot_weekly_series(\n    weekly,\n    y = hai_rate,\n    lower = hai_rate_lower,\n    upper = hai_rate_upper,\n    size = Ptdays,\n    y_label = \"HAI rate per 1000 patient-days with 95% CIs\",\n    size_label = \"Ptdays\",\n    line_week = intervention_line_week,\n    week_breaks = labelled_weeks,\n    week_labels = week_labels,\n    size_range = point_size_range\n  )\n)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "3. Figures"
+    ]
+  },
+  {
+    "objectID": "quarto/figures.html#the-exploratory-models",
+    "href": "quarto/figures.html#the-exploratory-models",
+    "title": "3. Figures",
+    "section": "The exploratory models",
+    "text": "The exploratory models\nEach exploratory model’s fitted line over the observed series. Laid side by side with Figure 1, they show what each simpler model misses: a single trend cannot follow the rise and fall, a level change alone ignores the trend, and a level change with one shared trend cannot bend after the intervention. These plots were not in the article.\n\n\nClick to show/hide R Code\n# The three exploratory models' fitted lines over the observed series\n# (analysis-plan.md section 8.3). Not reported in the article.\nexploratory_models &lt;- c(\"its1_week\", \"its2_intervention\", \"its3_level_change\")\n\nexploratory_plots &lt;- list(\n  positivity = map(exploratory_models, \\(model) {\n    plot_weekly_series(\n      weekly,\n      y = percent_positive,\n      lower = percent_lower,\n      upper = percent_upper,\n      size = Tested,\n      y_label = \"Proportion of tests positive with 95% CIs\",\n      size_label = \"Tested\",\n      line_week = intervention_line_week,\n      week_breaks = labelled_weeks,\n      week_labels = week_labels,\n      size_range = point_size_range,\n      fitted = positivity_fitted[[model]]\n    )\n  }) |&gt;\n    set_names(exploratory_models),\n  hai = map(exploratory_models, \\(model) {\n    plot_weekly_series(\n      weekly,\n      y = hai_rate,\n      lower = hai_rate_lower,\n      upper = hai_rate_upper,\n      size = Ptdays,\n      y_label = \"HAI rate per 1000 patient-days with 95% CIs\",\n      size_label = \"Ptdays\",\n      line_week = intervention_line_week,\n      week_breaks = labelled_weeks,\n      week_labels = week_labels,\n      size_range = point_size_range,\n      fitted = hai_fitted[[model]]\n    )\n  }) |&gt;\n    set_names(exploratory_models)\n)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "3. Figures"
+    ]
+  },
+  {
+    "objectID": "quarto/figures.html#figure-1",
+    "href": "quarto/figures.html#figure-1",
+    "title": "3. Figures",
+    "section": "Figure 1",
+    "text": "Figure 1\nThe published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, rising until week 12, stepping down at the intervention, and then falling.\nThe size legend of panel A reads “# HCP tests”, the number of healthcare-personnel tests each week. The original code labelled it “# patients tested”; it is corrected here and in Figure 2.\n\n\nClick to show/hide R Code\n# Figure 1 (analysis-plan.md section 8.4): the published segmented model.\n# The size legend of panel A reads \"# HCP tests\": the points are sized by\n# healthcare-personnel tests. The original code labelled it \"# patients\n# tested\".\nfigure_1a &lt;- plot_weekly_series(\n  weekly,\n  y = percent_positive,\n  lower = percent_lower,\n  upper = percent_upper,\n  size = Tested,\n  y_label = \"Percentage of HCP \\ntests positive\",\n  size_label = \"# HCP tests\",\n  line_week = intervention_line_week,\n  week_breaks = labelled_weeks,\n  week_labels = week_labels,\n  size_range = point_size_range,\n  fitted = positivity_fitted$its4_segmented,\n  x_label = NULL\n)\n\nfigure_1b &lt;- plot_weekly_series(\n  weekly,\n  y = hai_rate,\n  lower = hai_rate_lower,\n  upper = hai_rate_upper,\n  size = Ptdays,\n  y_label = \"HAI rate per\\n1000 patient-days\",\n  size_label = \"Patient-days\",\n  line_week = intervention_line_week,\n  week_breaks = labelled_weeks,\n  week_labels = week_labels,\n  size_range = point_size_range,\n  fitted = hai_fitted$its4_segmented\n)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "3. Figures"
+    ]
+  },
+  {
+    "objectID": "quarto/figures.html#figure-2-lines-by-date",
+    "href": "quarto/figures.html#figure-2-lines-by-date",
+    "title": "3. Figures",
+    "section": "Figure 2: lines by date",
+    "text": "Figure 2: lines by date\nFigure 2 plots the same series by date rather than by week, so the hospital data can be set against daily Harris County cases. As in the original code, its fitted line joins the published model’s predictions at the observed weeks, so it does not show Figure 1’s step at the intervention.\n\n\nClick to show/hide R Code\n# Figure 2 is drawn by date. As in the original code, its fitted line joins\n# the published model's predictions at the observed weeks, without the step\n# at the intervention that Figure 1 shows. Ptdays is set to 1 so the HAI\n# prediction is a rate per patient-day.\nweekly_by_date &lt;- weekly |&gt;\n  mutate(\n    positivity_fitted = 100 * predict(\n      positivity_models$its4_segmented,\n      newdata = weekly,\n      type = \"response\"\n    ),\n    hai_fitted = hai_rate_per * predict(\n      hai_models$its4_segmented,\n      newdata = mutate(weekly, Ptdays = 1),\n      type = \"response\"\n    )\n  )\n\n# The day before face shields began\nintervention_line_date &lt;- intervention_start - 1",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "3. Figures"
+    ]
+  },
+  {
+    "objectID": "quarto/figures.html#figure-2",
+    "href": "quarto/figures.html#figure-2",
+    "title": "3. Figures",
+    "section": "Figure 2",
+    "text": "Figure 2\nEach panel shows a hospital series with daily Harris County cases as grey bars behind it, on a second axis to the right. The comparison is the point of the figure: infections in the hospital fell more quickly than cases in the community, which the article notes when discussing whether the fall only reflected the community wave.\n\n\nClick to show/hide R Code\n# Figure 2 (analysis-plan.md section 8.4): Figure 1's series by date, with\n# daily Harris County cases as grey bars on a second y-axis. The bars are\n# divided by a scale factor to share the left axis, and the second axis\n# multiplies them back.\nfigure_2a &lt;- ggplot(harris) +\n  geom_point(\n    data = weekly_by_date,\n    aes(x = Date, y = percent_positive, size = Tested)\n  ) +\n  theme_light() +\n  geom_vline(xintercept = intervention_line_date, color = \"red\") +\n  geom_errorbar(\n    data = weekly_by_date,\n    aes(x = Date, ymin = percent_lower, ymax = percent_upper),\n    width = 0.2,\n    color = \"#5A5656\"\n  ) +\n  geom_line(\n    data = weekly_by_date,\n    aes(x = Date, y = positivity_fitted),\n    color = \"blue\"\n  ) +\n  labs(size = \"# HCP tests\") +\n  theme(\n    legend.justification = c(0, 0.5),\n    axis.title.y = element_text(size = 10),\n    axis.title.x = element_blank()\n  ) +\n  scale_size(range = point_size_range) +\n  geom_col(aes(x = Date, y = epicurve_Harris / harris_scale_positivity), alpha = 0.2) +\n  scale_y_continuous(\n    name = \"Percentage of HCP \\ntests positive\",\n    sec.axis = sec_axis(\n      \\(x) x * harris_scale_positivity,\n      name = \"Daily COVID-19 cases\\nin Harris County\"\n    )\n  )\n\nfigure_2b &lt;- ggplot(harris) +\n  geom_point(\n    data = weekly_by_date,\n    aes(x = Date, y = hai_rate, size = Ptdays)\n  ) +\n  theme_light() +\n  geom_vline(xintercept = intervention_line_date, color = \"red\") +\n  geom_errorbar(\n    data = weekly_by_date,\n    aes(x = Date, ymin = hai_rate_lower, ymax = hai_rate_upper),\n    width = 0.2\n  ) +\n  geom_line(\n    data = weekly_by_date,\n    aes(x = Date, y = hai_fitted),\n    color = \"blue\"\n  ) +\n  geom_col(aes(x = Date, y = epicurve_Harris / harris_scale_hai), alpha = 0.2) +\n  scale_y_continuous(\n    name = \"HAI rate per\\n1000 patient-days\",\n    sec.axis = sec_axis(\n      \\(x) x * harris_scale_hai,\n      name = \"Daily COVID-19 cases\\nin Harris County\"\n    )\n  ) +\n  scale_size(range = point_size_range) +\n  labs(size = \"Patient-days\") +\n  theme(\n    axis.title.x = element_blank(),\n    axis.title.y = element_text(size = 10),\n    axis.text.x = element_text(angle = 45, hjust = 1, size = 6)\n  )\n\nfigure_2 &lt;- plot_grid(figure_2a, figure_2b, ncol = 1, align = \"v\")",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "3. Figures"
+    ]
+  },
+  {
+    "objectID": "quarto/figures.html#saving-the-figures",
+    "href": "quarto/figures.html#saving-the-figures",
+    "title": "3. Figures",
+    "section": "Saving the figures",
+    "text": "Saving the figures\nThe figures are saved as TIFF files in figures/. As in the original code, no size is set, so ggsave() uses the size of the current graphics device.\n\n\nClick to show/hide R Code\n# As in the original code, Figure 1's panels are saved as TIFF files without\n# a set size, so ggsave() uses the size of the current graphics device.\n# Figure 2 was not saved by the original code; it is saved here the same way.\ndir.create(\"figures\", showWarnings = FALSE)\nggsave(file.path(\"figures\", \"figure_1a.tiff\"), figure_1a)\nggsave(file.path(\"figures\", \"figure_1b.tiff\"), figure_1b)\nggsave(file.path(\"figures\", \"figure_2.tiff\"), figure_2)",
+    "crumbs": [
+      "Code",
+      "Data, models and figures",
+      "3. Figures"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "",
+    "text": "In July 2020, as SARS-CoV-2 infections rose among staff and inpatients during Houston’s summer surge, a quaternary care center required every healthcare worker to wear a face shield on entering the facility, in addition to universal masking. Al Mohajer and colleagues evaluated the policy as an interrupted time series of weekly data, from 17 April to 5 July 2020 before face shields and 6 July to 7 September 2020 with them (Al Mohajer et al. 2021). Two outcomes were studied:\n\nthe percentage of healthcare-personnel SARS-CoV-2 tests that were positive;\nhospital-acquired infections among inpatients, per 1,000 patient-days.\n\nBoth fell after face shields were introduced. Each outcome was modelled with segmented regression, logistic for test positivity and Poisson for hospital-acquired infections, allowing a change in level and in slope at the intervention.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#the-study",
+    "href": "index.html#the-study",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "",
+    "text": "In July 2020, as SARS-CoV-2 infections rose among staff and inpatients during Houston’s summer surge, a quaternary care center required every healthcare worker to wear a face shield on entering the facility, in addition to universal masking. Al Mohajer and colleagues evaluated the policy as an interrupted time series of weekly data, from 17 April to 5 July 2020 before face shields and 6 July to 7 September 2020 with them (Al Mohajer et al. 2021). Two outcomes were studied:\n\nthe percentage of healthcare-personnel SARS-CoV-2 tests that were positive;\nhospital-acquired infections among inpatients, per 1,000 patient-days.\n\nBoth fell after face shields were introduced. Each outcome was modelled with segmented regression, logistic for test positivity and Poisson for hospital-acquired infections, allowing a change in level and in slope at the intervention.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#what-this-site-does",
+    "href": "index.html#what-this-site-does",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "What this site does",
+    "text": "What this site does\nThis site is a teaching resource. It uses the published study to show how an interrupted time series analysis is built in R, step by step. The original analysis was one R Markdown file of 2021; here it is rebuilt as labelled scripts, and each page explains what a section of the code does and why.\nThe code is shown, not run. The weekly surveillance data are institutional data and are not in this repository, so no result on this site comes from running the code. The study’s results are those published in the article.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#methods",
+    "href": "index.html#methods",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "Methods",
+    "text": "Methods\nThe authoritative specification is analysis-plan.md, which records the published methods. Reporting follows SQUIRE 2.0 (Ogrinc et al. 2016).",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#status",
+    "href": "index.html#status",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "section": "Status",
+    "text": "Status\nThe scripts are written and have been checked by reading; they have not yet been run on the study data. The pages explaining the study design and each script, the differences from the original code, and the published results will be added in turn.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#references",
+    "href": "index.html#references",
+    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
     "section": "References",
-    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.\n\n\nOgrinc, Greg, Louise Davies, Daisy Goodman, Paul Batalden, Frank Davidoff, and David Stevens. 2016. “SQUIRE 2.0 (Standards for QUality Improvement Reporting Excellence): Revised Publication Guidelines from a Detailed Consensus Process.” BMJ Quality & Safety 25 (12): 986–92. https://doi.org/10.1136/bmjqs-2015-004411.",
     "crumbs": [
-      "About"
+      "Home"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html",
+    "href": "quarto/repository-blueprint.html",
+    "title": "",
+    "section": "",
+    "text": "Project documentsRepository blueprint Code",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html#analytical-scripts",
+    "href": "quarto/repository-blueprint.html#analytical-scripts",
+    "title": "",
+    "section": "Analytical scripts",
+    "text": "Analytical scripts\n\nR/main.R sources definitive scripts in dependency order.\nTypical workflow: setup → cohort construction → processing → modeling → outputs.\nStudy-specific scripts may be grouped into subdirectories by analytical stage.\nR/tables.R and R/figures.R may generate outputs directly or orchestrate specialized scripts.",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html#documentation",
+    "href": "quarto/repository-blueprint.html#documentation",
+    "title": "",
+    "section": "Documentation",
+    "text": "Documentation\n\nDocument definitive analytical scripts with explanatory Quarto pages; exploratory scripts need not have pages.\nUse Cryptococcus-cost-analysis as an example for Quarto supporting files, chunk imports, callouts, and formatting—not scientific methods.\nQuarto source and rendered output locations may vary by project.",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
+    ]
+  },
+  {
+    "objectID": "quarto/repository-blueprint.html#outputs-and-version-control",
+    "href": "quarto/repository-blueprint.html#outputs-and-version-control",
+    "title": "",
+    "section": "Outputs and version control",
+    "text": "Outputs and version control\n\nTrack approved, nonrestricted outputs when useful for publication; otherwise retain them locally and exclude them from Git.\n.gitignore: Exclude restricted data, credentials, caches, temporary files, and generated outputs unless intentionally tracked (e.g., .Rproj.user/, .Rhistory, .RData, .httr-oauth, .quarto/, cache/, figures/, tables/, *.quarto_ipynb); verify exclusions cover actual output paths without hiding necessary source or reference files.",
+    "crumbs": [
+      "Project documents",
+      "Repository blueprint"
     ]
   },
   {
@@ -354,419 +720,119 @@
     ]
   },
   {
-    "objectID": "quarto/repository-blueprint.html",
-    "href": "quarto/repository-blueprint.html",
-    "title": "",
+    "objectID": "quarto/about.html",
+    "href": "quarto/about.html",
+    "title": "About",
     "section": "",
-    "text": "Project documentsRepository blueprint Code",
+    "text": "Al Mohajer M, Panthagani KM, Lasco T, Lembcke B, Hemmige V. Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients. International Journal of Infectious Diseases. 2021;105:252–255 (Al Mohajer et al. 2021).\nVagish Hemmige performed the statistical analysis and maintains this repository. Scientific decisions for this repository are made by Vagish Hemmige.",
     "crumbs": [
-      "Project documents",
-      "Repository blueprint"
+      "About"
     ]
   },
   {
-    "objectID": "quarto/repository-blueprint.html#analytical-scripts",
-    "href": "quarto/repository-blueprint.html#analytical-scripts",
-    "title": "",
-    "section": "Analytical scripts",
-    "text": "Analytical scripts\n\nR/main.R sources definitive scripts in dependency order.\nTypical workflow: setup → cohort construction → processing → modeling → outputs.\nStudy-specific scripts may be grouped into subdirectories by analytical stage.\nR/tables.R and R/figures.R may generate outputs directly or orchestrate specialized scripts.",
-    "crumbs": [
-      "Project documents",
-      "Repository blueprint"
-    ]
-  },
-  {
-    "objectID": "quarto/repository-blueprint.html#documentation",
-    "href": "quarto/repository-blueprint.html#documentation",
-    "title": "",
-    "section": "Documentation",
-    "text": "Documentation\n\nDocument definitive analytical scripts with explanatory Quarto pages; exploratory scripts need not have pages.\nUse Cryptococcus-cost-analysis as an example for Quarto supporting files, chunk imports, callouts, and formatting—not scientific methods.\nQuarto source and rendered output locations may vary by project.",
-    "crumbs": [
-      "Project documents",
-      "Repository blueprint"
-    ]
-  },
-  {
-    "objectID": "quarto/repository-blueprint.html#outputs-and-version-control",
-    "href": "quarto/repository-blueprint.html#outputs-and-version-control",
-    "title": "",
-    "section": "Outputs and version control",
-    "text": "Outputs and version control\n\nTrack approved, nonrestricted outputs when useful for publication; otherwise retain them locally and exclude them from Git.\n.gitignore: Exclude restricted data, credentials, caches, temporary files, and generated outputs unless intentionally tracked (e.g., .Rproj.user/, .Rhistory, .RData, .httr-oauth, .quarto/, cache/, figures/, tables/, *.quarto_ipynb); verify exclusions cover actual output paths without hiding necessary source or reference files.",
-    "crumbs": [
-      "Project documents",
-      "Repository blueprint"
-    ]
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "objectID": "quarto/about.html#the-study",
+    "href": "quarto/about.html#the-study",
+    "title": "About",
     "section": "",
-    "text": "In July 2020, as SARS-CoV-2 infections rose among staff and inpatients during Houston’s summer surge, a quaternary care center required every healthcare worker to wear a face shield on entering the facility, in addition to universal masking. Al Mohajer and colleagues evaluated the policy as an interrupted time series of weekly data, from 17 April to 5 July 2020 before face shields and 6 July to 7 September 2020 with them (Al Mohajer et al. 2021). Two outcomes were studied:\n\nthe percentage of healthcare-personnel SARS-CoV-2 tests that were positive;\nhospital-acquired infections among inpatients, per 1,000 patient-days.\n\nBoth fell after face shields were introduced. Each outcome was modelled with segmented regression, logistic for test positivity and Poisson for hospital-acquired infections, allowing a change in level and in slope at the intervention.",
+    "text": "Al Mohajer M, Panthagani KM, Lasco T, Lembcke B, Hemmige V. Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients. International Journal of Infectious Diseases. 2021;105:252–255 (Al Mohajer et al. 2021).\nVagish Hemmige performed the statistical analysis and maintains this repository. Scientific decisions for this repository are made by Vagish Hemmige.",
     "crumbs": [
-      "Home"
+      "About"
     ]
   },
   {
-    "objectID": "index.html#the-study",
-    "href": "index.html#the-study",
-    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
-    "section": "",
-    "text": "In July 2020, as SARS-CoV-2 infections rose among staff and inpatients during Houston’s summer surge, a quaternary care center required every healthcare worker to wear a face shield on entering the facility, in addition to universal masking. Al Mohajer and colleagues evaluated the policy as an interrupted time series of weekly data, from 17 April to 5 July 2020 before face shields and 6 July to 7 September 2020 with them (Al Mohajer et al. 2021). Two outcomes were studied:\n\nthe percentage of healthcare-personnel SARS-CoV-2 tests that were positive;\nhospital-acquired infections among inpatients, per 1,000 patient-days.\n\nBoth fell after face shields were introduced. Each outcome was modelled with segmented regression, logistic for test positivity and Poisson for hospital-acquired infections, allowing a change in level and in slope at the intervention.",
+    "objectID": "quarto/about.html#this-repository",
+    "href": "quarto/about.html#this-repository",
+    "title": "About",
+    "section": "This repository",
+    "text": "This repository\nThis repository rebuilds the published analysis from a single R Markdown file into labelled scripts run in order by R/main.R, as a teaching resource. The weekly surveillance data are institutional data and are not in the repository; the code finds them through the COVID_IC_DATA_DIR setting on the computer of an authorized analyst.\nContributions follow the rules in AGENTS.md; open decisions and known issues are tracked in Issues.",
     "crumbs": [
-      "Home"
+      "About"
     ]
   },
   {
-    "objectID": "index.html#what-this-site-does",
-    "href": "index.html#what-this-site-does",
-    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
-    "section": "What this site does",
-    "text": "What this site does\nThis site is a teaching resource. It uses the published study to show how an interrupted time series analysis is built in R, step by step. The original analysis was one R Markdown file of 2021; here it is rebuilt as labelled scripts, and each page explains what a section of the code does and why.\nThe code is shown, not run. The weekly surveillance data are institutional data and are not in this repository, so no result on this site comes from running the code. The study’s results are those published in the article.",
+    "objectID": "quarto/about.html#how-this-website-was-created",
+    "href": "quarto/about.html#how-this-website-was-created",
+    "title": "About",
+    "section": "How this website was created",
+    "text": "How this website was created\nThe site is built with Quarto from the analysis scripts themselves. Each code page imports the labelled sections of its script from R/ and shows them with an explanation; the site never runs the analysis, so it is built without the study data.\nThe repository was set up with the R Analysis Workflow plugin for AI coding assistants, written by Vagish Hemmige, following the layout of Dialysis-facility-density-USRDS; the architecture document is generated with Posit’s describe-design skill. An AI assistant (Claude) drafted code and documentation under the rules in AGENTS.md: it works only with code and documentation, never with the study data, and every change was reviewed and approved by Vagish Hemmige before it was committed.\nFour documents describe the project:\n\nAnalysis plan: what the analysis does, and why. The published methods, following SQUIRE 2.0.\nArchitecture: how the code does it. The scripts, the order they run in, what each needs and produces, and how data flow between them.\nAGENTS.md: how people and AI assistants work on the project.\nRepository blueprint: the layout every project of this kind starts from.",
     "crumbs": [
-      "Home"
+      "About"
     ]
   },
   {
-    "objectID": "index.html#methods",
-    "href": "index.html#methods",
-    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
-    "section": "Methods",
-    "text": "Methods\nThe authoritative specification is analysis-plan.md, which records the published methods. Reporting follows SQUIRE 2.0 (Ogrinc et al. 2016).",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#status",
-    "href": "index.html#status",
-    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
-    "section": "Status",
-    "text": "Status\nThe scripts are written and have been checked by reading; they have not yet been run on the study data. The pages explaining the study design and each script, the differences from the original code, and the published results will be added in turn.",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#references",
-    "href": "index.html#references",
-    "title": "Universal face shields and SARS-CoV-2 infections: an interrupted time series",
+    "objectID": "quarto/about.html#references",
+    "href": "quarto/about.html#references",
+    "title": "About",
     "section": "References",
-    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.\n\n\nOgrinc, Greg, Louise Davies, Daisy Goodman, Paul Batalden, Frank Davidoff, and David Stevens. 2016. “SQUIRE 2.0 (Standards for QUality Improvement Reporting Excellence): Revised Publication Guidelines from a Detailed Consensus Process.” BMJ Quality & Safety 25 (12): 986–92. https://doi.org/10.1136/bmjqs-2015-004411.",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.",
     "crumbs": [
-      "Home"
+      "About"
     ]
   },
   {
-    "objectID": "quarto/figures.html",
-    "href": "quarto/figures.html",
-    "title": "3. Figures",
+    "objectID": "quarto/differences.html",
+    "href": "quarto/differences.html",
+    "title": "Differences from the original code",
     "section": "",
-    "text": "This script draws the plots: the observed weekly series, the exploratory models, and the article’s two figures. It saves the figures to figures/, which is not in the repository, because they are made from the study data. The published figures are on the published results page.",
+    "text": "This page lists every way the scripts on this site differ from the original analysis: a single R Markdown file of March 2021 (Mayar_R_markdown_2021-3-1.Rmd), which produced the figures and model results of the published article (Al Mohajer et al. 2021). The original file is kept outside this repository.\nEach entry is one of five kinds:\nNo entry changes the models, the weekly estimates or the published results; the one correction changes a legend label.",
     "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "3. Figures"
+      "Study design and methods",
+      "Differences from the original code"
     ]
   },
   {
-    "objectID": "quarto/figures.html#the-observed-series",
-    "href": "quarto/figures.html#the-observed-series",
-    "title": "3. Figures",
-    "section": "The observed series",
-    "text": "The observed series\nThe first look at the data, before any model: each week’s percentage positive and HAI rate, with their 95% intervals, and a red line at the intervention. Every week-based plot is drawn by plot_weekly_series().\n\n\nClick to show/hide R Code\n# The observed series with 95% intervals, before any model (analysis-plan.md\n# section 8.1)\nweekly_plots &lt;- list(\n  positivity = plot_weekly_series(\n    weekly,\n    y = percent_positive,\n    lower = percent_lower,\n    upper = percent_upper,\n    size = Tested,\n    y_label = \"Proportion of tests positive with 95% CIs\",\n    size_label = \"Tested\",\n    line_week = intervention_line_week,\n    week_breaks = labelled_weeks,\n    week_labels = week_labels,\n    size_range = point_size_range\n  ),\n  hai = plot_weekly_series(\n    weekly,\n    y = hai_rate,\n    lower = hai_rate_lower,\n    upper = hai_rate_upper,\n    size = Ptdays,\n    y_label = \"HAI rate per 1000 patient-days with 95% CIs\",\n    size_label = \"Ptdays\",\n    line_week = intervention_line_week,\n    week_breaks = labelled_weeks,\n    week_labels = week_labels,\n    size_range = point_size_range\n  )\n)",
+    "objectID": "quarto/differences.html#setup",
+    "href": "quarto/differences.html#setup",
+    "title": "Differences from the original code",
+    "section": "Setup",
+    "text": "Setup\n\n\n\nOriginal code\nKind\nThis analysis\nEffect\n\n\n\n\nLoaded reshape2, svglite, flextable, knitr and ggthemr (not on CRAN), none of them used by the analysis, and loaded dplyr and ggplot2 twice.\nRemoved\nOnly the packages the analysis uses are attached, once each (Setup).\nNone\n\n\nRead the data from the working directory, with a reminder to set it (#setwd here).\nSame result\nThe data folder is named by COVID_IC_DATA_DIR in .Renviron (Setup).\nNone\n\n\nTyped the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (” May 11”).\nSame result\nComputed once from the first Monday (Setup).\nNone visible\n\n\nSet the intervention at Vertline &lt;- 12.9999 and drew the red line at Vertline - 0.5, week 12.4999.\nSame result\nintervention_week is 13 and the line is at week 12.5 (Setup).\nNone visible",
     "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "3. Figures"
+      "Study design and methods",
+      "Differences from the original code"
     ]
   },
   {
-    "objectID": "quarto/figures.html#the-exploratory-models",
-    "href": "quarto/figures.html#the-exploratory-models",
-    "title": "3. Figures",
-    "section": "The exploratory models",
-    "text": "The exploratory models\nEach exploratory model’s fitted line over the observed series. Laid side by side with Figure 1, they show what each simpler model misses: a single trend cannot follow the rise and fall, a level change alone ignores the trend, and a level change with one shared trend cannot bend after the intervention. These plots were not in the article.\n\n\nClick to show/hide R Code\n# The three exploratory models' fitted lines over the observed series\n# (analysis-plan.md section 8.3). Not reported in the article.\nexploratory_models &lt;- c(\"its1_week\", \"its2_intervention\", \"its3_level_change\")\n\nexploratory_plots &lt;- list(\n  positivity = map(exploratory_models, \\(model) {\n    plot_weekly_series(\n      weekly,\n      y = percent_positive,\n      lower = percent_lower,\n      upper = percent_upper,\n      size = Tested,\n      y_label = \"Proportion of tests positive with 95% CIs\",\n      size_label = \"Tested\",\n      line_week = intervention_line_week,\n      week_breaks = labelled_weeks,\n      week_labels = week_labels,\n      size_range = point_size_range,\n      fitted = positivity_fitted[[model]]\n    )\n  }) |&gt;\n    set_names(exploratory_models),\n  hai = map(exploratory_models, \\(model) {\n    plot_weekly_series(\n      weekly,\n      y = hai_rate,\n      lower = hai_rate_lower,\n      upper = hai_rate_upper,\n      size = Ptdays,\n      y_label = \"HAI rate per 1000 patient-days with 95% CIs\",\n      size_label = \"Ptdays\",\n      line_week = intervention_line_week,\n      week_breaks = labelled_weeks,\n      week_labels = week_labels,\n      size_range = point_size_range,\n      fitted = hai_fitted[[model]]\n    )\n  }) |&gt;\n    set_names(exploratory_models)\n)",
+    "objectID": "quarto/differences.html#data",
+    "href": "quarto/differences.html#data",
+    "title": "Differences from the original code",
+    "section": "Data",
+    "text": "Data\n\n\n\nOriginal code\nKind\nThis analysis\nEffect\n\n\n\n\nDid not check the workbook’s columns.\nAdded\nStops if any of the seven expected columns is missing, naming only the missing columns (1. Data).\nNone\n\n\nAttached the weekly intervals with cbind(), which relies on the rows staying in order.\nSame result\nAdded by name with mutate() (Functions).\nNone\n\n\nIntervention was Week &gt; 12.9999.\nSame result\nWeek &gt;= 13 (1. Data).\nNone for whole-number weeks\n\n\nAdded two placeholder rows at week 12.9999, with no outcome data, so the plotted line could step at the intervention. The models dropped them because their outcomes were missing.\nRemoved\nThe fitted lines are built separately, with the step, by build_fitted_line() (Functions). The data hold one row per week.\nNone\n\n\nPlaced each week in Figure 2 at one day before Date2 (week 1) or two days before (other weeks), with no note of what Date2 is.\nKept\nThe same rule, with a note: Date2 is the last day of each week’s range, as recalled by the author (1. Data).\nNone\n\n\nRead the Harris County file with read.table() and the date format \"%m / %d / %y\".\nSame result\nread_csv(), with the date read as text and converted with \"%m/%d/%y\"; R reads a space in a date format as “zero or more spaces”, so both formats read 07/05/20 the same way (1. Data).\nNone\n\n\nA sentence meant to report the total number of tests and positives printed the R code instead of the numbers (its inline code lacked the r).\nRemoved\nNot reproduced; the article reports the totals.\nNone",
     "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "3. Figures"
+      "Study design and methods",
+      "Differences from the original code"
     ]
   },
   {
-    "objectID": "quarto/figures.html#figure-1",
-    "href": "quarto/figures.html#figure-1",
-    "title": "3. Figures",
-    "section": "Figure 1",
-    "text": "Figure 1\nThe published model for both outcomes: panel A, test positivity; panel B, the HAI rate. The blue line is the segmented regression, rising until week 12, stepping down at the intervention, and then falling.\nThe size legend of panel A reads “# patients tested”, as in the original code, although the points are sized by the number of healthcare-personnel tests.\n\n\nClick to show/hide R Code\n# Figure 1 (analysis-plan.md section 8.4): the published segmented model.\n# The size legend of panel A reads \"# patients tested\", as in the original\n# code, although the points are sized by healthcare-personnel tests.\nfigure_1a &lt;- plot_weekly_series(\n  weekly,\n  y = percent_positive,\n  lower = percent_lower,\n  upper = percent_upper,\n  size = Tested,\n  y_label = \"Percentage of HCP \\ntests positive\",\n  size_label = \"# patients tested\",\n  line_week = intervention_line_week,\n  week_breaks = labelled_weeks,\n  week_labels = week_labels,\n  size_range = point_size_range,\n  fitted = positivity_fitted$its4_segmented,\n  x_label = NULL\n)\n\nfigure_1b &lt;- plot_weekly_series(\n  weekly,\n  y = hai_rate,\n  lower = hai_rate_lower,\n  upper = hai_rate_upper,\n  size = Ptdays,\n  y_label = \"HAI rate per\\n1000 patient-days\",\n  size_label = \"Patient-days\",\n  line_week = intervention_line_week,\n  week_breaks = labelled_weeks,\n  week_labels = week_labels,\n  size_range = point_size_range,\n  fitted = hai_fitted$its4_segmented\n)",
+    "objectID": "quarto/differences.html#models",
+    "href": "quarto/differences.html#models",
+    "title": "Differences from the original code",
+    "section": "Models",
+    "text": "Models\n\n\n\nOriginal code\nKind\nThis analysis\nEffect\n\n\n\n\nWrote out each of the eight models (logistic1 to logistic4, poisson1 to poisson4) in its own code chunk.\nSame result\nEach model’s terms are written once and fitted for both outcomes; the models are kept in named lists (2. Models).\nNone\n\n\nFitted the exploratory models on Week and the published model on Week2 (week minus 13).\nKept\nAs in the original. The exploratory models have no interaction, so centring the week would change only their intercepts, not their fit or their other coefficients.\nNone\n\n\nPrinted summary() for every model, and converted every table but one (the second HAI model) to a flextable.\nRemoved\nThe tables are gtsummary tables throughout (2. Models).\nNone\n\n\nDid not compute the values at week 13 that the article reports; they were read from the model output.\nAdded\npredict_at_intervention_week() computes them from the published model (2. Models).\nNone, if they match the article; to be confirmed on the first run\n\n\nThe weeks spanned by the fitted lines followed the data rows.\nSame result\nTaken from the first and last week in the data (2. Models).\nNone",
     "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "3. Figures"
+      "Study design and methods",
+      "Differences from the original code"
     ]
   },
   {
-    "objectID": "quarto/figures.html#figure-2-lines-by-date",
-    "href": "quarto/figures.html#figure-2-lines-by-date",
-    "title": "3. Figures",
-    "section": "Figure 2: lines by date",
-    "text": "Figure 2: lines by date\nFigure 2 plots the same series by date rather than by week, so the hospital data can be set against daily Harris County cases. As in the original code, its fitted line joins the published model’s predictions at the observed weeks, so it does not show Figure 1’s step at the intervention.\n\n\nClick to show/hide R Code\n# Figure 2 is drawn by date. As in the original code, its fitted line joins\n# the published model's predictions at the observed weeks, without the step\n# at the intervention that Figure 1 shows. Ptdays is set to 1 so the HAI\n# prediction is a rate per patient-day.\nweekly_by_date &lt;- weekly |&gt;\n  mutate(\n    positivity_fitted = 100 * predict(\n      positivity_models$its4_segmented,\n      newdata = weekly,\n      type = \"response\"\n    ),\n    hai_fitted = hai_rate_per * predict(\n      hai_models$its4_segmented,\n      newdata = mutate(weekly, Ptdays = 1),\n      type = \"response\"\n    )\n  )\n\n# The day before face shields began\nintervention_line_date &lt;- intervention_start - 1",
+    "objectID": "quarto/differences.html#figures",
+    "href": "quarto/differences.html#figures",
+    "title": "Differences from the original code",
+    "section": "Figures",
+    "text": "Figures\n\n\n\nOriginal code\nKind\nThis analysis\nEffect\n\n\n\n\nTen near-identical ggplot() calls.\nSame result\nOne function, plot_weekly_series() (Functions).\nNone for Figure 1\n\n\nThe exploratory plots had a different point-size range, legend position and axis-title size from Figure 1.\nSame result\nThe exploratory plots share Figure 1’s styling (3. Figures).\nThe exploratory plots look slightly different; they were not published\n\n\nFigure 1A’s size legend read “# patients tested”, although the points are sized by healthcare-personnel tests. Figure 2A had the same label.\nCorrected\n“# HCP tests” in both (3. Figures).\nThe legend text of Figures 1A and 2A\n\n\nFigure 2’s fitted line joined the predictions at the observed weeks, so it showed no step at the intervention, unlike Figure 1.\nKept\nAs in the original (3. Figures).\nNone\n\n\nFigure 2’s red line was placed with as.Date(\"07/05/2020\", format = \"%m / %d / %y\", size = 1); the size = 1 was passed to as.Date(), which ignores it.\nSame result\nintervention_start - 1, the same date (3. Figures).\nNone\n\n\nDrew the Harris County bars with geom_bar(stat = \"identity\").\nSame result\ngeom_col(), which is the same thing (3. Figures).\nNone\n\n\nSaved Figure 1’s panels as “Fig 1A 2020-9-19.tiff” and “Fig 1B 2020-9-19.tiff” in the working directory, with no size set. Figure 2 was not saved.\nAdded\nAll three figures are saved to figures/ as figure_1a.tiff, figure_1b.tiff and figure_2.tiff, still with no size set, so their size depends on the graphics device (3. Figures).\nNone",
     "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "3. Figures"
+      "Study design and methods",
+      "Differences from the original code"
     ]
   },
   {
-    "objectID": "quarto/figures.html#figure-2",
-    "href": "quarto/figures.html#figure-2",
-    "title": "3. Figures",
-    "section": "Figure 2",
-    "text": "Figure 2\nEach panel shows a hospital series with daily Harris County cases as grey bars behind it, on a second axis to the right. The comparison is the point of the figure: infections in the hospital fell more quickly than cases in the community, which the article notes when discussing whether the fall only reflected the community wave.\n\n\nClick to show/hide R Code\n# Figure 2 (analysis-plan.md section 8.4): Figure 1's series by date, with\n# daily Harris County cases as grey bars on a second y-axis. The bars are\n# divided by a scale factor to share the left axis, and the second axis\n# multiplies them back.\nfigure_2a &lt;- ggplot(harris) +\n  geom_point(\n    data = weekly_by_date,\n    aes(x = Date, y = percent_positive, size = Tested)\n  ) +\n  theme_light() +\n  geom_vline(xintercept = intervention_line_date, color = \"red\") +\n  geom_errorbar(\n    data = weekly_by_date,\n    aes(x = Date, ymin = percent_lower, ymax = percent_upper),\n    width = 0.2,\n    color = \"#5A5656\"\n  ) +\n  geom_line(\n    data = weekly_by_date,\n    aes(x = Date, y = positivity_fitted),\n    color = \"blue\"\n  ) +\n  labs(size = \"# patients tested\") +\n  theme(\n    legend.justification = c(0, 0.5),\n    axis.title.y = element_text(size = 10),\n    axis.title.x = element_blank()\n  ) +\n  scale_size(range = point_size_range) +\n  geom_col(aes(x = Date, y = epicurve_Harris / harris_scale_positivity), alpha = 0.2) +\n  scale_y_continuous(\n    name = \"Percentage of HCP \\ntests positive\",\n    sec.axis = sec_axis(\n      \\(x) x * harris_scale_positivity,\n      name = \"Daily COVID-19 cases\\nin Harris County\"\n    )\n  )\n\nfigure_2b &lt;- ggplot(harris) +\n  geom_point(\n    data = weekly_by_date,\n    aes(x = Date, y = hai_rate, size = Ptdays)\n  ) +\n  theme_light() +\n  geom_vline(xintercept = intervention_line_date, color = \"red\") +\n  geom_errorbar(\n    data = weekly_by_date,\n    aes(x = Date, ymin = hai_rate_lower, ymax = hai_rate_upper),\n    width = 0.2\n  ) +\n  geom_line(\n    data = weekly_by_date,\n    aes(x = Date, y = hai_fitted),\n    color = \"blue\"\n  ) +\n  geom_col(aes(x = Date, y = epicurve_Harris / harris_scale_hai), alpha = 0.2) +\n  scale_y_continuous(\n    name = \"HAI rate per\\n1000 patient-days\",\n    sec.axis = sec_axis(\n      \\(x) x * harris_scale_hai,\n      name = \"Daily COVID-19 cases\\nin Harris County\"\n    )\n  ) +\n  scale_size(range = point_size_range) +\n  labs(size = \"Patient-days\") +\n  theme(\n    axis.title.x = element_blank(),\n    axis.title.y = element_text(size = 10),\n    axis.text.x = element_text(angle = 45, hjust = 1, size = 6)\n  )\n\nfigure_2 &lt;- plot_grid(figure_2a, figure_2b, ncol = 1, align = \"v\")",
+    "objectID": "quarto/differences.html#references",
+    "href": "quarto/differences.html#references",
+    "title": "Differences from the original code",
+    "section": "References",
+    "text": "References\n\n\nAl Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. “Association Between Universal Face Shield in a Quaternary Care Center and Reduction of SARS-COV2 Infections Among Healthcare Personnel and Hospitalized Patients.” International Journal of Infectious Diseases 105: 252–55. https://doi.org/10.1016/j.ijid.2021.02.060.",
     "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "3. Figures"
-    ]
-  },
-  {
-    "objectID": "quarto/figures.html#saving-the-figures",
-    "href": "quarto/figures.html#saving-the-figures",
-    "title": "3. Figures",
-    "section": "Saving the figures",
-    "text": "Saving the figures\nThe figures are saved as TIFF files in figures/. As in the original code, no size is set, so ggsave() uses the size of the current graphics device.\n\n\nClick to show/hide R Code\n# As in the original code, Figure 1's panels are saved as TIFF files without\n# a set size, so ggsave() uses the size of the current graphics device.\n# Figure 2 was not saved by the original code; it is saved here the same way.\ndir.create(\"figures\", showWarnings = FALSE)\nggsave(file.path(\"figures\", \"figure_1a.tiff\"), figure_1a)\nggsave(file.path(\"figures\", \"figure_1b.tiff\"), figure_1b)\nggsave(file.path(\"figures\", \"figure_2.tiff\"), figure_2)",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "3. Figures"
-    ]
-  },
-  {
-    "objectID": "quarto/models.html",
-    "href": "quarto/models.html",
-    "title": "2. Models",
-    "section": "",
-    "text": "This script fits the interrupted time series models, for both outcomes, and builds what the tables and figures need from them.\nThe original analysis fitted four models for each outcome, each adding to the one before. Only the fourth, the segmented regression model, was reported in the article; the other three were exploratory, and show why the fourth was needed. They are kept here for that reason and labelled exploratory wherever they appear (analysis plan, section 8.3).",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "2. Models"
-    ]
-  },
-  {
-    "objectID": "quarto/models.html#the-four-models",
-    "href": "quarto/models.html#the-four-models",
-    "title": "2. Models",
-    "section": "The four models",
-    "text": "The four models\nEach model is written once, as the right-hand side of its formula, and used for both outcomes:\n\n\n\n\n\n\n\n\nModel\nTerms\nWhat it assumes\n\n\n\n\nits1_week (exploratory)\nWeek\nOne steady trend over the whole period; the intervention changes nothing\n\n\nits2_intervention (exploratory)\nIntervention\nA different level before and after, with no trend over time\n\n\nits3_level_change (exploratory)\nIntervention + Week\nOne trend, with a jump in level at the intervention\n\n\nits4_segmented (published)\nIntervention * Week2\nA jump in level at the intervention and a change in the trend\n\n\n\nThe fourth model is segmented regression, the standard model for an interrupted time series. Intervention * Week2 expands to three terms: the trend before the intervention (Week2), the jump at week 13 (Intervention), and the change in trend after it (Intervention:Week2). The earlier models are simplifications of it, each leaving out one or more of these terms.\n\n\nClick to show/hide R Code\n# The right-hand side of each model (analysis-plan.md sections 8.2 and 8.3).\n# its4_segmented is the model reported in the article; the other three are\n# exploratory and were not reported. Week2 is the week centred at the\n# intervention week, so in its4_segmented the Intervention term is the\n# contrast at week 13 and the interaction term is the change in slope.\nmodel_terms &lt;- c(\n  its1_week = \"Week\",\n  its2_intervention = \"Intervention\",\n  its3_level_change = \"Intervention + Week\",\n  its4_segmented = \"Intervention * Week2\"\n)",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "2. Models"
-    ]
-  },
-  {
-    "objectID": "quarto/models.html#test-positivity",
-    "href": "quarto/models.html#test-positivity",
-    "title": "2. Models",
-    "section": "Test positivity",
-    "text": "Test positivity\nLogistic regression of the positive tests out of all tests in each week. cbind(Positives, Tested - Positives) gives the model the numbers of positive and negative tests, so each week counts in proportion to how many tests it had: a week with many tests carries more weight than a week with few.\n\n\nClick to show/hide R Code\n# Logistic regression of positive healthcare-personnel tests out of tests\n# performed\npositivity_models &lt;- map(model_terms, \\(terms) {\n  glm(\n    as.formula(str_c(\"cbind(Positives, Tested - Positives) ~ \", terms)),\n    family = binomial,\n    data = weekly\n  )\n})",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "2. Models"
-    ]
-  },
-  {
-    "objectID": "quarto/models.html#hospital-acquired-infections",
-    "href": "quarto/models.html#hospital-acquired-infections",
-    "title": "2. Models",
-    "section": "Hospital-acquired infections",
-    "text": "Hospital-acquired infections\nPoisson regression of the number of HAIs each week. The number of inpatients varies from week to week, so the count is modelled relative to patient-days through an offset: log(Ptdays) enters the model with its coefficient fixed at 1, which makes the model one for the rate of HAIs per patient-day.\n\n\nClick to show/hide R Code\n# Poisson regression of weekly HAI counts, with log patient-days as an offset\nhai_models &lt;- map(model_terms, \\(terms) {\n  glm(\n    as.formula(str_c(\"HAI ~ \", terms)),\n    offset = log(Ptdays),\n    family = poisson(link = \"log\"),\n    data = weekly\n  )\n})",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "2. Models"
-    ]
-  },
-  {
-    "objectID": "quarto/models.html#model-tables",
-    "href": "quarto/models.html#model-tables",
-    "title": "2. Models",
-    "section": "Model tables",
-    "text": "Model tables\ntbl_regression(exponentiate = TRUE) turns each model’s coefficients into odds ratios (positivity) or incidence rate ratios (HAI), with 95% confidence intervals and P values.\nFor the published model, the ratios read as follows:\n\nWeek2: the change from one week to the next before the intervention.\nIntervention: the jump at week 13, from the value the pre-intervention trend predicts to the value with the intervention.\nIntervention:Week2: how much the week-to-week change after the intervention differs from the change before it. A ratio below 1 means the trend bent downwards.\n\nThe confidence intervals in these tables are profile-likelihood intervals, which is what confint() gives for these models. The P values are Wald tests.\n\n\nClick to show/hide R Code\n# Odds ratios (positivity) and incidence rate ratios (HAI), as in the\n# original code. In its4_segmented, the Week2 ratio compares each week with\n# the one before it before the intervention, and the interaction ratio\n# compares that week-to-week change after the intervention with the change\n# before it.\npositivity_tables &lt;- map(positivity_models, tbl_regression, exponentiate = TRUE)\nhai_tables &lt;- map(hai_models, tbl_regression, exponentiate = TRUE)",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "2. Models"
-    ]
-  },
-  {
-    "objectID": "quarto/models.html#fitted-lines",
-    "href": "quarto/models.html#fitted-lines",
-    "title": "2. Models",
-    "section": "Fitted lines",
-    "text": "Fitted lines\nFor each model, its predicted value for every week, for drawing on the figures, from build_fitted_line(). Positivity is shown as a percentage, so its predictions are multiplied by 100; HAI rates are per 1,000 patient-days.\n\n\nClick to show/hide R Code\nfirst_week &lt;- min(weekly$Week)\nlast_week &lt;- max(weekly$Week)\n\npositivity_fitted &lt;- map(\n  positivity_models,\n  build_fitted_line,\n  first_week = first_week,\n  last_week = last_week,\n  intervention_week = intervention_week,\n  scale = 100\n)\nhai_fitted &lt;- map(\n  hai_models,\n  build_fitted_line,\n  first_week = first_week,\n  last_week = last_week,\n  intervention_week = intervention_week,\n  scale = hai_rate_per\n)",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "2. Models"
-    ]
-  },
-  {
-    "objectID": "quarto/models.html#values-at-week-13",
-    "href": "quarto/models.html#values-at-week-13",
-    "title": "2. Models",
-    "section": "Values at week 13",
-    "text": "Values at week 13\nThe comparison the article reports: what the published model predicts at week 13 without face shields and with them, and the P value of the difference, from predict_at_intervention_week(). The article also reports the P value of the change in slope, which is the Intervention:Week2 row of the model table.\n\n\nClick to show/hide R Code\n# The values the article reports from the published model: the predicted\n# percentage positive and HAI rate at week 13 without and with face shields,\n# and the P value of the intervention term\npositivity_at_break &lt;- predict_at_intervention_week(\n  positivity_models$its4_segmented,\n  scale = 100\n)\nhai_at_break &lt;- predict_at_intervention_week(\n  hai_models$its4_segmented,\n  scale = hai_rate_per\n)",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "2. Models"
-    ]
-  },
-  {
-    "objectID": "quarto/functions.html",
-    "href": "quarto/functions.html",
-    "title": "Functions",
-    "section": "",
-    "text": "Four helpers used by the analysis scripts. Each takes its inputs as arguments and reads no global objects, so it can be read and checked on its own.",
-    "crumbs": [
-      "Code",
-      "Setup and helper functions",
-      "Functions"
-    ]
-  },
-  {
-    "objectID": "quarto/functions.html#weekly-estimates-with-exact-intervals",
-    "href": "quarto/functions.html#weekly-estimates-with-exact-intervals",
-    "title": "Functions",
-    "section": "Weekly estimates with exact intervals",
-    "text": "Weekly estimates with exact intervals\nadd_exact_intervals()\nFor each week, the percentage of healthcare-personnel tests that were positive, and the HAI rate per 1,000 patient-days, each with a 95% confidence interval (analysis plan, section 8.1).\nBoth intervals are exact: they come from the binomial and Poisson distributions themselves rather than a normal approximation. This matters for the HAI series, whose weekly counts run from 0 to 7. With so few events a normal approximation can give a lower bound below zero, while an exact interval for a week with no infections still runs from 0 to a sensible upper bound. binom.exact() gives the Clopper–Pearson interval and pois.exact() the exact Poisson interval, with patient-days as the exposure.\nThe original code computed the same intervals and attached them with cbind(); here they are added by name with mutate(), so a reordered table cannot attach them to the wrong rows.\nUsed in the analysis: Data: weekly estimates.\n\n\nClick to show/hide R Code\n# Adds the weekly estimates of analysis-plan.md section 8.1: the percentage\n# of healthcare-personnel tests positive, with an exact binomial interval,\n# and the HAI rate, with an exact Poisson interval using patient-days as the\n# exposure. `weekly` has one row per week with the columns Positives, Tested,\n# HAI and Ptdays.\nadd_exact_intervals &lt;- function(weekly, conf_level, rate_per) {\n  positivity &lt;- binom.exact(\n    weekly$Positives,\n    weekly$Tested,\n    conf.level = conf_level\n  )\n  hai &lt;- pois.exact(\n    weekly$HAI,\n    weekly$Ptdays,\n    conf.level = conf_level\n  )\n\n  weekly |&gt;\n    mutate(\n      percent_positive = 100 * positivity$proportion,\n      percent_lower = 100 * positivity$lower,\n      percent_upper = 100 * positivity$upper,\n      hai_rate = rate_per * hai$rate,\n      hai_rate_lower = rate_per * hai$lower,\n      hai_rate_upper = rate_per * hai$upper\n    )\n}",
-    "crumbs": [
-      "Code",
-      "Setup and helper functions",
-      "Functions"
-    ]
-  },
-  {
-    "objectID": "quarto/functions.html#the-fitted-line",
-    "href": "quarto/functions.html#the-fitted-line",
-    "title": "Functions",
-    "section": "The fitted line",
-    "text": "The fitted line\nbuild_fitted_line()\nThe predicted value of a fitted model for every week, for drawing its line on a plot. At the intervention the published model jumps: it predicts one value at week 13 without the intervention and another with it. To draw that jump, the function includes the break twice, once on each side, so the line rises to the pre-intervention prediction and drops straight down to the post-intervention one.\nThe original code did this by adding two placeholder rows to the data at week 12.9999, which then had to be ignored by the models. Building the line separately keeps the data as they are.\nFor the HAI models, the prediction is made with Ptdays set to 1, so the model returns a rate per patient-day, which scale turns into a rate per 1,000.\nUsed in the analysis: Models: fitted lines.\n\n\nClick to show/hide R Code\n# Predicted values from a fitted model for every week, for drawing its line.\n# The week just before the intervention week appears twice, once without and\n# once with the intervention, so the line shows the jump at the intervention.\n# `scale` turns the prediction into the plotted unit: 100 for a percentage\n# from a logistic model, or the rate denominator (1,000) for a Poisson model,\n# whose prediction is per patient-day because Ptdays is set to 1.\nbuild_fitted_line &lt;- function(model, first_week, last_week, intervention_week, scale) {\n  break_week &lt;- intervention_week - 1e-4\n\n  before &lt;- tibble(\n    Week = c(first_week:(intervention_week - 1), break_week),\n    Intervention = FALSE\n  )\n  after &lt;- tibble(\n    Week = c(break_week, intervention_week:last_week),\n    Intervention = TRUE\n  )\n\n  bind_rows(before, after) |&gt;\n    mutate(\n      Week2 = Week - intervention_week,\n      Ptdays = 1,\n      fitted_value = scale * predict(model, newdata = pick(everything()), type = \"response\")\n    )\n}",
-    "crumbs": [
-      "Code",
-      "Setup and helper functions",
-      "Functions"
-    ]
-  },
-  {
-    "objectID": "quarto/functions.html#values-at-the-intervention-week",
-    "href": "quarto/functions.html#values-at-the-intervention-week",
-    "title": "Functions",
-    "section": "Values at the intervention week",
-    "text": "Values at the intervention week\npredict_at_intervention_week()\nThe article reports, for each outcome, what the published model predicts at week 13 without face shields and with them, and whether the two differ. Because the models centre week at 13 (Week2 is zero there), the Intervention coefficient is exactly that difference, on the log-odds or log-rate scale, and its P value is the test the article reports. The function returns the two predicted values and that P value.\nThe original code did not compute these values; it printed the model summaries, from which they were read.\nUsed in the analysis: Models: values at week 13.\n\n\nClick to show/hide R Code\n# The paper's headline contrast (analysis-plan.md section 8.2): the predicted\n# value in the intervention week without and with the intervention, and the\n# P value of the intervention term. The models centre week at the\n# intervention week (Week2 = 0), so the intervention term is that contrast.\npredict_at_intervention_week &lt;- function(model, scale) {\n  tibble(\n    Week2 = 0,\n    Intervention = c(FALSE, TRUE),\n    Ptdays = 1\n  ) |&gt;\n    mutate(\n      scenario = if_else(Intervention, \"With face shields\", \"Without face shields\"),\n      predicted = scale * predict(model, newdata = pick(everything()), type = \"response\"),\n      p_value = coef(summary(model))[\"InterventionTRUE\", \"Pr(&gt;|z|)\"]\n    ) |&gt;\n    select(scenario, predicted, p_value)\n}",
-    "crumbs": [
-      "Code",
-      "Setup and helper functions",
-      "Functions"
-    ]
-  },
-  {
-    "objectID": "quarto/functions.html#plotting-a-weekly-series",
-    "href": "quarto/functions.html#plotting-a-weekly-series",
-    "title": "Functions",
-    "section": "Plotting a weekly series",
-    "text": "Plotting a weekly series\nplot_weekly_series()\nEvery week-based plot in the analysis has the same parts: a point for each week, sized by how many tests or patient-days it contributed; its 95% interval; a red line at the intervention; and, for a model plot, the model’s fitted line in blue. The original code wrote out a full ggplot() call for each of its ten plots; here one function draws them all, and the plots differ only in what they are given.\nColumns are passed unquoted (for example y = percent_positive); the function uses { } to pass them on to ggplot2.\nUsed in the analysis: Figures.\n\n\nClick to show/hide R Code\n# One weekly series as in Figure 1: points sized by tests or patient-days,\n# 95% intervals, a red line between the last week before and the first week\n# with the intervention, and, when `fitted` is given, a model's fitted line in\n# blue. Columns are passed unquoted, for example y = percent_positive.\nplot_weekly_series &lt;- function(weekly,\n                               y,\n                               lower,\n                               upper,\n                               size,\n                               y_label,\n                               size_label,\n                               line_week,\n                               week_breaks,\n                               week_labels,\n                               size_range,\n                               fitted = NULL,\n                               x_label = \"Week\") {\n  weekly_plot &lt;- ggplot(weekly) +\n    geom_point(aes(x = Week, y = {{ y }}, size = {{ size }})) +\n    geom_errorbar(\n      aes(x = Week, ymin = {{ lower }}, ymax = {{ upper }}),\n      width = 0.2\n    ) +\n    geom_vline(xintercept = line_week, color = \"red\") +\n    scale_x_continuous(\n      breaks = week_breaks,\n      labels = week_labels,\n      minor_breaks = NULL\n    ) +\n    scale_size(range = size_range) +\n    labs(x = x_label, y = y_label, size = size_label) +\n    theme_light() +\n    theme(\n      axis.text.x = element_text(angle = 45, hjust = 1, size = 6),\n      axis.title.y = element_text(size = 10),\n      legend.justification = c(0, 0.5)\n    )\n\n  # geom_path() draws the fitted values in the order given, so the two points\n  # at the break week join as a vertical step\n  if (!is.null(fitted)) {\n    weekly_plot &lt;- weekly_plot +\n      geom_path(data = fitted, aes(x = Week, y = fitted_value), color = \"blue\")\n  }\n\n  weekly_plot\n}",
-    "crumbs": [
-      "Code",
-      "Setup and helper functions",
-      "Functions"
-    ]
-  },
-  {
-    "objectID": "quarto/prepare_data.html",
-    "href": "quarto/prepare_data.html",
-    "title": "1. Data",
-    "section": "",
-    "text": "This script reads the two data files and adds what the models and figures need: the weekly estimates with their intervals, the variables that describe the interrupted time series, and the dates used in Figure 2.\nOnly a person authorized to use the data runs it. The data are not in this repository, and nothing on this site comes from running it.",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "1. Data"
-    ]
-  },
-  {
-    "objectID": "quarto/prepare_data.html#finding-the-data",
-    "href": "quarto/prepare_data.html#finding-the-data",
-    "title": "1. Data",
-    "section": "Finding the data",
-    "text": "Finding the data\nIf COVID_IC_DATA_DIR has not been set, the script stops at once with a message saying how to set it, rather than failing later with a missing-file error.\n\n\nClick to show/hide R Code\nif (data_dir == \"\") {\n  stop(\n    \"COVID_IC_DATA_DIR is not set. Add it to .Renviron and restart R.\",\n    call. = FALSE\n  )\n}",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "1. Data"
-    ]
-  },
-  {
-    "objectID": "quarto/prepare_data.html#the-weekly-surveillance-data",
-    "href": "quarto/prepare_data.html#the-weekly-surveillance-data",
-    "title": "1. Data",
-    "section": "The weekly surveillance data",
-    "text": "The weekly surveillance data\nOne row per week, with the number of healthcare personnel tested and the number positive, the number of hospital-acquired infections (possible and confirmed together; see the analysis plan, section 7) and the number of patient-days. The data are aggregate counts: no individual-level data were available or used.\nThe script checks that the seven columns the code expects are present, and stops if any is missing. The message names only the missing columns, never any values.\n\n\nClick to show/hide R Code\n# One row per week. The original code expects these columns: Week, Date1 and\n# Date2 (dates for the week), Tested and Positives (healthcare-personnel\n# tests), HAI (possible and confirmed hospital-acquired infections together)\n# and Ptdays (patient-days).\nweekly_raw &lt;- read_excel(file.path(data_dir, surveillance_file))\n\nexpected_columns &lt;- c(\"Week\", \"Date1\", \"Date2\", \"Tested\", \"Positives\", \"HAI\", \"Ptdays\")\nmissing_columns &lt;- setdiff(expected_columns, names(weekly_raw))\nif (length(missing_columns) &gt; 0) {\n  stop(\n    \"The surveillance workbook has no column named: \",\n    str_flatten_comma(missing_columns),\n    call. = FALSE\n  )\n}",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "1. Data"
-    ]
-  },
-  {
-    "objectID": "quarto/prepare_data.html#weekly-estimates",
-    "href": "quarto/prepare_data.html#weekly-estimates",
-    "title": "1. Data",
-    "section": "Weekly estimates",
-    "text": "Weekly estimates\nThe percentage positive and the HAI rate for each week, with exact 95% intervals, from add_exact_intervals(). These are the points and error bars in the figures.\n\n\nClick to show/hide R Code\n# analysis-plan.md section 8.1\nweekly &lt;- weekly_raw |&gt;\n  mutate(\n    Date1 = as.Date(Date1),\n    Date2 = as.Date(Date2)\n  ) |&gt;\n  add_exact_intervals(conf_level = confidence_level, rate_per = hai_rate_per)",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "1. Data"
-    ]
-  },
-  {
-    "objectID": "quarto/prepare_data.html#time-series-variables",
-    "href": "quarto/prepare_data.html#time-series-variables",
-    "title": "1. Data",
-    "section": "Time series variables",
-    "text": "Time series variables\nAn interrupted time series model needs two things beyond the outcome: a time variable, and an indicator of whether each week falls after the intervention.\n\nIntervention is TRUE from week 13, the first week with face shields.\nWeek2 is the week number minus 13, so it is zero at the intervention week.\n\nCentring the week at 13 does not change how well the model fits, or its predictions. It changes what the coefficients mean: with Week2 zero at week 13, the Intervention coefficient becomes the difference between the predicted values with and without the intervention at week 13, which is the comparison the article reports. Without centring, it would be that difference at week 0, which lies outside the study.\n\n\nClick to show/hide R Code\n# analysis-plan.md sections 6 and 8.2. Intervention is TRUE from the\n# intervention week on. Week2 is the week centred at the intervention week,\n# so the intervention term in the models is the contrast at week 13.\nweekly &lt;- weekly |&gt;\n  mutate(\n    Intervention = Week &gt;= intervention_week,\n    Week2 = Week - intervention_week\n  )",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "1. Data"
-    ]
-  },
-  {
-    "objectID": "quarto/prepare_data.html#plot-dates",
-    "href": "quarto/prepare_data.html#plot-dates",
-    "title": "1. Data",
-    "section": "Plot dates",
-    "text": "Plot dates\nFigure 2 draws the weekly series by date, alongside daily Harris County cases, so each week needs a date. Date2 is the last day of each week’s range, a Friday; two days before it is the Wednesday in the middle of the week. Week 1, which began on Friday 17 April, is drawn one day before its Date2, as in the original code.\n\n\nClick to show/hide R Code\n# The date each week is drawn at in Figure 2, alongside the daily Harris\n# County bars. Date2 is the last day of each week's range (recalled by the\n# author, not documented in the data): a Friday, so two days before it is the\n# Wednesday in the middle of the week. Week 1 began on Friday 17 April 2020,\n# so its Date2 is that day; the original code drew it one day earlier. Both\n# rules are kept as in the original code.\nweekly &lt;- weekly |&gt;\n  mutate(\n    Date = if_else(Date2 == study_start, Date2 - 1, Date2 - 2)\n  )",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "1. Data"
-    ]
-  },
-  {
-    "objectID": "quarto/prepare_data.html#harris-county-cases",
-    "href": "quarto/prepare_data.html#harris-county-cases",
-    "title": "1. Data",
-    "section": "Harris County cases",
-    "text": "Harris County cases\nDaily COVID-19 cases in Harris County, from the Harris County Public Health COVID Data Dashboard “Epi Curve”, give the community background in Figure 2. They are shown for comparison and are not used in the models. The dates are read as text first, so they are converted with the format the file uses (month/day/two-digit year) rather than guessed.\n\n\nClick to show/hide R Code\n# Daily COVID-19 cases in Harris County, from the Harris County Public Health\n# COVID Data Dashboard \"Epi Curve\". The original code expects the columns\n# Date (written month/day/two-digit year) and epicurve_Harris (cases).\nharris &lt;- read_csv(\n  file.path(data_dir, harris_file),\n  col_types = cols(Date = col_character(), .default = col_guess())\n) |&gt;\n  mutate(Date = as.Date(Date, format = \"%m/%d/%y\"))",
-    "crumbs": [
-      "Code",
-      "Data, models and figures",
-      "1. Data"
+      "Study design and methods",
+      "Differences from the original code"
     ]
   },
   {

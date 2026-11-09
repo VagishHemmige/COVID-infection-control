@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Vagish Hemmige">
+
+<title>Differences from the original code – Universal face shields and SARS-CoV-2: an interrupted time series</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../quarto/setup.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-66ae90e4418e9d0ac3caa4b8c3bef75c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+div.callout-Rcode.callout {
+  border-left-color: #d63384;
+}
+div.callout-Rcode.callout-style-default > .callout-header {
+  background-color: rgba(214, 51, 132, 0.13);
+}
+div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
+  content: '💻';
+  background-image: none;
+}
+div.callout-Results.callout {
+  border-left-color: #198754;
+}
+div.callout-Results.callout-style-default > .callout-header {
+  background-color: rgba(25, 135, 84, 0.13);
+}
+div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
+  content: '📊';
+  background-image: none;
+}
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
+}
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
+}
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
+  background-image: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../quarto/differences.html">Study design and methods</a></li><li class="breadcrumb-item"><a href="../quarto/differences.html">Differences from the original code</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Universal face shields and SARS-CoV-2: an interrupted time series</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link"><i class="bi bi-house" role="img">
+</i> 
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Study design and methods</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/differences.html" class="sidebar-item-text sidebar-link active"><i class="bi bi-diagram-3" role="img">
+</i> 
+ <span class="menu-text">Differences from the original code</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Code</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Setup and helper functions</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/setup.html" class="sidebar-item-text sidebar-link"><i class="bi bi-laptop" role="img">
+</i> 
+ <span class="menu-text">Setup</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/functions.html" class="sidebar-item-text sidebar-link"><i class="bi bi-laptop" role="img">
+</i> 
+ <span class="menu-text">Functions</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data, models and figures</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/prepare_data.html" class="sidebar-item-text sidebar-link"><i class="bi bi-laptop" role="img">
+</i> 
+ <span class="menu-text">1. Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/models.html" class="sidebar-item-text sidebar-link"><i class="bi bi-laptop" role="img">
+</i> 
+ <span class="menu-text">2. Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/figures.html" class="sidebar-item-text sidebar-link"><i class="bi bi-laptop" role="img">
+</i> 
+ <span class="menu-text">3. Figures</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Project documents</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/analysis-plan.html" class="sidebar-item-text sidebar-link"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">Analysis plan</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/architecture.html" class="sidebar-item-text sidebar-link"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">Architecture</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/agents.html" class="sidebar-item-text sidebar-link"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">AGENTS.md</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/repository-blueprint.html" class="sidebar-item-text sidebar-link"><i class="bi bi-file-earmark-ruled" role="img">
+</i> 
+ <span class="menu-text">Repository blueprint</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../quarto/about.html" class="sidebar-item-text sidebar-link"><i class="bi bi-info-circle" role="img">
+</i> 
+ <span class="menu-text">About</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#models" id="toc-models" class="nav-link" data-scroll-target="#models">Models</a></li>
+  <li><a href="#figures" id="toc-figures" class="nav-link" data-scroll-target="#figures">Figures</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/VagishHemmige/COVID-infection-control/edit/main/quarto/differences.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/VagishHemmige/COVID-infection-control/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../quarto/differences.html">Study design and methods</a></li><li class="breadcrumb-item"><a href="../quarto/differences.html">Differences from the original code</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Differences from the original code</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta column-body">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Vagish Hemmige </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>This page lists every way the scripts on this site differ from the original analysis: a single R Markdown file of March 2021 (<code>Mayar_R_markdown_2021-3-1.Rmd</code>), which produced the figures and model results of the published article <span class="citation" data-cites="almohajer2021faceshield">(<a href="#ref-almohajer2021faceshield" role="doc-biblioref">Al Mohajer et al. 2021</a>)</span>. The original file is kept outside this repository.</p>
+<p>Each entry is one of five kinds:</p>
+<ul>
+<li><strong>Corrected</strong>: a mistake in the original code, corrected here.</li>
+<li><strong>Same result</strong>: the code is written differently, and gives the same numbers and figures.</li>
+<li><strong>Added</strong>: something the original code did not do.</li>
+<li><strong>Removed</strong>: something the original code did that is no longer needed.</li>
+<li><strong>Kept</strong>: something in the original code that looks unusual, kept as it was so the code still matches what was published.</li>
+</ul>
+<p>No entry changes the models, the weekly estimates or the published results; the one correction changes a legend label.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Status
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The scripts have been checked by reading; they have not yet been run on the study data. “Same result” means the code is written to give the same numbers and figures as the original; that is to be confirmed on the first run.</p>
+</div>
+</div>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Original code</th>
+<th>Kind</th>
+<th>This analysis</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Loaded <code>reshape2</code>, <code>svglite</code>, <code>flextable</code>, <code>knitr</code> and <code>ggthemr</code> (not on CRAN), none of them used by the analysis, and loaded <code>dplyr</code> and <code>ggplot2</code> twice.</td>
+<td>Removed</td>
+<td>Only the packages the analysis uses are attached, once each (<a href="../quarto/setup.html#packages">Setup</a>).</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Read the data from the working directory, with a reminder to set it (<code>#setwd here</code>).</td>
+<td>Same result</td>
+<td>The data folder is named by <code>COVID_IC_DATA_DIR</code> in <code>.Renviron</code> (<a href="../quarto/setup.html#where-the-data-are">Setup</a>).</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>Typed the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (” May 11”).</td>
+<td>Same result</td>
+<td>Computed once from the first Monday (<a href="../quarto/setup.html#week-labels">Setup</a>).</td>
+<td>None visible</td>
+</tr>
+<tr class="even">
+<td>Set the intervention at <code>Vertline &lt;- 12.9999</code> and drew the red line at <code>Vertline - 0.5</code>, week 12.4999.</td>
+<td>Same result</td>
+<td><code>intervention_week</code> is 13 and the line is at week 12.5 (<a href="../quarto/setup.html#plot-constants">Setup</a>).</td>
+<td>None visible</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Original code</th>
+<th>Kind</th>
+<th>This analysis</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Did not check the workbook’s columns.</td>
+<td>Added</td>
+<td>Stops if any of the seven expected columns is missing, naming only the missing columns (<a href="../quarto/prepare_data.html#the-weekly-surveillance-data">1. Data</a>).</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Attached the weekly intervals with <code>cbind()</code>, which relies on the rows staying in order.</td>
+<td>Same result</td>
+<td>Added by name with <code>mutate()</code> (<a href="../quarto/functions.html#weekly-estimates-with-exact-intervals">Functions</a>).</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td><code>Intervention</code> was <code>Week &gt; 12.9999</code>.</td>
+<td>Same result</td>
+<td><code>Week &gt;= 13</code> (<a href="../quarto/prepare_data.html#time-series-variables">1. Data</a>).</td>
+<td>None for whole-number weeks</td>
+</tr>
+<tr class="even">
+<td>Added two placeholder rows at week 12.9999, with no outcome data, so the plotted line could step at the intervention. The models dropped them because their outcomes were missing.</td>
+<td>Removed</td>
+<td>The fitted lines are built separately, with the step, by <code>build_fitted_line()</code> (<a href="../quarto/functions.html#the-fitted-line">Functions</a>). The data hold one row per week.</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>Placed each week in Figure 2 at one day before <code>Date2</code> (week 1) or two days before (other weeks), with no note of what <code>Date2</code> is.</td>
+<td>Kept</td>
+<td>The same rule, with a note: <code>Date2</code> is the last day of each week’s range, as recalled by the author (<a href="../quarto/prepare_data.html#plot-dates">1. Data</a>).</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Read the Harris County file with <code>read.table()</code> and the date format <code>"%m / %d / %y"</code>.</td>
+<td>Same result</td>
+<td><code>read_csv()</code>, with the date read as text and converted with <code>"%m/%d/%y"</code>; R reads a space in a date format as “zero or more spaces”, so both formats read <code>07/05/20</code> the same way (<a href="../quarto/prepare_data.html#harris-county-cases">1. Data</a>).</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>A sentence meant to report the total number of tests and positives printed the R code instead of the numbers (its inline code lacked the <code>r</code>).</td>
+<td>Removed</td>
+<td>Not reproduced; the article reports the totals.</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="models" class="level2">
+<h2 class="anchored" data-anchor-id="models">Models</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Original code</th>
+<th>Kind</th>
+<th>This analysis</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Wrote out each of the eight models (<code>logistic1</code> to <code>logistic4</code>, <code>poisson1</code> to <code>poisson4</code>) in its own code chunk.</td>
+<td>Same result</td>
+<td>Each model’s terms are written once and fitted for both outcomes; the models are kept in named lists (<a href="../quarto/models.html#the-four-models">2. Models</a>).</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Fitted the exploratory models on <code>Week</code> and the published model on <code>Week2</code> (week minus 13).</td>
+<td>Kept</td>
+<td>As in the original. The exploratory models have no interaction, so centring the week would change only their intercepts, not their fit or their other coefficients.</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>Printed <code>summary()</code> for every model, and converted every table but one (the second HAI model) to a flextable.</td>
+<td>Removed</td>
+<td>The tables are <code>gtsummary</code> tables throughout (<a href="../quarto/models.html#model-tables">2. Models</a>).</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Did not compute the values at week 13 that the article reports; they were read from the model output.</td>
+<td>Added</td>
+<td><code>predict_at_intervention_week()</code> computes them from the published model (<a href="../quarto/models.html#values-at-week-13">2. Models</a>).</td>
+<td>None, if they match the article; to be confirmed on the first run</td>
+</tr>
+<tr class="odd">
+<td>The weeks spanned by the fitted lines followed the data rows.</td>
+<td>Same result</td>
+<td>Taken from the first and last week in the data (<a href="../quarto/models.html#fitted-lines">2. Models</a>).</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="figures" class="level2">
+<h2 class="anchored" data-anchor-id="figures">Figures</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Original code</th>
+<th>Kind</th>
+<th>This analysis</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ten near-identical <code>ggplot()</code> calls.</td>
+<td>Same result</td>
+<td>One function, <code>plot_weekly_series()</code> (<a href="../quarto/functions.html#plotting-a-weekly-series">Functions</a>).</td>
+<td>None for Figure 1</td>
+</tr>
+<tr class="even">
+<td>The exploratory plots had a different point-size range, legend position and axis-title size from Figure 1.</td>
+<td>Same result</td>
+<td>The exploratory plots share Figure 1’s styling (<a href="../quarto/figures.html#the-exploratory-models">3. Figures</a>).</td>
+<td>The exploratory plots look slightly different; they were not published</td>
+</tr>
+<tr class="odd">
+<td>Figure 1A’s size legend read “# patients tested”, although the points are sized by healthcare-personnel tests. Figure 2A had the same label.</td>
+<td>Corrected</td>
+<td>“# HCP tests” in both (<a href="../quarto/figures.html#figure-1">3. Figures</a>).</td>
+<td>The legend text of Figures 1A and 2A</td>
+</tr>
+<tr class="even">
+<td>Figure 2’s fitted line joined the predictions at the observed weeks, so it showed no step at the intervention, unlike Figure 1.</td>
+<td>Kept</td>
+<td>As in the original (<a href="../quarto/figures.html#figure-2-lines-by-date">3. Figures</a>).</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>Figure 2’s red line was placed with <code>as.Date("07/05/2020", format = "%m / %d / %y", size = 1)</code>; the <code>size = 1</code> was passed to <code>as.Date()</code>, which ignores it.</td>
+<td>Same result</td>
+<td><code>intervention_start - 1</code>, the same date (<a href="../quarto/figures.html#figure-2-lines-by-date">3. Figures</a>).</td>
+<td>None</td>
+</tr>
+<tr class="even">
+<td>Drew the Harris County bars with <code>geom_bar(stat = "identity")</code>.</td>
+<td>Same result</td>
+<td><code>geom_col()</code>, which is the same thing (<a href="../quarto/figures.html#figure-2">3. Figures</a>).</td>
+<td>None</td>
+</tr>
+<tr class="odd">
+<td>Saved Figure 1’s panels as “Fig 1A 2020-9-19.tiff” and “Fig 1B 2020-9-19.tiff” in the working directory, with no size set. Figure 2 was not saved.</td>
+<td>Added</td>
+<td>All three figures are saved to <code>figures/</code> as <code>figure_1a.tiff</code>, <code>figure_1b.tiff</code> and <code>figure_2.tiff</code>, still with no size set, so their size depends on the graphics device (<a href="../quarto/figures.html#saving-the-figures">3. Figures</a>).</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-almohajer2021faceshield" class="csl-entry" role="listitem">
+Al Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish Hemmige. 2021. <span>“Association Between Universal Face Shield in a Quaternary Care Center and Reduction of <span>SARS-COV2</span> Infections Among Healthcare Personnel and Hospitalized Patients.”</span> <em>International Journal of Infectious Diseases</em> 105: 252–55. <a href="https://doi.org/10.1016/j.ijid.2021.02.060">https://doi.org/10.1016/j.ijid.2021.02.060</a>.
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/vagishhemmige\.github\.io\/COVID-infection-control");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link" aria-label="Home">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Home</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../quarto/setup.html" class="pagination-link" aria-label="Setup">
+        <span class="nav-page-text">Setup</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Differences from the original code"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> html</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>This page lists every way the scripts on this site differ from the original analysis: a single R Markdown file of March 2021 (<span class="in">`Mayar_R_markdown_2021-3-1.Rmd`</span>), which produced the figures and model results of the published article <span class="co">[</span><span class="ot">@almohajer2021faceshield</span><span class="co">]</span>. The original file is kept outside this repository.</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Each entry is one of five kinds:</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Corrected**: a mistake in the original code, corrected here.</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Same result**: the code is written differently, and gives the same numbers and figures.</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Added**: something the original code did not do.</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Removed**: something the original code did that is no longer needed.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Kept**: something in the original code that looks unusual, kept as it was so the code still matches what was published.</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>No entry changes the models, the weekly estimates or the published results; the one correction changes a legend label.</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">## Status</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>The scripts have been checked by reading; they have not yet been run on the study data. "Same result" means the code is written to give the same numbers and figures as the original; that is to be confirmed on the first run.</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">## Setup</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Loaded <span class="in">`reshape2`</span>, <span class="in">`svglite`</span>, <span class="in">`flextable`</span>, <span class="in">`knitr`</span> and <span class="in">`ggthemr`</span> (not on CRAN), none of them used by the analysis, and loaded <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> twice. <span class="pp">|</span> Removed <span class="pp">|</span> Only the packages the analysis uses are attached, once each (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#packages)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Read the data from the working directory, with a reminder to set it (<span class="in">`#setwd here`</span>). <span class="pp">|</span> Same result <span class="pp">|</span> The data folder is named by <span class="in">`COVID_IC_DATA_DIR`</span> in <span class="in">`.Renviron`</span> (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#where-the-data-are)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Typed the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (" May 11"). <span class="pp">|</span> Same result <span class="pp">|</span> Computed once from the first Monday (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#week-labels)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Set the intervention at <span class="in">`Vertline &lt;- 12.9999`</span> and drew the red line at <span class="in">`Vertline - 0.5`</span>, week 12.4999. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`intervention_week`</span> is 13 and the line is at week 12.5 (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#plot-constants)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Did not check the workbook's columns. <span class="pp">|</span> Added <span class="pp">|</span> Stops if any of the seven expected columns is missing, naming only the missing columns (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#the-weekly-surveillance-data)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Attached the weekly intervals with <span class="in">`cbind()`</span>, which relies on the rows staying in order. <span class="pp">|</span> Same result <span class="pp">|</span> Added by name with <span class="in">`mutate()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#weekly-estimates-with-exact-intervals)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`Intervention`</span> was <span class="in">`Week &gt; 12.9999`</span>. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`Week &gt;= 13`</span> (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#time-series-variables)</span>). <span class="pp">|</span> None for whole-number weeks <span class="pp">|</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Added two placeholder rows at week 12.9999, with no outcome data, so the plotted line could step at the intervention. The models dropped them because their outcomes were missing. <span class="pp">|</span> Removed <span class="pp">|</span> The fitted lines are built separately, with the step, by <span class="in">`build_fitted_line()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#the-fitted-line)</span>). The data hold one row per week. <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Placed each week in Figure 2 at one day before <span class="in">`Date2`</span> (week 1) or two days before (other weeks), with no note of what <span class="in">`Date2`</span> is. <span class="pp">|</span> Kept <span class="pp">|</span> The same rule, with a note: <span class="in">`Date2`</span> is the last day of each week's range, as recalled by the author (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#plot-dates)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Read the Harris County file with <span class="in">`read.table()`</span> and the date format <span class="in">`"%m / %d / %y"`</span>. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`read_csv()`</span>, with the date read as text and converted with <span class="in">`"%m/%d/%y"`</span>; R reads a space in a date format as "zero or more spaces", so both formats read <span class="in">`07/05/20`</span> the same way (<span class="co">[</span><span class="ot">1. Data</span><span class="co">](prepare_data.qmd#harris-county-cases)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> A sentence meant to report the total number of tests and positives printed the R code instead of the numbers (its inline code lacked the <span class="in">`r`</span>). <span class="pp">|</span> Removed <span class="pp">|</span> Not reproduced; the article reports the totals. <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="fu">## Models</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Wrote out each of the eight models (<span class="in">`logistic1`</span> to <span class="in">`logistic4`</span>, <span class="in">`poisson1`</span> to <span class="in">`poisson4`</span>) in its own code chunk. <span class="pp">|</span> Same result <span class="pp">|</span> Each model's terms are written once and fitted for both outcomes; the models are kept in named lists (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#the-four-models)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Fitted the exploratory models on <span class="in">`Week`</span> and the published model on <span class="in">`Week2`</span> (week minus 13). <span class="pp">|</span> Kept <span class="pp">|</span> As in the original. The exploratory models have no interaction, so centring the week would change only their intercepts, not their fit or their other coefficients. <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Printed <span class="in">`summary()`</span> for every model, and converted every table but one (the second HAI model) to a flextable. <span class="pp">|</span> Removed <span class="pp">|</span> The tables are <span class="in">`gtsummary`</span> tables throughout (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#model-tables)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Did not compute the values at week 13 that the article reports; they were read from the model output. <span class="pp">|</span> Added <span class="pp">|</span> <span class="in">`predict_at_intervention_week()`</span> computes them from the published model (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#values-at-week-13)</span>). <span class="pp">|</span> None, if they match the article; to be confirmed on the first run <span class="pp">|</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> The weeks spanned by the fitted lines followed the data rows. <span class="pp">|</span> Same result <span class="pp">|</span> Taken from the first and last week in the data (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#fitted-lines)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Figures</span></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Ten near-identical <span class="in">`ggplot()`</span> calls. <span class="pp">|</span> Same result <span class="pp">|</span> One function, <span class="in">`plot_weekly_series()`</span> (<span class="co">[</span><span class="ot">Functions</span><span class="co">](functions.qmd#plotting-a-weekly-series)</span>). <span class="pp">|</span> None for Figure 1 <span class="pp">|</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> The exploratory plots had a different point-size range, legend position and axis-title size from Figure 1. <span class="pp">|</span> Same result <span class="pp">|</span> The exploratory plots share Figure 1's styling (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#the-exploratory-models)</span>). <span class="pp">|</span> The exploratory plots look slightly different; they were not published <span class="pp">|</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 1A's size legend read "# patients tested", although the points are sized by healthcare-personnel tests. Figure 2A had the same label. <span class="pp">|</span> Corrected <span class="pp">|</span> "# HCP tests" in both (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-1)</span>). <span class="pp">|</span> The legend text of Figures 1A and 2A <span class="pp">|</span></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 2's fitted line joined the predictions at the observed weeks, so it showed no step at the intervention, unlike Figure 1. <span class="pp">|</span> Kept <span class="pp">|</span> As in the original (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2-lines-by-date)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Figure 2's red line was placed with <span class="in">`as.Date("07/05/2020", format = "%m / %d / %y", size = 1)`</span>; the <span class="in">`size = 1`</span> was passed to <span class="in">`as.Date()`</span>, which ignores it. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`intervention_start - 1`</span>, the same date (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2-lines-by-date)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Drew the Harris County bars with <span class="in">`geom_bar(stat = "identity")`</span>. <span class="pp">|</span> Same result <span class="pp">|</span> <span class="in">`geom_col()`</span>, which is the same thing (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#figure-2)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Saved Figure 1's panels as "Fig 1A 2020-9-19.tiff" and "Fig 1B 2020-9-19.tiff" in the working directory, with no size set. Figure 2 was not saved. <span class="pp">|</span> Added <span class="pp">|</span> All three figures are saved to <span class="in">`figures/`</span> as <span class="in">`figure_1a.tiff`</span>, <span class="in">`figure_1b.tiff`</span> and <span class="in">`figure_2.tiff`</span>, still with no size set, so their size depends on the graphics device (<span class="co">[</span><span class="ot">3. Figures</span><span class="co">](figures.qmd#saving-the-figures)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a><span class="fu">## References</span></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>::: {#refs}</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/VagishHemmige/COVID-infection-control/edit/main/quarto/differences.qmd" class="toc-action"><i class="bi bi-github"></i>Edit this page</a></li><li><a href="https://github.com/VagishHemmige/COVID-infection-control/issues/new" class="toc-action"><i class="bi empty"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
