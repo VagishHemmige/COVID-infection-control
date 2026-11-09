@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this material, please cite the published article."
+title: "Universal face shields and SARS-CoV-2 infections: an interrupted time series"
+type: software
+authors:
+  - family-names: Hemmige
+    given-names: Vagish
+    orcid: "https://orcid.org/0009-0006-6346-1826"
+license: MIT
+repository-code: "https://github.com/VagishHemmige/COVID-infection-control"
+url: "https://vagishhemmige.github.io/COVID-infection-control/"
+preferred-citation:
+  type: article
+  title: "Association between universal face shield in a quaternary care center and reduction of SARS-COV2 infections among healthcare personnel and hospitalized patients"
+  authors:
+    - family-names: "Al Mohajer"
+      given-names: "Mayar"
+    - family-names: "Panthagani"
+      given-names: "Kristen M."
+    - family-names: "Lasco"
+      given-names: "Todd"
+    - family-names: "Lembcke"
+      given-names: "Bradley"
+    - family-names: "Hemmige"
+      given-names: "Vagish"
+      orcid: "https://orcid.org/0009-0006-6346-1826"
+  journal: "International Journal of Infectious Diseases"
+  year: 2021
+  volume: 105
+  start: "252"
+  end: "255"
+  doi: "10.1016/j.ijid.2021.02.060"
