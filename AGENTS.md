@@ -20,7 +20,7 @@ This repository is a teaching resource built on a published quality-improvement 
 - **`analysis-plan.md` is the source of truth for design.** Code implements the plan; it does not redefine it. If code needs to depart from the plan, open a decision issue, or comment on the existing one, for the deciders. Once a decider has settled it (in the issue, or relayed there in their exact words), the plan change and the code can go in the same pull request, which closes the issue.
 - **Deciders.** Scientific decisions are made by Vagish Hemmige, in any area. Anyone may open or contribute to a decision issue; only a decider settles it (see "Working with agents").
 - **Departures from the original analysis.** The original code and the paper are the record of what was done. When the code disagrees with the paper or contains an error, do not silently copy it or silently fix it: the site's "Differences from the original code" page records every difference, and choices between the paper and the code go to a decision issue.
-- **This is an analysis project, not an R package.** Do not add DESCRIPTION, NAMESPACE, roxygen, or pkgdown infrastructure, or apply CRAN conventions.
+- **This is an analysis project, not an R package.** Do not add DESCRIPTION, NAMESPACE, roxygen, or [{pkgdown}](https://pkgdown.r-lib.org/) infrastructure, or apply CRAN conventions.
 - **Default branch:** `main`, protected. Changes reach it only through pull requests.
 
 ## Data sources
@@ -95,10 +95,10 @@ The site documents the code. It does not run the analysis.
 ## Coding conventions
 
 - **Weeks and dates.** Week numbers, the intervention week and the week labels on the figures come from the constants in `setup.R`, so they cannot drift apart. The centred week (`Week2`, zero at the intervention week) is computed from the same constant.
-- **Confidence intervals** for weekly proportions and rates use the exact binomial and Poisson methods, as in the original code (`epitools`).
+- **Confidence intervals** for weekly proportions and rates use the exact binomial and Poisson methods, as in the original code ([{epitools}](https://CRAN.R-project.org/package=epitools)).
 - **Code that turns model output into reported numbers** (predicted values at the intervention week, rate ratios) lives in named functions in `R/functions.R`.
 - **Package APIs:** read the help page and NEWS for the installed version before calling a package; don't write calls from memory.
-- **Style:** readable tidyverse code, following the tidyverse style guide: dplyr pipelines (`|>`), one step per line; `case_when()` rather than nested `ifelse()`; models, rows and columns selected by name, never by position. A plot repeated with different data is one function, not copied code. Style changes go in their own commits.
+- **Style:** readable tidyverse code, following the tidyverse style guide: [{dplyr}](https://dplyr.tidyverse.org/) pipelines (`|>`), one step per line; `case_when()` rather than nested `ifelse()`; models, rows and columns selected by name, never by position. A plot repeated with different data is one function, not copied code. Style changes go in their own commits.
 
 ## Checks for any change
 

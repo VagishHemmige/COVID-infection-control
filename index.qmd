@@ -18,6 +18,8 @@ This site is a teaching resource. It uses the published study to show how an int
 
 The code is shown, not run. The weekly surveillance data are institutional data and are not in this repository, so no result on this site comes from running the code. The study's results are those published in the article.
 
+[Braces](https://forum.posit.co/t/curly-braces-around-package-name-convention/122547) identify R packages throughout this site.
+
 ## Methods
 
 The authoritative specification is [`analysis-plan.md`](quarto/analysis-plan.qmd), which records the published methods. Reporting follows SQUIRE 2.0 [@ogrinc2016squire].

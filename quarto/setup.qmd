@@ -22,9 +22,9 @@ knitr::read_chunk("../R/setup.R")
 
 ## Packages
 
-`readxl` reads the weekly surveillance workbook, `epitools` computes the exact confidence intervals for each week, `gtsummary` turns the fitted models into tables of odds ratios and rate ratios, and `cowplot` stacks the two panels of Figure 2. The tidyverse provides the data handling (`dplyr`), reading the Harris County file (`readr`) and the plots (`ggplot2`).
+[{readxl}](https://readxl.tidyverse.org/) reads the weekly surveillance workbook, [{epitools}](https://CRAN.R-project.org/package=epitools) computes the exact confidence intervals for each week, [{gtsummary}](https://www.danieldsjoberg.com/gtsummary/) turns the fitted models into tables of odds ratios and rate ratios, and [{cowplot}](https://wilkelab.org/cowplot/) stacks the two panels of Figure 2. The [{tidyverse}](https://www.tidyverse.org/) provides the data handling ([{dplyr}](https://dplyr.tidyverse.org/)), reading the Harris County file ([{readr}](https://readr.tidyverse.org/)) and the plots ([{ggplot2}](https://ggplot2.tidyverse.org/)).
 
-The original R Markdown file also loaded `flextable`, which it used to convert the model tables for its Word output; the tables here stay `gtsummary` tables, so it is not needed. It loaded `reshape2`, `svglite`, `knitr` and `ggthemr` (not on CRAN) without using them, and loaded `dplyr` and `ggplot2` twice. None of these is loaded here.
+The original R Markdown file also loaded [{flextable}](https://davidgohel.github.io/flextable/), which it used to convert the model tables for its Word output; the tables here stay {gtsummary} tables, so it is not needed. It loaded [{reshape2}](https://CRAN.R-project.org/package=reshape2), [{svglite}](https://svglite.r-lib.org/), [{knitr}](https://yihui.org/knitr/) and [{ggthemr}](https://github.com/Mikata-Project/ggthemr) (not on CRAN) without using them, and loaded {dplyr} and {ggplot2} twice. None of these is loaded here.
 
 ```{r}
 #| label: load-packages
@@ -71,7 +71,7 @@ Weekly intervals are 95% intervals, and hospital-acquired infection (HAI) rates 
 
 The red line marking the intervention falls halfway between week 12 and week 13. Point sizes, which show how many tests or patient-days each week contributed, range from 1 to 3.
 
-Figure 2 draws daily Harris County cases on a second axis. `ggplot2` allows a second axis only as a transformation of the first, so the cases are divided by a scale factor to share the left axis, and the second axis multiplies them back. The factors are kept exactly as in the original code.
+Figure 2 draws daily Harris County cases on a second axis. {ggplot2} allows a second axis only as a transformation of the first, so the cases are divided by a scale factor to share the left axis, and the second axis multiplies them back. The factors are kept exactly as in the original code.
 
 ```{r}
 #| label: define-plot-constants

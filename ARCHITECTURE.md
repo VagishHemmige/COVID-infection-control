@@ -41,14 +41,14 @@ Harris_data.csv ── prepare_data.R ── harris ─────────�
 - **Four models per outcome from one list.** `model_terms` in `models.R` names each model's right-hand side; the positivity and HAI models are fitted from it with `map()`, so both outcomes always have the same four models under the same names.
 - **Poisson rates per patient-day.** HAI models take `offset = log(Ptdays)` in the `glm()` call. Prediction rows set `Ptdays` to 1, so a prediction is a rate per patient-day, scaled by `hai_rate_per` (1,000).
 - **The fitted line's step.** `build_fitted_line()` repeats the week just before the intervention week once without and once with the intervention; `geom_path()` in `plot_weekly_series()` draws the pair as a vertical step. Figure 2 draws its line from predictions at the observed weeks, so it has no step, as in the original code.
-- **Weekly intervals.** `add_exact_intervals()` adds exact binomial (positivity) and exact Poisson (HAI) 95% intervals with epitools.
+- **Weekly intervals.** `add_exact_intervals()` adds exact binomial (positivity) and exact Poisson (HAI) 95% intervals with [{epitools}](https://CRAN.R-project.org/package=epitools).
 - **Inputs are checked.** `prepare_data.R` stops if `COVID_IC_DATA_DIR` is not set or the workbook lacks any of the seven expected columns; the message names columns only.
 - **One plotting function.** `plot_weekly_series()` draws every week-based plot (the weekly series, the exploratory plots and Figure 1); Figure 2 is built directly in `figures.R` because it is drawn by date with a second axis.
 
 ## Dependencies outside this repository
 
 - **The study data**, in the folder named by `COVID_IC_DATA_DIR`: the weekly surveillance workbook and the Harris County extract. Neither is in the repository; their column names have not yet been checked against the code.
-- **Packages** attached in `setup.R`: tidyverse, readxl, epitools, gtsummary and cowplot.
+- **Packages** attached in `setup.R`: [{tidyverse}](https://www.tidyverse.org/), [{readxl}](https://readxl.tidyverse.org/), {epitools}, [{gtsummary}](https://www.danieldsjoberg.com/gtsummary/) and [{cowplot}](https://wilkelab.org/cowplot/).
 
 ## Website
 
