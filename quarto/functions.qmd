@@ -79,7 +79,7 @@ The original code did not compute these values; it printed the model summaries, 
 
 Every week-based plot in the analysis has the same parts: a point for each week, sized by how many tests or patient-days it contributed; its 95% interval; a red line at the intervention; and, for a model plot, the model's fitted line in blue. The original code wrote out a full `ggplot()` call for each of its ten plots; here one function draws them all, and the plots differ only in what they are given.
 
-Columns are passed unquoted (for example `y = percent_positive`); the function uses `{{ }}` to pass them on to `ggplot2`.
+Columns are passed unquoted (for example `y = percent_positive`); the function uses `{{ }}` to pass them on to [{ggplot2}](https://ggplot2.tidyverse.org/).
 
 **Used in the analysis:** [Figures](figures.qmd).
 

@@ -56,7 +56,7 @@ Interrupted time series of weekly data:
 - Proportion of healthcare-personnel tests positive each week, with an exact binomial 95% confidence interval.
 - HAI rate per 1,000 patient-days each week, with an exact Poisson 95% confidence interval.
 
-Both are computed with the `epitools` package [@epitools].
+Both are computed with the [{epitools}](https://CRAN.R-project.org/package=epitools) package [@epitools].
 
 ### 8.2 Segmented regression
 
