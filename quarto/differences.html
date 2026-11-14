@@ -102,7 +102,7 @@ div.csl-indent {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-66ae90e4418e9d0ac3caa4b8c3bef75c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-9c6fd4a99ff4209dd1149a1765198857.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -142,17 +142,6 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
   content: '⏳';
   background-image: none;
 }
-div.callout-Rcode.callout {
-  border-left-color: #d63384;
-}
-div.callout-Rcode.callout-style-default > .callout-header {
-  background-color: rgba(214, 51, 132, 0.13);
-}
-div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
-  content: '💻';
-  background-image: none;
-}
 div.callout-Results.callout {
   border-left-color: #198754;
 }
@@ -162,6 +151,17 @@ div.callout-Results.callout-style-default > .callout-header {
 div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
   content: '📊';
+  background-image: none;
+}
+div.callout-Rcode.callout {
+  border-left-color: #d63384;
+}
+div.callout-Rcode.callout-style-default > .callout-header {
+  background-color: rgba(214, 51, 132, 0.13);
+}
+div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
+  content: '💻';
   background-image: none;
 }
 </style>
@@ -447,9 +447,9 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 </thead>
 <tbody>
 <tr class="odd">
-<td>Loaded <code>flextable</code>, used to convert the model tables with <code>as_flextable()</code> for the Word document the file produced. Also loaded <code>reshape2</code>, <code>svglite</code>, <code>knitr</code> and <code>ggthemr</code> (not on CRAN), which the analysis did not use, and loaded <code>dplyr</code> and <code>ggplot2</code> twice.</td>
+<td>Loaded <a href="https://davidgohel.github.io/flextable/">{flextable}</a>, used to convert the model tables with <code>as_flextable()</code> for the Word document the file produced. Also loaded <a href="https://CRAN.R-project.org/package=reshape2">{reshape2}</a>, <a href="https://svglite.r-lib.org/">{svglite}</a>, <a href="https://yihui.org/knitr/">{knitr}</a> and <a href="https://github.com/Mikata-Project/ggthemr">{ggthemr}</a> (not on CRAN), which the analysis did not use, and loaded <a href="https://dplyr.tidyverse.org/">{dplyr}</a> and <a href="https://ggplot2.tidyverse.org/">{ggplot2}</a> twice.</td>
 <td>Removed</td>
-<td>The model tables stay <code>gtsummary</code> tables, so <code>flextable</code> is not needed; the unused packages are not loaded, and each package is attached once (<a href="../quarto/setup.html#packages">Setup</a>).</td>
+<td>The model tables stay <a href="https://www.danieldsjoberg.com/gtsummary/">{gtsummary}</a> tables, so {flextable} is not needed; the unused packages are not loaded, and each package is attached once (<a href="../quarto/setup.html#packages">Setup</a>).</td>
 <td>None</td>
 </tr>
 <tr class="even">
@@ -555,9 +555,9 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
 <td>None</td>
 </tr>
 <tr class="odd">
-<td>Printed <code>summary()</code> for every model, and converted every table but one (the second HAI model) to a flextable for the Word output.</td>
+<td>Printed <code>summary()</code> for every model, and converted every table but one (the second HAI model) to a {flextable} for the Word output.</td>
 <td>Removed</td>
-<td>The tables are <code>gtsummary</code> tables throughout, for the website (<a href="../quarto/models.html#model-tables">2. Models</a>).</td>
+<td>The tables are {gtsummary} tables throughout, for the website (<a href="../quarto/models.html#model-tables">2. Models</a>).</td>
 <td>None to the numbers; the tables’ format</td>
 </tr>
 <tr class="even">
@@ -1136,7 +1136,7 @@ Al Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Original code <span class="pp">|</span> Kind <span class="pp">|</span> This analysis <span class="pp">|</span> Effect <span class="pp">|</span></span>
 <span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Loaded <span class="in">`flextable`</span>, used to convert the model tables with <span class="in">`as_flextable()`</span> for the Word document the file produced. Also loaded <span class="in">`reshape2`</span>, <span class="in">`svglite`</span>, <span class="in">`knitr`</span> and <span class="in">`ggthemr`</span> (not on CRAN), which the analysis did not use, and loaded <span class="in">`dplyr`</span> and <span class="in">`ggplot2`</span> twice. <span class="pp">|</span> Removed <span class="pp">|</span> The model tables stay <span class="in">`gtsummary`</span> tables, so <span class="in">`flextable`</span> is not needed; the unused packages are not loaded, and each package is attached once (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#packages)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Loaded <span class="co">[</span><span class="ot">{flextable}</span><span class="co">](https://davidgohel.github.io/flextable/)</span>, used to convert the model tables with <span class="in">`as_flextable()`</span> for the Word document the file produced. Also loaded <span class="co">[</span><span class="ot">{reshape2}</span><span class="co">](https://CRAN.R-project.org/package=reshape2)</span>, <span class="co">[</span><span class="ot">{svglite}</span><span class="co">](https://svglite.r-lib.org/)</span>, <span class="co">[</span><span class="ot">{knitr}</span><span class="co">](https://yihui.org/knitr/)</span> and <span class="co">[</span><span class="ot">{ggthemr}</span><span class="co">](https://github.com/Mikata-Project/ggthemr)</span> (not on CRAN), which the analysis did not use, and loaded <span class="co">[</span><span class="ot">{dplyr}</span><span class="co">](https://dplyr.tidyverse.org/)</span> and <span class="co">[</span><span class="ot">{ggplot2}</span><span class="co">](https://ggplot2.tidyverse.org/)</span> twice. <span class="pp">|</span> Removed <span class="pp">|</span> The model tables stay <span class="co">[</span><span class="ot">{gtsummary}</span><span class="co">](https://www.danieldsjoberg.com/gtsummary/)</span> tables, so {flextable} is not needed; the unused packages are not loaded, and each package is attached once (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#packages)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Read the data from the working directory, with a reminder to set it (<span class="in">`#setwd here`</span>). <span class="pp">|</span> Same result intended <span class="pp">|</span> The data folder is named by <span class="in">`COVID_IC_DATA_DIR`</span> in <span class="in">`.Renviron`</span> (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#where-the-data-are)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Typed the 21 week labels out by hand in each of its ten plots; one label had a stray leading space (" May 11"). <span class="pp">|</span> Same result intended <span class="pp">|</span> Computed once from the first Monday (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#week-labels)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
 <span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Set the intervention at <span class="in">`Vertline &lt;- 12.9999`</span> and drew the red line at <span class="in">`Vertline - 0.5`</span>, week 12.4999. <span class="pp">|</span> Same result intended <span class="pp">|</span> <span class="in">`intervention_week`</span> is 13 and the line is at week 12.5 (<span class="co">[</span><span class="ot">Setup</span><span class="co">](setup.qmd#plot-constants)</span>). <span class="pp">|</span> None visible <span class="pp">|</span></span>
@@ -1159,7 +1159,7 @@ Al Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish
 <span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|---|---|</span></span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Wrote out each of the eight models (<span class="in">`logistic1`</span> to <span class="in">`logistic4`</span>, <span class="in">`poisson1`</span> to <span class="in">`poisson4`</span>) in its own code chunk. <span class="pp">|</span> Same result intended <span class="pp">|</span> Each model's terms are written once and fitted for both outcomes; the models are kept in named lists (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#the-four-models)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
 <span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Fitted the exploratory models on <span class="in">`Week`</span> and the published model on <span class="in">`Week2`</span> (week minus 13). <span class="pp">|</span> Kept <span class="pp">|</span> As in the original. The exploratory models have no interaction, so centring the week would change only their intercepts, not their fit or their other coefficients. <span class="pp">|</span> None <span class="pp">|</span></span>
-<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Printed <span class="in">`summary()`</span> for every model, and converted every table but one (the second HAI model) to a flextable for the Word output. <span class="pp">|</span> Removed <span class="pp">|</span> The tables are <span class="in">`gtsummary`</span> tables throughout, for the website (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#model-tables)</span>). <span class="pp">|</span> None to the numbers; the tables' format <span class="pp">|</span></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Printed <span class="in">`summary()`</span> for every model, and converted every table but one (the second HAI model) to a {flextable} for the Word output. <span class="pp">|</span> Removed <span class="pp">|</span> The tables are {gtsummary} tables throughout, for the website (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#model-tables)</span>). <span class="pp">|</span> None to the numbers; the tables' format <span class="pp">|</span></span>
 <span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Did not compute the values at week 13 that the article reports; they were read from the model output. <span class="pp">|</span> Added <span class="pp">|</span> <span class="in">`predict_at_intervention_week()`</span> computes them from the published model (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#values-at-week-13)</span>). <span class="pp">|</span> None, if they match the article; to be confirmed on the first run <span class="pp">|</span></span>
 <span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> The weeks spanned by the fitted lines followed the data rows. <span class="pp">|</span> Same result intended <span class="pp">|</span> Taken from the first and last week in the data (<span class="co">[</span><span class="ot">2. Models</span><span class="co">](models.qmd#fitted-lines)</span>). <span class="pp">|</span> None <span class="pp">|</span></span>
 <span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>

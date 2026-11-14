@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-66ae90e4418e9d0ac3caa4b8c3bef75c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-9c6fd4a99ff4209dd1149a1765198857.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -112,17 +112,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>
-div.callout-Pending.callout {
-  border-left-color: #f0c400;
-}
-div.callout-Pending.callout-style-default > .callout-header {
-  background-color: rgba(240, 196, 0, 0.13);
-}
-div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
-  content: '⏳';
-  background-image: none;
-}
 div.callout-Rcode.callout {
   border-left-color: #d63384;
 }
@@ -143,6 +132,17 @@ div.callout-Results.callout-style-default > .callout-header {
 div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
   content: '📊';
+  background-image: none;
+}
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
+}
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
+}
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
   background-image: none;
 }
 </style>
@@ -494,7 +494,7 @@ Harris_data.csv ── prepare_data.R ── harris ─────────�
 <li><strong>Four models per outcome from one list.</strong> <code>model_terms</code> in <code>models.R</code> names each model’s right-hand side; the positivity and HAI models are fitted from it with <code>map()</code>, so both outcomes always have the same four models under the same names.</li>
 <li><strong>Poisson rates per patient-day.</strong> HAI models take <code>offset = log(Ptdays)</code> in the <code>glm()</code> call. Prediction rows set <code>Ptdays</code> to 1, so a prediction is a rate per patient-day, scaled by <code>hai_rate_per</code> (1,000).</li>
 <li><strong>The fitted line’s step.</strong> <code>build_fitted_line()</code> repeats the week just before the intervention week once without and once with the intervention; <code>geom_path()</code> in <code>plot_weekly_series()</code> draws the pair as a vertical step. Figure 2 draws its line from predictions at the observed weeks, so it has no step, as in the original code.</li>
-<li><strong>Weekly intervals.</strong> <code>add_exact_intervals()</code> adds exact binomial (positivity) and exact Poisson (HAI) 95% intervals with epitools.</li>
+<li><strong>Weekly intervals.</strong> <code>add_exact_intervals()</code> adds exact binomial (positivity) and exact Poisson (HAI) 95% intervals with <a href="https://CRAN.R-project.org/package=epitools">{epitools}</a>.</li>
 <li><strong>Inputs are checked.</strong> <code>prepare_data.R</code> stops if <code>COVID_IC_DATA_DIR</code> is not set or the workbook lacks any of the seven expected columns; the message names columns only.</li>
 <li><strong>One plotting function.</strong> <code>plot_weekly_series()</code> draws every week-based plot (the weekly series, the exploratory plots and Figure 1); Figure 2 is built directly in <code>figures.R</code> because it is drawn by date with a second axis.</li>
 </ul>
@@ -503,7 +503,7 @@ Harris_data.csv ── prepare_data.R ── harris ─────────�
 <h2 class="anchored" data-anchor-id="dependencies-outside-this-repository">Dependencies outside this repository</h2>
 <ul>
 <li><strong>The study data</strong>, in the folder named by <code>COVID_IC_DATA_DIR</code>: the weekly surveillance workbook and the Harris County extract. Neither is in the repository; their column names have not yet been checked against the code.</li>
-<li><strong>Packages</strong> attached in <code>setup.R</code>: tidyverse, readxl, epitools, gtsummary and cowplot.</li>
+<li><strong>Packages</strong> attached in <code>setup.R</code>: <a href="https://www.tidyverse.org/">{tidyverse}</a>, <a href="https://readxl.tidyverse.org/">{readxl}</a>, {epitools}, <a href="https://www.danieldsjoberg.com/gtsummary/">{gtsummary}</a> and <a href="https://wilkelab.org/cowplot/">{cowplot}</a>.</li>
 </ul>
 </section>
 <section id="website" class="level2">

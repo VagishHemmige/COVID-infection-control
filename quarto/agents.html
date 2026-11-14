@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-66ae90e4418e9d0ac3caa4b8c3bef75c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-9c6fd4a99ff4209dd1149a1765198857.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -112,17 +112,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>
-div.callout-Pending.callout {
-  border-left-color: #f0c400;
-}
-div.callout-Pending.callout-style-default > .callout-header {
-  background-color: rgba(240, 196, 0, 0.13);
-}
-div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
-  content: '⏳';
-  background-image: none;
-}
 div.callout-Rcode.callout {
   border-left-color: #d63384;
 }
@@ -143,6 +132,17 @@ div.callout-Results.callout-style-default > .callout-header {
 div.callout-Results .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
 div.callout-Results.callout-style-default .callout-icon::before, div.callout-Results.callout-titled .callout-icon::before {
   content: '📊';
+  background-image: none;
+}
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
+}
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
+}
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
   background-image: none;
 }
 </style>
@@ -440,7 +440,7 @@ edit that file, not this page. Its first heading is the page title.
 <li><strong><code>analysis-plan.md</code> is the source of truth for design.</strong> Code implements the plan; it does not redefine it. If code needs to depart from the plan, open a decision issue, or comment on the existing one, for the deciders. Once a decider has settled it (in the issue, or relayed there in their exact words), the plan change and the code can go in the same pull request, which closes the issue.</li>
 <li><strong>Deciders.</strong> Scientific decisions are made by Vagish Hemmige, in any area. Anyone may open or contribute to a decision issue; only a decider settles it (see “Working with agents”).</li>
 <li><strong>Departures from the original analysis.</strong> The original code and the paper are the record of what was done. When the code disagrees with the paper or contains an error, do not silently copy it or silently fix it: the site’s “Differences from the original code” page records every difference, and choices between the paper and the code go to a decision issue.</li>
-<li><strong>This is an analysis project, not an R package.</strong> Do not add DESCRIPTION, NAMESPACE, roxygen, or pkgdown infrastructure, or apply CRAN conventions.</li>
+<li><strong>This is an analysis project, not an R package.</strong> Do not add DESCRIPTION, NAMESPACE, roxygen, or <a href="https://pkgdown.r-lib.org/">{pkgdown}</a> infrastructure, or apply CRAN conventions.</li>
 <li><strong>Default branch:</strong> <code>main</code>, protected. Changes reach it only through pull requests.</li>
 </ul>
 </section>
@@ -587,10 +587,10 @@ edit that file, not this page. Its first heading is the page title.
 <h2 class="anchored" data-anchor-id="coding-conventions">Coding conventions</h2>
 <ul>
 <li><strong>Weeks and dates.</strong> Week numbers, the intervention week and the week labels on the figures come from the constants in <code>setup.R</code>, so they cannot drift apart. The centred week (<code>Week2</code>, zero at the intervention week) is computed from the same constant.</li>
-<li><strong>Confidence intervals</strong> for weekly proportions and rates use the exact binomial and Poisson methods, as in the original code (<code>epitools</code>).</li>
+<li><strong>Confidence intervals</strong> for weekly proportions and rates use the exact binomial and Poisson methods, as in the original code (<a href="https://CRAN.R-project.org/package=epitools">{epitools}</a>).</li>
 <li><strong>Code that turns model output into reported numbers</strong> (predicted values at the intervention week, rate ratios) lives in named functions in <code>R/functions.R</code>.</li>
 <li><strong>Package APIs:</strong> read the help page and NEWS for the installed version before calling a package; don’t write calls from memory.</li>
-<li><strong>Style:</strong> readable tidyverse code, following the tidyverse style guide: dplyr pipelines (<code>|&gt;</code>), one step per line; <code>case_when()</code> rather than nested <code>ifelse()</code>; models, rows and columns selected by name, never by position. A plot repeated with different data is one function, not copied code. Style changes go in their own commits.</li>
+<li><strong>Style:</strong> readable tidyverse code, following the tidyverse style guide: <a href="https://dplyr.tidyverse.org/">{dplyr}</a> pipelines (<code>|&gt;</code>), one step per line; <code>case_when()</code> rather than nested <code>ifelse()</code>; models, rows and columns selected by name, never by position. A plot repeated with different data is one function, not copied code. Style changes go in their own commits.</li>
 </ul>
 </section>
 <section id="checks-for-any-change" class="level2">

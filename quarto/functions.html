@@ -102,7 +102,7 @@ div.csl-indent {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-66ae90e4418e9d0ac3caa4b8c3bef75c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-9c6fd4a99ff4209dd1149a1765198857.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -131,15 +131,15 @@ div.csl-indent {
   }
 }</script>
 <style>
-div.callout-Rcode.callout {
-  border-left-color: #d63384;
+div.callout-Pending.callout {
+  border-left-color: #f0c400;
 }
-div.callout-Rcode.callout-style-default > .callout-header {
-  background-color: rgba(214, 51, 132, 0.13);
+div.callout-Pending.callout-style-default > .callout-header {
+  background-color: rgba(240, 196, 0, 0.13);
 }
-div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
-  content: '💻';
+div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
+  content: '⏳';
   background-image: none;
 }
 div.callout-Results.callout {
@@ -153,15 +153,15 @@ div.callout-Results.callout-style-default .callout-icon::before, div.callout-Res
   content: '📊';
   background-image: none;
 }
-div.callout-Pending.callout {
-  border-left-color: #f0c400;
+div.callout-Rcode.callout {
+  border-left-color: #d63384;
 }
-div.callout-Pending.callout-style-default > .callout-header {
-  background-color: rgba(240, 196, 0, 0.13);
+div.callout-Rcode.callout-style-default > .callout-header {
+  background-color: rgba(214, 51, 132, 0.13);
 }
-div.callout-Pending .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
-div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pending.callout-titled .callout-icon::before {
-  content: '⏳';
+div.callout-Rcode .callout-toggle::before {  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="rgb(33, 37, 41)" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>');}
+div.callout-Rcode.callout-style-default .callout-icon::before, div.callout-Rcode.callout-titled .callout-icon::before {
+  content: '💻';
   background-image: none;
 }
 </style>
@@ -542,7 +542,7 @@ div.callout-Pending.callout-style-default .callout-icon::before, div.callout-Pen
 <h2 class="anchored" data-anchor-id="plotting-a-weekly-series">Plotting a weekly series</h2>
 <p><code>plot_weekly_series()</code></p>
 <p>Every week-based plot in the analysis has the same parts: a point for each week, sized by how many tests or patient-days it contributed; its 95% interval; a red line at the intervention; and, for a model plot, the model’s fitted line in blue. The original code wrote out a full <code>ggplot()</code> call for each of its ten plots; here one function draws them all, and the plots differ only in what they are given.</p>
-<p>Columns are passed unquoted (for example <code>y = percent_positive</code>); the function uses <code>{ }</code> to pass them on to <code>ggplot2</code>.</p>
+<p>Columns are passed unquoted (for example <code>y = percent_positive</code>); the function uses <code>{ }</code> to pass them on to <a href="https://ggplot2.tidyverse.org/">{ggplot2}</a>.</p>
 <p><strong>Used in the analysis:</strong> <a href="../quarto/figures.html">Figures</a>.</p>
 <div class="cell">
 <details class="code-fold">
@@ -1152,7 +1152,7 @@ Al Mohajer, Mayar, Kristen M Panthagani, Todd Lasco, Bradley Lembcke, and Vagish
 <span id="cb5-87"><a href="#cb5-87" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-88"><a href="#cb5-88" aria-hidden="true" tabindex="-1"></a>Every week-based plot in the analysis has the same parts: a point for each week, sized by how many tests or patient-days it contributed; its 95% interval; a red line at the intervention; and, for a model plot, the model's fitted line in blue. The original code wrote out a full <span class="in">`ggplot()`</span> call for each of its ten plots; here one function draws them all, and the plots differ only in what they are given.</span>
 <span id="cb5-89"><a href="#cb5-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>Columns are passed unquoted (for example <span class="in">`y = percent_positive`</span>); the function uses <span class="in">`{ }`</span> to pass them on to <span class="in">`ggplot2`</span>.</span>
+<span id="cb5-90"><a href="#cb5-90" aria-hidden="true" tabindex="-1"></a>Columns are passed unquoted (for example <span class="in">`y = percent_positive`</span>); the function uses <span class="in">`{ }`</span> to pass them on to <span class="co">[</span><span class="ot">{ggplot2}</span><span class="co">](https://ggplot2.tidyverse.org/)</span>.</span>
 <span id="cb5-91"><a href="#cb5-91" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-92"><a href="#cb5-92" aria-hidden="true" tabindex="-1"></a>**Used in the analysis:** <span class="co">[</span><span class="ot">Figures</span><span class="co">](figures.qmd)</span>.</span>
 <span id="cb5-93"><a href="#cb5-93" aria-hidden="true" tabindex="-1"></a></span>
